@@ -24,7 +24,53 @@ class _TabBarScreenState extends State<TabBarScreen> with SingleTickerProviderSt
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        appBar: AppBar(
+        body: NestedScrollView(
+          body: TabBarView(
+            controller: _tabController,
+            children: const [
+              OfertasScreen(),
+              MisViajesScreen(),
+              ChatsScreen(),
+            ],
+          ),
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                bottom: TabBar(
+                  enableFeedback: false,
+                  controller: _tabController,
+                  tabs: const [
+                    Tab(child: Text('Ofertas')),
+                    Tab(child: Text('Mis viajes')),
+                    Tab(child: Text('Chats'))
+                  ],
+                ),
+                actions: [
+                  IconButton(
+                    onPressed: null,
+                    icon: Icon(
+                      Icons.settings,
+                      color: IconTheme.of(context).color,
+                    ),
+                  )
+                ],
+                pinned: true,
+                snap: false,
+                floating: true,
+                title: const Text('Unicar'),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(20),
+                  ),
+                ),
+              ),
+            ];
+          },
+        ),
+      ),
+    );
+
+    /*appBar: AppBar(
           title: Text(widget.title),
           actions: [
             IconButton(
@@ -52,8 +98,6 @@ class _TabBarScreenState extends State<TabBarScreen> with SingleTickerProviderSt
             MisViajesScreen(),
             ChatsScreen(),
           ],
-        ),
-      ),
-    );
+        ),*/
   }
 }

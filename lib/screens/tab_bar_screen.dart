@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:unicar/screens/chats_screen.dart';
 import 'package:unicar/screens/mis_viajes_screen.dart';
 import 'package:unicar/screens/ofertas_screen.dart';
+import 'package:unicar/widgets/appbar.dart';
 
 class TabBarScreen extends StatefulWidget {
   const TabBarScreen({Key? key, required this.title}) : super(key: key);
@@ -25,6 +26,9 @@ class _TabBarScreenState extends State<TabBarScreen> with SingleTickerProviderSt
       length: 3,
       child: Scaffold(
         body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[MyAppbar(tabController: _tabController)];
+          },
           body: TabBarView(
             controller: _tabController,
             children: const [
@@ -33,71 +37,8 @@ class _TabBarScreenState extends State<TabBarScreen> with SingleTickerProviderSt
               ChatsScreen(),
             ],
           ),
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                bottom: TabBar(
-                  enableFeedback: false,
-                  controller: _tabController,
-                  tabs: const [
-                    Tab(child: Text('Ofertas')),
-                    Tab(child: Text('Mis viajes')),
-                    Tab(child: Text('Chats'))
-                  ],
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: null,
-                    icon: Icon(
-                      Icons.settings,
-                      color: IconTheme.of(context).color,
-                    ),
-                  )
-                ],
-                pinned: true,
-                snap: false,
-                floating: true,
-                title: const Text('Unicar'),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(20),
-                  ),
-                ),
-              ),
-            ];
-          },
         ),
       ),
     );
-
-    /*appBar: AppBar(
-          title: Text(widget.title),
-          actions: [
-            IconButton(
-              onPressed: null,
-              icon: Icon(
-                Icons.settings,
-                color: IconTheme.of(context).color,
-              ),
-            )
-          ],
-          bottom: TabBar(
-            enableFeedback: false,
-            controller: _tabController,
-            tabs: const [
-              Tab(child: Text('Ofertas')),
-              Tab(child: Text('Mis viajes')),
-              Tab(child: Text('Chats'))
-            ],
-          ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: const [
-            OfertasScreen(),
-            MisViajesScreen(),
-            ChatsScreen(),
-          ],
-        ),*/
   }
 }

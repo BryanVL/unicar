@@ -17,15 +17,29 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Unicar',
       theme: ThemeData(
-        useMaterial3: false,
-        primarySwatch: Colors.blue,
-        primaryColor: Colors.blue,
-        brightness: Brightness.light,
-        bottomAppBarTheme: const BottomAppBarTheme(color: Colors.blue),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-      ),
+          primarySwatch: Colors.blue,
+          primaryColor: Colors.blue,
+          brightness: Brightness.light,
+          iconTheme: const IconThemeData(
+            color: Colors.black,
+          ),
+          appBarTheme: const AppBarTheme(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(25),
+              ),
+            ),
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.blue,
+          ),
+          tabBarTheme: TabBarTheme(
+            unselectedLabelColor: Colors.black,
+            indicator: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              color: Colors.lightBlue,
+            ),
+          ),
+          buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary)),
       home: const TabBarScreen(title: 'Unicar'),
       routes: {
         OfertasScreen.kRouteName: (ctx) => const OfertasScreen(),

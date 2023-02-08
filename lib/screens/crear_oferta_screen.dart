@@ -11,6 +11,8 @@ class CrearOferta extends StatefulWidget {
 }
 
 class _CrearOfertaState extends State<CrearOferta> {
+  String selectedTime = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +34,29 @@ class _CrearOfertaState extends State<CrearOferta> {
               width: 300,
               height: 200,
               color: Colors.green,
-            )
+            ),
+            Row(
+              children: [
+                OutlinedButton(
+                  onPressed: () async {
+                    final TimeOfDay? picked_s = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+
+                    if (picked_s != null) {
+                      setState(() {
+                        selectedTime = picked_s.minute < 10
+                            ? '${picked_s.hour}:0${picked_s.minute}'
+                            : '${picked_s.hour}:${picked_s.minute}';
+                      });
+                    }
+                  },
+                  child: Text('Selecciona la hora de comienzo del viaje'),
+                ),
+              ],
+            ),
+            Text('Hora seleccionada: $selectedTime'),
           ],
         ),
       ),

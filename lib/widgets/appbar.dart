@@ -8,25 +8,10 @@ class MyAppbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      surfaceTintColor: Colors.black,
-      shadowColor: Colors.black,
-      bottom: TabBar(
-        indicator: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            25.0,
-          ),
-          color: Colors.lightBlue,
-        ),
-        //indicatorColor: Colors.deepPurpleAccent,
-        automaticIndicatorColorAdjustment: true,
-        enableFeedback: false,
-        controller: tabController,
-        tabs: const [
-          Tab(child: Text('Ofertas')),
-          Tab(child: Text('Mis viajes')),
-          Tab(child: Text('Chats'))
-        ],
-      ),
+      title: const Text('Unicar'),
+      pinned: true,
+      snap: false,
+      floating: true,
       actions: [
         IconButton(
           onPressed: () {},
@@ -36,14 +21,15 @@ class MyAppbar extends StatelessWidget {
           ),
         )
       ],
-      pinned: true,
-      snap: false,
-      floating: true,
-      title: const Text('Unicar'),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(20),
-        ),
+      bottom: TabBar(
+        automaticIndicatorColorAdjustment: true,
+        enableFeedback: false,
+        controller: tabController,
+        tabs: const [
+          Tab(child: Text('Ofertas')),
+          Tab(child: Text('Mis viajes')),
+          Tab(child: Text('Chats'))
+        ],
       ),
     );
   }

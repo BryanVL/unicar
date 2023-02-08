@@ -8,16 +8,7 @@ class MyAppbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      surfaceTintColor: Colors.black,
-      shadowColor: Colors.black,
       bottom: TabBar(
-        indicator: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            25.0,
-          ),
-          color: Colors.lightBlue,
-        ),
-        //indicatorColor: Colors.deepPurpleAccent,
         automaticIndicatorColorAdjustment: true,
         enableFeedback: false,
         controller: tabController,
@@ -32,7 +23,6 @@ class MyAppbar extends StatelessWidget {
           onPressed: () {},
           icon: Icon(
             Icons.settings,
-            color: IconTheme.of(context).color,
           ),
         )
       ],
@@ -40,11 +30,6 @@ class MyAppbar extends StatelessWidget {
       snap: false,
       floating: true,
       title: const Text('Unicar'),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(20),
-        ),
-      ),
     );
   }
 }

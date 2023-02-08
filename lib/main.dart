@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:unicar/screens/chats_screen.dart';
 import 'package:unicar/screens/crear_oferta_screen.dart';
 import 'package:unicar/screens/mis_viajes_screen.dart';
@@ -21,9 +22,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         primaryColor: Colors.blue,
         brightness: Brightness.light,
-        bottomAppBarTheme: const BottomAppBarTheme(color: Colors.blue),
         iconTheme: const IconThemeData(
           color: Colors.white,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.lightBlue,
+          foregroundColor: Colors.black,
+          actionsIconTheme: IconThemeData(color: Colors.black),
         ),
       ),
       home: const TabBarScreen(title: 'Unicar'),

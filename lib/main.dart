@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Unicar',
       theme: ThemeData(
-        useMaterial3: false,
+        useMaterial3: true,
         primarySwatch: Colors.blue,
         primaryColor: Colors.blue,
         brightness: Brightness.light,

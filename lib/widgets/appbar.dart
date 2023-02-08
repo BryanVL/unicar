@@ -29,7 +29,7 @@ class MyAppbar extends StatelessWidget {
       ),
       actions: [
         IconButton(
-          onPressed: null,
+          onPressed: () {},
           icon: Icon(
             Icons.settings,
             color: IconTheme.of(context).color,

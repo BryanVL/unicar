@@ -7,11 +7,13 @@ class OfertasScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: null,
-        label: Text('Nueva oferta'),
+        onPressed: () {
+          Navigator.of(context).pushNamed('/CrearOferta');
+        },
+        label: Text('Publicar oferta'),
         icon: Icon(Icons.add),
       ),
     );

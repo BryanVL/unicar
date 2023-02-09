@@ -24,20 +24,20 @@ class _CrearOfertaState extends State<CrearOferta> {
               Navigator.of(context).pop();
             },
           )),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 16.0),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            customDropdown(titulo: 'Origen'),
-            customDropdown(titulo: 'Destino'),
+            const customDropdown(titulo: 'Origen:'),
+            const customDropdown(titulo: 'Destino:'),
             Container(
               width: 300,
               height: 200,
               color: Colors.green,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                OutlinedButton(
+                ElevatedButton(
                   onPressed: () async {
                     final TimeOfDay? picked_s = await showTimePicker(
                       context: context,
@@ -57,6 +57,41 @@ class _CrearOfertaState extends State<CrearOferta> {
               ],
             ),
             Text('Hora seleccionada: $selectedTime'),
+            const Padding(
+              padding: EdgeInsets.only(
+                left: 48.0,
+                right: 48,
+                top: 32,
+                bottom: 8,
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Plazas disponibles del viaje',
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(
+                left: 48.0,
+                right: 48,
+                top: 8,
+                bottom: 32,
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Añade una descripción al viaje',
+                    hintText: 'Escribe algo para que sea más fácil reconocerte'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 32.0),
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Text('Publicar oferta'),
+              ),
+            )
           ],
         ),
       ),

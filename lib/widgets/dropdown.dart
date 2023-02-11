@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../models/oferta.dart';
+
 class customDropdown extends StatefulWidget {
   const customDropdown({super.key, required this.titulo});
   final String titulo;
@@ -9,7 +11,21 @@ class customDropdown extends StatefulWidget {
 }
 
 class _customDropdownState extends State<customDropdown> {
-  String dropdownValue = 'Torremolinos';
+  String dropdownValue = 'Selecciona uno';
+
+  final listaUbicaciones = Oferta.ubicaciones
+      .map(
+        (ubicacion) => DropdownMenuItem(
+          alignment: Alignment.center,
+          value: ubicacion,
+          child: Text(
+            ubicacion,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+      )
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +54,7 @@ class _customDropdownState extends State<customDropdown> {
           ),
           child: Container(
             alignment: Alignment.bottomCenter,
-            width: 250,
+            width: 215,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 29, 183, 255),
@@ -51,53 +67,23 @@ class _customDropdownState extends State<customDropdown> {
                   )
                 ],
               ),
-              child: DropdownButton(
-                iconSize: 48,
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                autofocus: true,
-                dropdownColor: const Color.fromARGB(255, 167, 209, 236),
-                underline: Container(),
-                isExpanded: true,
-                alignment: Alignment.center,
-                value: dropdownValue,
-                onChanged: (String? value) {
-                  setState(() {
-                    dropdownValue = value!;
-                  });
-                },
-                items: const [
-                  DropdownMenuItem(
-                    alignment: Alignment.center,
-                    value: 'Torremolinos',
-                    child: Text('Torremolinos'),
+              child: DropdownButtonFormField(
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
                   ),
-                  DropdownMenuItem(
-                    alignment: Alignment.center,
-                    value: 'Teatinos',
-                    child: Text('Teatinos'),
-                  ),
-                  DropdownMenuItem(
-                    alignment: Alignment.center,
-                    value: 'Fuengirola',
-                    child: Text('Fuengirola'),
-                  ),
-                  DropdownMenuItem(
-                    alignment: Alignment.center,
-                    value: 'Ampliación de Teatinos',
-                    child: Text('Ampliación de Teatinos'),
-                  ),
-                  DropdownMenuItem(
-                    alignment: Alignment.center,
-                    value: 'Benalmadena',
-                    child: Text('Benalmadena'),
-                  ),
-                  DropdownMenuItem(
-                    alignment: Alignment.center,
-                    value: 'Alhaurin de la torre',
-                    child: Text('Alharurin de la torre'),
-                  ),
-                ],
-              ),
+                  iconSize: 48,
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  autofocus: true,
+                  dropdownColor: const Color.fromARGB(255, 167, 209, 236),
+                  isExpanded: true,
+                  alignment: Alignment.center,
+                  value: dropdownValue,
+                  onChanged: (String? value) {
+                    setState(() {
+                      dropdownValue = value!;
+                    });
+                  },
+                  items: listaUbicaciones),
             ),
           ),
         ),

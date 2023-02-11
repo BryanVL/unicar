@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:unicar/main.dart';
 
 class Oferta {
   final int id;
@@ -11,11 +10,21 @@ class Oferta {
   final double longitudOrigen;
   final double latitudDestino;
   final double longitudDestino;
-  final TimeOfDay hora;
+  final String hora;
   final int plazasTotales;
   final int plazasOcupadas;
   final String descripcion;
   final int creadoPor;
+
+  static const List<String> ubicaciones = [
+    'Selecciona uno',
+    'Torremolinos',
+    'Teatinos',
+    'Fuengirola',
+    'Ampliación de Teatinos',
+    'Benalmadena',
+    'Alhaurin de la torre',
+  ];
 
   Oferta(
     this.id,
@@ -40,5 +49,17 @@ class Oferta {
           'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_ocupadas,descripcion, creado_por',
         );
     print(data);
+  }
+
+  static Future<void> nuevoViaje(String origen, String destino, String hora, String plazas,
+      String descripcion, usuario) async {
+    await Supabase.instance.client.from('Viaje').insert({
+      'Origen': origen,
+      'Destino': destino,
+      'hora_inicio': hora,
+      'plazas_totales': plazas,
+      'descripcion': descripcion,
+      'creado_por': usuario
+    });
   }
 }

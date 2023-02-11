@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../models/oferta.dart';
 
 class customDropdown extends StatefulWidget {
-  const customDropdown({super.key, required this.titulo});
+  customDropdown({super.key, required this.titulo, required this.callback});
   final String titulo;
+  Function(String) callback;
 
   @override
   State<customDropdown> createState() => _customDropdownState();
@@ -12,20 +13,6 @@ class customDropdown extends StatefulWidget {
 
 class _customDropdownState extends State<customDropdown> {
   String dropdownValue = 'Selecciona uno';
-
-  final listaUbicaciones = Oferta.ubicaciones
-      .map(
-        (ubicacion) => DropdownMenuItem(
-          alignment: Alignment.center,
-          value: ubicacion,
-          child: Text(
-            ubicacion,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ),
-      )
-      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +55,15 @@ class _customDropdownState extends State<customDropdown> {
                 ],
               ),
               child: DropdownButtonFormField(
+                  validator: (value) {
+                    if (dropdownValue == 'Selecciona uno') {
+                      return 'Debes seleccionar un origen y destino';
+                    }
+                    /*if (dropdownValueDestino == dropdownValueOrigen) {
+                      return 'Origen y destino no pueden ser iguales';
+                    }*/
+                    return null;
+                  },
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                   ),
@@ -79,11 +75,12 @@ class _customDropdownState extends State<customDropdown> {
                   alignment: Alignment.center,
                   value: dropdownValue,
                   onChanged: (String? value) {
+                    widget.callback(value ?? '');
                     setState(() {
                       dropdownValue = value!;
                     });
                   },
-                  items: listaUbicaciones),
+                  items: Oferta.listaUbicaciones),
             ),
           ),
         ),

@@ -26,6 +26,20 @@ class Oferta {
     'Alhaurin de la torre',
   ];
 
+  static final listaUbicaciones = ubicaciones
+      .map(
+        (ubicacion) => DropdownMenuItem(
+          alignment: Alignment.center,
+          value: ubicacion,
+          child: Text(
+            ubicacion,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+      )
+      .toList();
+
   Oferta(
     this.id,
     this.creadoEn,

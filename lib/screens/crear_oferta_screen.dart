@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/models/oferta.dart';
 
+import '../widgets/dropdown.dart';
+
 class CrearOferta extends StatefulWidget {
   const CrearOferta({super.key});
 
@@ -21,25 +23,23 @@ class _CrearOfertaState extends State<CrearOferta> {
   TextEditingController descripcionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  final listaUbicaciones = Oferta.ubicaciones
-      .map(
-        (ubicacion) => DropdownMenuItem(
-          alignment: Alignment.center,
-          value: ubicacion,
-          child: Text(
-            ubicacion,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ),
-      )
-      .toList();
-
   @override
   void dispose() {
     super.dispose();
     plazasController.dispose();
     descripcionController.dispose();
+  }
+
+  callbackOrigen(valorElegido) {
+    setState(() {
+      dropdownValueOrigen = valorElegido;
+    });
+  }
+
+  callbackDestino(valorElegido) {
+    setState(() {
+      dropdownValueDestino = valorElegido;
+    });
   }
 
   @override
@@ -59,146 +59,8 @@ class _CrearOfertaState extends State<CrearOferta> {
           key: _formKey,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 80,
-                      height: 90,
-                      child: const Text(
-                        'Origen:',
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      right: 32,
-                    ),
-                    child: Container(
-                      alignment: Alignment.bottomCenter,
-                      width: 215,
-                      child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 29, 183, 255),
-                            border: Border.all(color: Colors.black38, width: 1),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black,
-                                blurRadius: 5,
-                              )
-                            ],
-                          ),
-                          child: DropdownButtonFormField(
-                            validator: (value) {
-                              if (dropdownValueOrigen == 'Selecciona uno') {
-                                return 'Debes seleccionar un origen';
-                              }
-                              if (dropdownValueDestino == dropdownValueOrigen) {
-                                return 'Origen y destino no pueden ser iguales';
-                              }
-                              return null;
-                            },
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                            ),
-                            iconSize: 48,
-                            borderRadius: const BorderRadius.all(Radius.circular(20)),
-                            autofocus: true,
-                            dropdownColor: const Color.fromARGB(255, 167, 209, 236),
-                            isExpanded: true,
-                            alignment: Alignment.center,
-                            value: dropdownValueOrigen,
-                            onChanged: (String? value) {
-                              setState(() {
-                                dropdownValueOrigen = value!;
-                              });
-                            },
-                            items: listaUbicaciones,
-                          )),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 80,
-                      height: 90,
-                      child: const Text(
-                        'Destino:',
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      right: 32,
-                    ),
-                    child: Container(
-                      alignment: Alignment.bottomCenter,
-                      width: 215,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 29, 183, 255),
-                          border: Border.all(color: Colors.black38, width: 1),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black,
-                              blurRadius: 5,
-                            )
-                          ],
-                        ),
-                        child: DropdownButtonFormField(
-                            validator: (value) {
-                              if (dropdownValueDestino == 'Selecciona uno') {
-                                return 'Debes seleccionar un destino';
-                              }
-                              if (dropdownValueDestino == dropdownValueOrigen) {
-                                return 'Origen y destino no pueden ser iguales';
-                              }
-                              return null;
-                            },
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                            ),
-                            iconSize: 48,
-                            borderRadius: const BorderRadius.all(Radius.circular(20)),
-                            autofocus: true,
-                            dropdownColor: const Color.fromARGB(255, 167, 209, 236),
-                            isExpanded: true,
-                            alignment: Alignment.center,
-                            value: dropdownValueDestino,
-                            onChanged: (String? value) {
-                              setState(() {
-                                dropdownValueDestino = value!;
-                              });
-                            },
-                            items: listaUbicaciones),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              /* const customDropdown(titulo: 'Origen:'),
-                const customDropdown(titulo: 'Destino:'),*/
+              customDropdown(titulo: 'Origen:', callback: callbackOrigen),
+              customDropdown(titulo: 'Destino:', callback: callbackDestino),
               Container(
                 width: 300,
                 height: 200,

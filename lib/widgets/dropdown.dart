@@ -59,9 +59,6 @@ class _customDropdownState extends State<customDropdown> {
                     if (dropdownValue == 'Selecciona uno') {
                       return 'Debes seleccionar un origen y destino';
                     }
-                    /*if (dropdownValueDestino == dropdownValueOrigen) {
-                      return 'Origen y destino no pueden ser iguales';
-                    }*/
                     return null;
                   },
                   decoration: const InputDecoration(

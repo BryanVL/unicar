@@ -46,7 +46,9 @@ class MyApp extends StatelessWidget {
               color: Colors.lightBlue,
             ),
           ),
-          buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary)),
+          buttonTheme: const ButtonThemeData(
+            textTheme: ButtonTextTheme.primary,
+          )),
       home: const TabBarScreen(title: 'Unicar'),
       routes: {
         OfertasScreen.kRouteName: (ctx) => const OfertasScreen(),

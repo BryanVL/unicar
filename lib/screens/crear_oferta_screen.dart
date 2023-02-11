@@ -134,10 +134,28 @@ class _CrearOfertaState extends State<CrearOferta> {
                 padding: const EdgeInsets.only(bottom: 32.0),
                 child: boton(
                   funcion: () async {
+                    if (dropdownValueDestino == dropdownValueOrigen) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: const Text('El origen y el destino no pueden ser iguales'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Aceptar'),
+                                ),
+                              ],
+                            );
+                          });
+                    }
                     if (_formKey.currentState!.validate() &&
                         (dropdownValueOrigen != 'Selecciona uno' &&
                             dropdownValueDestino != 'Selecciona uno' &&
-                            selectedTime != '')) {
+                            selectedTime != '' &&
+                            dropdownValueDestino != dropdownValueOrigen)) {
                       Oferta.nuevoViaje(dropdownValueOrigen, dropdownValueDestino, selectedTime,
                               plazasController.text, descripcionController.text, 1)
                           .then((value) => Navigator.of(context).pop());

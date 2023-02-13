@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/seccion_tarjetas.dart';
+import '../widgets/texto.dart';
+
 class MisViajesScreen extends StatelessWidget {
   const MisViajesScreen({super.key});
 
@@ -7,8 +10,31 @@ class MisViajesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Text('Mis viajes'),
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: ListView(
+              children: const [
+                TextoSeccion(
+                  paddingLeft: 16,
+                  paddingBottom: 16,
+                  texto: 'Viajes que ofreces',
+                ),
+                SeccionTarjetas(numTarjetas: 1),
+                TextoSeccion(
+                  texto: 'Viajes en los que estas apuntado',
+                  paddingTop: 48,
+                  paddingBottom: 16,
+                  paddingLeft: 16,
+                ),
+                SeccionTarjetas(numTarjetas: 2),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

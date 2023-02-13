@@ -27,17 +27,21 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           primaryColor: Colors.blue,
           brightness: Brightness.light,
+          scaffoldBackgroundColor: const Color.fromARGB(255, 222, 238, 253),
           iconTheme: const IconThemeData(
             color: Colors.black,
           ),
           appBarTheme: const AppBarTheme(
+            elevation: 0,
+            surfaceTintColor: Colors.transparent,
+            shadowColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(25),
               ),
             ),
             foregroundColor: Colors.black,
-            backgroundColor: Colors.blue,
+            backgroundColor: Color.fromARGB(255, 60, 119, 245),
           ),
           tabBarTheme: TabBarTheme(
             unselectedLabelColor: Colors.black,

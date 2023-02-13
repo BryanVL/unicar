@@ -37,11 +37,11 @@ class _customDropdownState extends State<customDropdown> {
         Padding(
           padding: const EdgeInsets.only(
             left: 16,
-            right: 32,
+            right: 16,
           ),
           child: Container(
             alignment: Alignment.bottomCenter,
-            width: 215,
+            width: 225,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 29, 183, 255),
@@ -55,6 +55,7 @@ class _customDropdownState extends State<customDropdown> {
                 ],
               ),
               child: DropdownButtonFormField(
+                  key: widget.key,
                   validator: (value) {
                     if (dropdownValue == 'Selecciona uno') {
                       return 'Debes seleccionar un origen y destino';

@@ -70,6 +70,8 @@ class _CrearOfertaState extends State<CrearOferta> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   boton(
+                      paddingLeft: 8,
+                      paddingRight: 8,
                       funcion: () async {
                         final TimeOfDay? picked_s = await showTimePicker(
                           context: context,
@@ -133,6 +135,8 @@ class _CrearOfertaState extends State<CrearOferta> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
                 child: boton(
+                  paddingLeft: 8,
+                  paddingRight: 8,
                   funcion: () async {
                     if (dropdownValueDestino == dropdownValueOrigen) {
                       showDialog(

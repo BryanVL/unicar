@@ -13,8 +13,26 @@ class Oferta {
   final String hora;
   final int plazasTotales;
   final int plazasOcupadas;
+  final String titulo;
   final String descripcion;
   final int creadoPor;
+
+  Oferta(
+    this.id,
+    this.creadoEn,
+    this.origen,
+    this.destino,
+    this.latitudOrigen,
+    this.longitudOrigen,
+    this.latitudDestino,
+    this.longitudDestino,
+    this.hora,
+    this.plazasTotales,
+    this.plazasOcupadas,
+    this.titulo,
+    this.descripcion,
+    this.creadoPor,
+  );
 
   static const List<String> ubicaciones = [
     'Selecciona uno',
@@ -39,22 +57,6 @@ class Oferta {
         ),
       )
       .toList();
-
-  Oferta(
-    this.id,
-    this.creadoEn,
-    this.origen,
-    this.destino,
-    this.latitudOrigen,
-    this.longitudOrigen,
-    this.latitudDestino,
-    this.longitudDestino,
-    this.hora,
-    this.plazasTotales,
-    this.plazasOcupadas,
-    this.descripcion,
-    this.creadoPor,
-  );
 
   //Oferta.fromDatabase();
   final supabase = Supabase.instance.client;

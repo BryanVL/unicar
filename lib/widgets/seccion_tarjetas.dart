@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:unicar/models/tarjetaViaje.dart';
 import 'package:unicar/widgets/tarjeta_viaje.dart';
 
 class SeccionTarjetas extends StatelessWidget {
-  const SeccionTarjetas({super.key, required this.numTarjetas});
-  final int numTarjetas;
+  const SeccionTarjetas({
+    super.key,
+    required this.datosViaje,
+  });
+  final List<TarjetaViaje> datosViaje;
+
   @override
   Widget build(BuildContext context) {
     return NotificationListener<OverscrollIndicatorNotification>(
@@ -14,13 +19,10 @@ class SeccionTarjetas extends StatelessWidget {
       child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: numTarjetas,
+        itemCount: datosViaje.length,
         itemBuilder: (context, index) {
-          return const tarjetaViaje(
-            //key: Key('$index'),
-            origen: 'origen',
-            destino: 'destino',
-            fechaHora: 'fechaHora',
+          return TarjetaViajeWidget(
+            datosTarjeta: datosViaje[index],
           );
         },
       ),

@@ -1,25 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:unicar/models/tarjetaViaje.dart';
 
-class tarjetaViaje extends StatelessWidget {
-  const tarjetaViaje({
+class TarjetaViajeWidget extends StatelessWidget {
+  const TarjetaViajeWidget({
     super.key,
-    this.titulo,
-    required this.origen,
-    required this.destino,
-    required this.fechaHora,
-    this.descripcion,
-    this.iconoURL,
+    required this.datosTarjeta,
   });
-  final String? titulo;
-  final String origen;
-  final String destino;
-  final String fechaHora;
-  final String? descripcion;
-  final String? iconoURL;
+  final TarjetaViaje datosTarjeta;
 
   @override
   Widget build(BuildContext context) {
-    //print(key);
     return Padding(
       padding: const EdgeInsets.only(
         bottom: 16,
@@ -28,7 +18,7 @@ class tarjetaViaje extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).pushNamed('/verViaje');
+          Navigator.of(context).pushNamed('/VerViaje');
         },
         child: Container(
           decoration: const BoxDecoration(
@@ -76,35 +66,35 @@ class tarjetaViaje extends StatelessWidget {
                         height: 5,
                       ),
                       RichText(
-                        text: const TextSpan(
+                        text: TextSpan(
                           style: TextStyle(color: Colors.black),
                           children: [
                             TextSpan(
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
-                              text: "Torremolinos ",
+                              text: datosTarjeta.origen,
                             ),
-                            WidgetSpan(
+                            const WidgetSpan(
                               child: Icon(
                                 Icons.arrow_right_alt_rounded,
                                 size: 16,
                               ),
                             ),
                             TextSpan(
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
-                              text: " Teatinos",
+                              text: datosTarjeta.destino,
                             ),
                           ],
                         ),
                       ),
-                      const Text(
-                        'Salida: 14:30',
-                        style: TextStyle(
+                      Text(
+                        'Salida: ${datosTarjeta.fechaHora}',
+                        style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
                         ),

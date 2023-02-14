@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unicar/providers/viaje_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 
+import '../models/tarjetaViaje.dart';
 import '../widgets/tarjeta_viaje.dart';
 
-class OfertasScreen extends StatelessWidget {
+class OfertasScreen extends ConsumerWidget {
   const OfertasScreen({super.key});
 
   static const kRouteName = "/Ofertas";
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final datosTarjetasViaje = ref.watch(dataTarjetasViajesOferta);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 top: 32,
                 left: 16,
               ),
@@ -28,25 +33,38 @@ class OfertasScreen extends StatelessWidget {
                     Navigator.of(context).pushNamed('/CrearOferta');
                   },
                   textoBoton: 'Filtrar')),
-          Expanded(
-            child: NotificationListener<OverscrollIndicatorNotification>(
-              onNotification: (OverscrollIndicatorNotification overscroll) {
-                overscroll.disallowIndicator();
-                return true;
-              },
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 100,
-                itemBuilder: (context, index) {
-                  return tarjetaViaje(
-                    //key: Key('$index'),
-                    origen: 'origen',
-                    destino: 'destino',
-                    fechaHora: 'fechaHora',
-                  );
-                },
-              ),
-            ),
+          datosTarjetasViaje.when(
+            data: (data) {
+              return Expanded(
+                child: NotificationListener<OverscrollIndicatorNotification>(
+                  onNotification: (OverscrollIndicatorNotification overscroll) {
+                    overscroll.disallowIndicator();
+                    return true;
+                  },
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      return TarjetaViajeWidget(
+                        datosTarjeta: TarjetaViaje(
+                          id: data[index].id,
+                          origen: data[index].origen,
+                          destino: data[index].destino,
+                          fechaHora: data[index].fechaHora,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+            loading: () {
+              return CircularProgressIndicator();
+            },
+            error: (error, stackTrace) {
+              return Text(
+                  'Hubo un error al cargar los viajes, intentalo de nuevo. Codigo error: $error');
+            },
           ),
         ],
       ),

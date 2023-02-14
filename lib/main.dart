@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/screens/chats_screen.dart';
 import 'package:unicar/screens/crear_oferta_screen.dart';
 import 'package:unicar/screens/mis_viajes_screen.dart';
 import 'package:unicar/screens/ofertas_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
+import 'package:unicar/screens/ver_viaje_screen.dart';
 
 Future<void> main() async {
   await Supabase.initialize(
@@ -13,7 +15,11 @@ Future<void> main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5mYmxudmR2ZWdqZ3FreGhyb3dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU2ODIyOTcsImV4cCI6MTk5MTI1ODI5N30.k7g7SCRdraTHjnIx-MsVde4NR2thrZW4OF8XSNNlJj4',
   );
 
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -59,6 +65,7 @@ class MyApp extends StatelessWidget {
         MisViajesScreen.kRouteName: (context) => const MisViajesScreen(),
         ChatsScreen.kRouteName: (context) => const ChatsScreen(),
         CrearOferta.kRouteName: (context) => const CrearOferta(),
+        VerViajeScreen.kRouteName: (context) => const VerViajeScreen(),
       },
     );
   }

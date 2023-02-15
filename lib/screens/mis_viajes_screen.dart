@@ -34,7 +34,17 @@ class MisViajesScreen extends ConsumerWidget {
                     );
                   },
                   loading: () {
-                    return CircularProgressIndicator();
+                    return SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          CircularProgressIndicator(),
+                        ],
+                      ),
+                    );
                   },
                   error: (error, stackTrace) {
                     return Text(
@@ -54,7 +64,17 @@ class MisViajesScreen extends ConsumerWidget {
                     );
                   },
                   loading: () {
-                    return CircularProgressIndicator();
+                    return SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          CircularProgressIndicator(),
+                        ],
+                      ),
+                    );
                   },
                   error: (error, stackTrace) {
                     return Text(

@@ -61,13 +61,16 @@ class TarjetaViajeWidget extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Expanded(
+                Expanded(
                   flex: 1,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    backgroundImage: NetworkImage(
-                        'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg'),
-                    radius: 35,
+                  child: Hero(
+                    tag: 'imagenUsuario${datosTarjeta.id}',
+                    child: const CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      backgroundImage: NetworkImage(
+                          'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg'),
+                      radius: 35,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -75,10 +78,10 @@ class TarjetaViajeWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         maxLines: 1,
-                        'Titulo de viaje',
-                        style: TextStyle(
+                        datosTarjeta.titulo ?? 'Viaje a ${datosTarjeta.destino}',
+                        style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 22.0,
                           overflow: TextOverflow.ellipsis,

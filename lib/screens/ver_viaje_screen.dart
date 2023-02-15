@@ -31,10 +31,13 @@ class VerViajeScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(oferta.urlIcono!),
-                  radius: 35,
+                Hero(
+                  tag: 'imagenUsuario${oferta.id}',
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    backgroundImage: NetworkImage(oferta.urlIcono!),
+                    radius: 35,
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16),

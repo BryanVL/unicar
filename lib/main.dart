@@ -6,7 +6,6 @@ import 'package:unicar/screens/crear_oferta_screen.dart';
 import 'package:unicar/screens/mis_viajes_screen.dart';
 import 'package:unicar/screens/ofertas_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
-import 'package:unicar/screens/ver_viaje_screen.dart';
 
 Future<void> main() async {
   await Supabase.initialize(

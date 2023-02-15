@@ -92,3 +92,5 @@ class Oferta {
         .eq('id', id);
   }
 }
+
+enum TipoViaje { propio, apuntado, oferta }

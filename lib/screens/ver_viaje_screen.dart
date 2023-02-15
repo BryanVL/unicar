@@ -7,9 +7,57 @@ class VerViajeScreen extends StatelessWidget {
   VerViajeScreen({
     super.key,
     required this.oferta,
+    required this.tipo,
   });
-
+  final TipoViaje tipo;
   final Oferta oferta;
+  final estiloTexto = const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w400,
+  );
+
+  final botonEliminar = boton(
+    colorBoton: Colors.red,
+    paddingTodo: 16,
+    funcion: () {},
+    textoBoton: 'Eliminar oferta',
+  );
+
+  final botonEditar = boton(
+    paddingTodo: 16,
+    funcion: () {},
+    textoBoton: 'Editar oferta',
+  );
+
+  final botonAbrirChat = boton(
+    paddingTodo: 16,
+    funcion: () {},
+    textoBoton: 'Abrir chat',
+  );
+
+  final botonSolicitar = boton(
+    paddingTodo: 16,
+    funcion: () {},
+    textoBoton: 'Reservar plaza',
+  );
+
+  final botonCancelarPlaza = boton(
+    colorBoton: Colors.red,
+    paddingTodo: 16,
+    funcion: () {},
+    textoBoton: 'Cancelar plaza',
+  );
+
+  Widget devolverBoton(TipoViaje t) {
+    switch (t) {
+      case TipoViaje.propio:
+        return botonEditar;
+      case TipoViaje.apuntado:
+        return botonCancelarPlaza;
+      case TipoViaje.oferta:
+        return botonSolicitar;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,111 +71,113 @@ class VerViajeScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Hero(
-                  tag: 'imagenUsuario${oferta.id}',
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    backgroundImage: NetworkImage(oferta.urlIcono!),
-                    radius: 35,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Hero(
+                    tag: 'imagenUsuario${oferta.id}',
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      backgroundImage: NetworkImage(oferta.urlIcono!),
+                      radius: 35,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16),
-                  child: Text(
-                    oferta.nombreCreador!,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      oferta.nombreCreador!,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-            child: Text(
-              'Origen: ${oferta.origen}',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
+                ],
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-            child: Text(
-              'Destino: ${oferta.destino}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
+              child: Text(
+                'Origen: ${oferta.origen}',
+                style: estiloTexto,
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-            child: Text(
-              'Plazas disponibles: ${oferta.plazasDisponibles}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                bottom: 8,
+                top: 8,
+              ),
+              child: Text(
+                'Destino: ${oferta.destino}',
+                style: estiloTexto,
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-            child: Text(
-              'Hora salida: ${oferta.hora}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                bottom: 8,
+                top: 8,
+              ),
+              child: Text(
+                'Plazas disponibles: ${oferta.plazasDisponibles}',
+                style: estiloTexto,
+              ),
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-            child: Text(
-              'Descripción',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                bottom: 8,
+                top: 8,
+              ),
+              child: Text(
+                'Hora salida: ${oferta.hora}',
+                style: estiloTexto,
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 16.0, left: 16),
-            child: Text(
-              oferta.descripcion ?? 'Sin descripción',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
+              child: Text('Descripción', style: estiloTexto),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 48.0),
-            child: Container(
-              alignment: Alignment.center,
-              width: 300,
-              height: 200,
-              color: Colors.green,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0, left: 16),
+              child: Text(
+                oferta.descripcion ?? 'Sin descripción',
+                style: estiloTexto,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 32.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 32),
-                  child: boton(
-                    paddingTodo: 16,
-                    funcion: () {},
-                    textoBoton: 'Solicitar plaza',
+            Padding(
+              padding: const EdgeInsets.only(left: 48.0),
+              child: Container(
+                alignment: Alignment.center,
+                width: 300,
+                height: 200,
+                color: Colors.green,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 32.0, bottom: 64),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 32),
+                    child: devolverBoton(tipo),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 32),
-                  child: boton(
-                    paddingTodo: 16,
-                    funcion: () {},
-                    textoBoton: 'Abrir chat',
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
+                  Padding(
+                      padding: const EdgeInsets.only(left: 32),
+                      child: tipo == TipoViaje.propio ? botonEliminar : botonAbrirChat),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/viaje_provider.dart';
 
 import '../widgets/seccion_tarjetas.dart';
@@ -30,6 +31,7 @@ class MisViajesScreen extends ConsumerWidget {
                 viajesDelUsuario.when(
                   data: (data) {
                     return SeccionTarjetas(
+                      tipo: TipoViaje.propio,
                       datosViaje: data,
                     );
                   },
@@ -60,6 +62,7 @@ class MisViajesScreen extends ConsumerWidget {
                 viajesApuntado.when(
                   data: (data) {
                     return SeccionTarjetas(
+                      tipo: TipoViaje.apuntado,
                       datosViaje: data,
                     );
                   },

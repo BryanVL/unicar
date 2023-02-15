@@ -10,6 +10,7 @@ class boton extends StatelessWidget {
     this.paddingLeft,
     this.paddingRight,
     this.paddingTodo,
+    this.colorBoton,
   });
   final VoidCallback funcion;
   final String textoBoton;
@@ -18,10 +19,12 @@ class boton extends StatelessWidget {
   final double? paddingLeft;
   final double? paddingRight;
   final double? paddingTodo;
+  final Color? colorBoton;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        backgroundColor: colorBoton,
         padding: EdgeInsets.only(
           top: paddingTop ?? paddingTodo ?? 0,
           bottom: paddingBottom ?? paddingTodo ?? 0,

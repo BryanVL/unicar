@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/viaje_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 
@@ -46,6 +46,7 @@ class OfertasScreen extends ConsumerWidget {
                     itemCount: data.length,
                     itemBuilder: (context, index) {
                       return TarjetaViajeWidget(
+                        tipo: TipoViaje.oferta,
                         datosTarjeta: TarjetaViaje(
                           id: data[index].id,
                           origen: data[index].origen,

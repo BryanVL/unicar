@@ -8,8 +8,10 @@ class TarjetaViajeWidget extends StatelessWidget {
   const TarjetaViajeWidget({
     super.key,
     required this.datosTarjeta,
+    required this.tipo,
   });
   final TarjetaViaje datosTarjeta;
+  final TipoViaje tipo;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class TarjetaViajeWidget extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => VerViajeScreen(
+                  tipo: tipo,
                   oferta: Oferta(
                       id: datosTarjeta.id,
                       origen: datosTarjeta.origen,

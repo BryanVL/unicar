@@ -16,51 +16,77 @@ class VerViajeScreen extends StatelessWidget {
     fontWeight: FontWeight.w400,
   );
 
-  final botonEliminar = boton(
-    colorBoton: Colors.red,
-    paddingTodo: 16,
-    funcion: () {},
-    textoBoton: 'Eliminar oferta',
-  );
-
-  final botonEditar = boton(
-    paddingTodo: 16,
-    funcion: () {},
-    textoBoton: 'Editar oferta',
-  );
-
-  final botonAbrirChat = boton(
-    paddingTodo: 16,
-    funcion: () {},
-    textoBoton: 'Abrir chat',
-  );
-
-  final botonSolicitar = boton(
-    paddingTodo: 16,
-    funcion: () {},
-    textoBoton: 'Reservar plaza',
-  );
-
-  final botonCancelarPlaza = boton(
-    colorBoton: Colors.red,
-    paddingTodo: 16,
-    funcion: () {},
-    textoBoton: 'Cancelar plaza',
-  );
-
-  Widget devolverBoton(TipoViaje t) {
-    switch (t) {
-      case TipoViaje.propio:
-        return botonEditar;
-      case TipoViaje.apuntado:
-        return botonCancelarPlaza;
-      case TipoViaje.oferta:
-        return botonSolicitar;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final botonEliminar = boton(
+      colorBoton: Colors.red,
+      paddingTodo: 16,
+      funcion: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: const Text('¿Estas seguro de que quieres borrar el viaje?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Oferta.eliminarViaje(oferta.id);
+                    Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                  },
+                  child: const Text('Borrar'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancelar'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      textoBoton: 'Eliminar oferta',
+    );
+
+    final botonEditar = boton(
+      paddingTodo: 16,
+      funcion: () {},
+      textoBoton: 'Editar oferta',
+    );
+
+    final botonAbrirChat = boton(
+      paddingTodo: 16,
+      funcion: () {},
+      textoBoton: 'Abrir chat',
+    );
+
+    final botonReservar = boton(
+      paddingTodo: 16,
+      funcion: () {
+        Oferta.reservarPlaza(oferta.id, oferta.plazasDisponibles ?? 0, oferta.creadoPor!);
+        Navigator.of(context).pop();
+      },
+      textoBoton: 'Reservar plaza',
+    );
+
+    final botonCancelarPlaza = boton(
+      colorBoton: Colors.red,
+      paddingTodo: 16,
+      funcion: () {},
+      textoBoton: 'Cancelar plaza',
+    );
+    Widget devolverBoton(TipoViaje t) {
+      switch (t) {
+        case TipoViaje.propio:
+          return botonEditar;
+        case TipoViaje.apuntado:
+          return botonCancelarPlaza;
+        case TipoViaje.oferta:
+          return botonReservar;
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(oferta.titulo!),

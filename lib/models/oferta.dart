@@ -85,6 +85,23 @@ class Oferta {
     });
   }
 
+  static Future<void> eliminarViaje(int id) async {
+    final db = Supabase.instance.client;
+    await db.from('Es_pasajero').delete().match({'Id_viaje': id});
+    await db.from('Viaje').delete().match({'id': id});
+  }
+
+  static Future<void> reservarPlaza(int id, int plazas, int idUSer) async {
+    if (plazas > 0) {
+      final db = Supabase.instance.client;
+      await db.from('Viaje').update({'plazas_disponibles': plazas - 1}).match({'id': id});
+      await db.from('Es_pasajero').insert({
+        'Id_viaje': id,
+        'id_usuario': idUSer,
+      });
+    }
+  }
+
   static Future<List> datosExtra(int id) async {
     return await Supabase.instance.client
         .from('Viaje')

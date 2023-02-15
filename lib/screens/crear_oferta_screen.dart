@@ -21,6 +21,8 @@ class _CrearOfertaState extends State<CrearOferta> {
   String dropdownValueDestino = 'Selecciona uno';
   TextEditingController plazasController = TextEditingController();
   TextEditingController descripcionController = TextEditingController();
+  TextEditingController tituloController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -28,6 +30,7 @@ class _CrearOfertaState extends State<CrearOferta> {
     super.dispose();
     plazasController.dispose();
     descripcionController.dispose();
+    tituloController.dispose();
   }
 
   callbackOrigen(valorElegido) {
@@ -119,6 +122,24 @@ class _CrearOfertaState extends State<CrearOferta> {
                   left: 48.0,
                   right: 48,
                   top: 8,
+                ),
+                child: TextFormField(
+                  controller: tituloController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    )),
+                    labelText: 'Añade un titulo (Opcional)',
+                    hintText: 'Escribe algún titulo',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 48.0,
+                  right: 48,
+                  top: 8,
                   bottom: 32,
                 ),
                 child: TextFormField(
@@ -128,8 +149,8 @@ class _CrearOfertaState extends State<CrearOferta> {
                           borderRadius: BorderRadius.all(
                         Radius.circular(20),
                       )),
-                      labelText: 'Añade una descripción al viaje',
-                      hintText: 'Escribe algo para que sea más fácil reconocerte'),
+                      labelText: 'Añade una descripción (Opcional)',
+                      hintText: 'Escribe algo para reconocerte'),
                 ),
               ),
               Padding(
@@ -160,9 +181,15 @@ class _CrearOfertaState extends State<CrearOferta> {
                             dropdownValueDestino != 'Selecciona uno' &&
                             selectedTime != '' &&
                             dropdownValueDestino != dropdownValueOrigen)) {
-                      Oferta.nuevoViaje(dropdownValueOrigen, dropdownValueDestino, selectedTime,
-                              plazasController.text, descripcionController.text, 1)
-                          .then((value) => Navigator.of(context).pop());
+                      Oferta.nuevoViaje(
+                        dropdownValueOrigen,
+                        dropdownValueDestino,
+                        selectedTime,
+                        plazasController.text,
+                        descripcionController.text,
+                        tituloController.text,
+                        1,
+                      ).then((value) => Navigator.of(context).pop());
                     }
                   },
                   textoBoton: 'Publicar oferta',

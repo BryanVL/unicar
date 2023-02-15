@@ -72,13 +72,15 @@ class Oferta {
   }
 
   static Future<void> nuevoViaje(String origen, String destino, String hora, String plazas,
-      String descripcion, usuario) async {
+      String descripcion, String titulo, int usuario) async {
     await Supabase.instance.client.from('Viaje').insert({
       'Origen': origen,
       'Destino': destino,
       'hora_inicio': hora,
       'plazas_totales': plazas,
+      'plazas_disponibles': plazas,
       'descripcion': descripcion,
+      'titulo': titulo,
       'creado_por': usuario
     });
   }

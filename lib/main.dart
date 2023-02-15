@@ -65,7 +65,6 @@ class MyApp extends StatelessWidget {
         MisViajesScreen.kRouteName: (context) => const MisViajesScreen(),
         ChatsScreen.kRouteName: (context) => const ChatsScreen(),
         CrearOferta.kRouteName: (context) => const CrearOferta(),
-        VerViajeScreen.kRouteName: (context) => const VerViajeScreen(),
       },
     );
   }

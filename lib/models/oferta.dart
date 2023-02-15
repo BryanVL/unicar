@@ -3,36 +3,40 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Oferta {
   final int id;
-  final DateTime creadoEn;
+  final DateTime? creadoEn;
   final String origen;
   final String destino;
-  final double latitudOrigen;
-  final double longitudOrigen;
-  final double latitudDestino;
-  final double longitudDestino;
+  final double? latitudOrigen;
+  final double? longitudOrigen;
+  final double? latitudDestino;
+  final double? longitudDestino;
   final String hora;
-  final int plazasTotales;
-  final int plazasOcupadas;
-  final String titulo;
-  final String descripcion;
-  final int creadoPor;
+  final int? plazasTotales;
+  final int? plazasDisponibles;
+  final String? titulo;
+  final String? descripcion;
+  final String? urlIcono;
+  final int? creadoPor;
+  final String? nombreCreador;
 
-  Oferta(
-    this.id,
+  Oferta({
+    required this.id,
     this.creadoEn,
-    this.origen,
-    this.destino,
+    required this.origen,
+    required this.destino,
     this.latitudOrigen,
     this.longitudOrigen,
     this.latitudDestino,
     this.longitudDestino,
-    this.hora,
+    required this.hora,
     this.plazasTotales,
-    this.plazasOcupadas,
+    this.plazasDisponibles,
     this.titulo,
     this.descripcion,
     this.creadoPor,
-  );
+    this.nombreCreador,
+    this.urlIcono,
+  });
 
   static const List<String> ubicaciones = [
     'Selecciona uno',
@@ -77,5 +81,14 @@ class Oferta {
       'descripcion': descripcion,
       'creado_por': usuario
     });
+  }
+
+  static Future<List> datosExtra(int id) async {
+    return await Supabase.instance.client
+        .from('Viaje')
+        .select(
+          'plazas_disponibles, descripcion, Usuario!Viaje_creado_por_fkey(nombre)',
+        )
+        .eq('id', id);
   }
 }

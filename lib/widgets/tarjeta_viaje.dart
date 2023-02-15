@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:unicar/models/tarjetaViaje.dart';
+import 'package:unicar/screens/ver_viaje_screen.dart';
+
+import '../models/oferta.dart';
 
 class TarjetaViajeWidget extends StatelessWidget {
   const TarjetaViajeWidget({
@@ -17,8 +20,27 @@ class TarjetaViajeWidget extends StatelessWidget {
         left: 16,
       ),
       child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).pushNamed('/VerViaje');
+        onTap: () async {
+          final Future<List> objFuturo = Oferta.datosExtra(datosTarjeta.id);
+          objFuturo.then((value) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => VerViajeScreen(
+                  oferta: Oferta(
+                      id: datosTarjeta.id,
+                      origen: datosTarjeta.origen,
+                      destino: datosTarjeta.destino,
+                      hora: datosTarjeta.fechaHora,
+                      plazasDisponibles: value[0]['plazas_disponibles'] ?? 0,
+                      titulo: datosTarjeta.titulo ?? 'Viaje a ${datosTarjeta.destino}',
+                      descripcion: value[0]['descripcion'],
+                      urlIcono: datosTarjeta.iconoURL ??
+                          'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
+                      nombreCreador: value[0]['Usuario']['nombre']),
+                ),
+              ),
+            );
+          });
         },
         child: Container(
           decoration: const BoxDecoration(

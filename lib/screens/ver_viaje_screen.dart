@@ -64,7 +64,11 @@ class VerViajeScreen extends StatelessWidget {
     final botonReservar = boton(
       paddingTodo: 16,
       funcion: () {
-        Oferta.reservarPlaza(oferta.id, oferta.plazasDisponibles ?? 0, oferta.creadoPor!);
+        Oferta.reservarPlaza(
+          oferta.id,
+          oferta.plazasDisponibles ?? 0,
+          /*oferta.creadoPor!*/ 1,
+        ); //TODO aqui poner el id de usuario que este usando la aplicacion y no el creador
         Navigator.of(context).pop();
       },
       textoBoton: 'Reservar plaza',
@@ -110,7 +114,7 @@ class VerViajeScreen extends StatelessWidget {
                     tag: 'imagenUsuario${oferta.id}',
                     child: CircleAvatar(
                       backgroundColor: Colors.grey,
-                      backgroundImage: NetworkImage(oferta.urlIcono!),
+                      backgroundImage: NetworkImage(oferta.urlIcono!), //TODO cosa de imagen
                       radius: 35,
                     ),
                   ),

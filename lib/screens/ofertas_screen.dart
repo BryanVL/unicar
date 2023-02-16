@@ -52,6 +52,7 @@ class OfertasScreen extends ConsumerWidget {
                           origen: data[index].origen,
                           destino: data[index].destino,
                           fechaHora: data[index].fechaHora,
+                          titulo: data[index].titulo,
                         ),
                       );
                     },

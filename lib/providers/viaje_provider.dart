@@ -8,7 +8,7 @@ final dataTarjetasViajesOferta = FutureProvider<List<TarjetaViaje>>((ref) async 
         'Viaje',
       )
       .select(
-        'id,Origen,Destino,hora_inicio',
+        'id,Origen,Destino,hora_inicio, titulo',
       )
       .neq(
         'creado_por',
@@ -23,6 +23,7 @@ final dataTarjetasViajesOferta = FutureProvider<List<TarjetaViaje>>((ref) async 
         origen: elemento['Origen'],
         destino: elemento['Destino'],
         fechaHora: elemento['hora_inicio'],
+        titulo: elemento['titulo'],
       );
     },
   ).toList();
@@ -36,7 +37,7 @@ final dataTarjetasViajesUsuario = FutureProvider<List<TarjetaViaje>>((ref) async
         'Viaje',
       )
       .select(
-        'id,Origen,Destino,hora_inicio',
+        'id,Origen,Destino,hora_inicio, titulo',
       )
       .eq(
         'creado_por',
@@ -53,6 +54,7 @@ final dataTarjetasViajesUsuario = FutureProvider<List<TarjetaViaje>>((ref) async
         origen: elemento['Origen'],
         destino: elemento['Destino'],
         fechaHora: elemento['hora_inicio'],
+        titulo: elemento['titulo'],
       );
     },
   ).toList();
@@ -66,7 +68,7 @@ final dataTarjetasViajesApuntado = FutureProvider<List<TarjetaViaje>>((ref) asyn
         'Es_pasajero',
       )
       .select(
-        'Viaje(id,Origen,Destino,hora_inicio)',
+        'Viaje(id,Origen,Destino,hora_inicio,titulo)',
       )
       .eq(
         'id_usuario',
@@ -80,6 +82,7 @@ final dataTarjetasViajesApuntado = FutureProvider<List<TarjetaViaje>>((ref) asyn
         origen: elemento['Viaje']['Origen'],
         destino: elemento['Viaje']['Destino'],
         fechaHora: elemento['Viaje']['hora_inicio'],
+        titulo: elemento['Viaje']['titulo'],
       );
     },
   ).toList();

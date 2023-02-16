@@ -188,7 +188,7 @@ class _CrearOfertaState extends State<CrearOferta> {
                         plazasController.text,
                         descripcionController.text,
                         tituloController.text,
-                        1,
+                        2,
                       ).then((value) => Navigator.of(context).pop());
                     }
                   },

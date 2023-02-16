@@ -106,7 +106,7 @@ class Oferta {
     return await Supabase.instance.client
         .from('Viaje')
         .select(
-          'plazas_disponibles, descripcion, Usuario!Viaje_creado_por_fkey(nombre)',
+          'plazas_disponibles, descripcion, Usuario!Viaje_creado_por_fkey(nombre, id)',
         )
         .eq('id', id);
   }

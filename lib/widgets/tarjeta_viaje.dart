@@ -30,16 +30,20 @@ class TarjetaViajeWidget extends StatelessWidget {
                 builder: (context) => VerViajeScreen(
                   tipo: tipo,
                   oferta: Oferta(
-                      id: datosTarjeta.id,
-                      origen: datosTarjeta.origen,
-                      destino: datosTarjeta.destino,
-                      hora: datosTarjeta.fechaHora,
-                      plazasDisponibles: value[0]['plazas_disponibles'] ?? 0,
-                      titulo: datosTarjeta.titulo ?? 'Viaje a ${datosTarjeta.destino}',
-                      descripcion: value[0]['descripcion'],
-                      urlIcono: datosTarjeta.iconoURL ??
-                          'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
-                      nombreCreador: value[0]['Usuario']['nombre']),
+                    id: datosTarjeta.id,
+                    origen: datosTarjeta.origen,
+                    destino: datosTarjeta.destino,
+                    hora: datosTarjeta.fechaHora,
+                    plazasDisponibles: value[0]['plazas_disponibles'] ?? 0,
+                    titulo: datosTarjeta.titulo == null || datosTarjeta.titulo == ''
+                        ? 'Viaje a ${datosTarjeta.destino}'
+                        : datosTarjeta.titulo,
+                    descripcion: value[0]['descripcion'],
+                    urlIcono: datosTarjeta.iconoURL ??
+                        'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
+                    nombreCreador: value[0]['Usuario']['nombre'],
+                    creadoPor: value[0]['Usuario']['id'],
+                  ),
                 ),
               ),
             );
@@ -83,7 +87,9 @@ class TarjetaViajeWidget extends StatelessWidget {
                     children: [
                       Text(
                         maxLines: 1,
-                        datosTarjeta.titulo ?? 'Viaje a ${datosTarjeta.destino}',
+                        (datosTarjeta.titulo == null || datosTarjeta.titulo == ''
+                            ? 'Viaje a ${datosTarjeta.destino}'
+                            : datosTarjeta.titulo)!,
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 22.0,

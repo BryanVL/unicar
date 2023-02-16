@@ -14,7 +14,9 @@ class MyAppbar extends StatelessWidget {
       floating: true,
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pushNamed('/Configuracion');
+          },
           icon: Icon(
             Icons.settings,
             color: IconTheme.of(context).color,

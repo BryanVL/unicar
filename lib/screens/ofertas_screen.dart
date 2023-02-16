@@ -30,7 +30,7 @@ class OfertasScreen extends ConsumerWidget {
                   paddingLeft: 64,
                   paddingRight: 64,
                   funcion: () {
-                    Navigator.of(context).pushNamed('/CrearOferta');
+                    Navigator.of(context).pushNamed('/Filtrar');
                   },
                   textoBoton: 'Filtrar')),
           datosTarjetasViaje.when(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/screens/chats_screen.dart';
 import 'package:unicar/screens/crear_oferta_screen.dart';
+import 'package:unicar/screens/filtrar_screen.dart';
 import 'package:unicar/screens/mis_viajes_screen.dart';
 import 'package:unicar/screens/ofertas_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         MisViajesScreen.kRouteName: (context) => const MisViajesScreen(),
         ChatsScreen.kRouteName: (context) => const ChatsScreen(),
         CrearOferta.kRouteName: (context) => const CrearOferta(),
+        FiltrarScreen.kRouteName: (context) => const FiltrarScreen(),
       },
     );
   }

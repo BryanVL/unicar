@@ -34,6 +34,7 @@ class TarjetaViajeWidget extends StatelessWidget {
                     origen: datosTarjeta.origen,
                     destino: datosTarjeta.destino,
                     hora: datosTarjeta.fechaHora,
+                    plazasTotales: value[0]['plazas_totales'] ?? 0,
                     plazasDisponibles: value[0]['plazas_disponibles'] ?? 0,
                     titulo: datosTarjeta.titulo == null || datosTarjeta.titulo == ''
                         ? 'Viaje a ${datosTarjeta.destino}'

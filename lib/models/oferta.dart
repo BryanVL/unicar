@@ -102,11 +102,31 @@ class Oferta {
     }
   }
 
+  static Future<void> actualizarViaje(
+    int idViaje,
+    String origen,
+    String destino,
+    String plazasTotales,
+    String hora,
+    String titulo,
+    String descripcion,
+  ) async {
+    final db = Supabase.instance.client;
+    await db.from('Viaje').update({
+      'Origen': origen,
+      'Destino': destino,
+      'plazas_totales': plazasTotales,
+      'hora_inicio': hora,
+      'titulo': titulo,
+      'descripcion': descripcion,
+    }).match({'id': idViaje});
+  }
+
   static Future<List> datosExtra(int id) async {
     return await Supabase.instance.client
         .from('Viaje')
         .select(
-          'plazas_disponibles, descripcion, Usuario!Viaje_creado_por_fkey(nombre, id)',
+          'plazas_totales,plazas_disponibles, descripcion, Usuario!Viaje_creado_por_fkey(nombre, id)',
         )
         .eq('id', id);
   }

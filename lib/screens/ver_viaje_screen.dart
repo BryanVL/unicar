@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unicar/screens/editar_oferta_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 import '../models/oferta.dart';
@@ -51,7 +52,11 @@ class VerViajeScreen extends StatelessWidget {
 
     final botonEditar = boton(
       paddingTodo: 16,
-      funcion: () {},
+      funcion: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => EditarOfertaScreen(oferta)),
+        );
+      },
       textoBoton: 'Editar oferta',
     );
 

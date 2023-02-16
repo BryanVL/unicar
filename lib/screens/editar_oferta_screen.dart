@@ -1,29 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:unicar/widgets/buttons.dart';
-import 'package:unicar/models/oferta.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/oferta.dart';
+import '../widgets/buttons.dart';
 import '../widgets/dropdown.dart';
 
-class CrearOferta extends StatefulWidget {
-  const CrearOferta({super.key});
-
-  static const kRouteName = "/CrearOferta";
+class EditarOfertaScreen extends ConsumerStatefulWidget {
+  const EditarOfertaScreen(this.oferta, {super.key});
+  final Oferta oferta;
 
   @override
-  State<CrearOferta> createState() => _CrearOfertaState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _EditarOfertaScreenState();
 }
 
-class _CrearOfertaState extends State<CrearOferta> {
+class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
   String selectedTime = '';
   TimeOfDay valorHora = TimeOfDay.now();
-  String dropdownValueOrigen = 'Selecciona uno';
-  String dropdownValueDestino = 'Selecciona uno';
+  String dropdownValueOrigen = '';
+  String dropdownValueDestino = '';
   TextEditingController plazasController = TextEditingController();
   TextEditingController descripcionController = TextEditingController();
   TextEditingController tituloController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  initState() {
+    super.initState();
+    dropdownValueOrigen = widget.oferta.origen;
+    dropdownValueDestino = widget.oferta.destino;
+    selectedTime = widget.oferta.hora;
+    plazasController.text = '${widget.oferta.plazasTotales}';
+    descripcionController.text = widget.oferta.descripcion ?? '';
+    tituloController.text = widget.oferta.titulo ?? '';
+  }
 
   @override
   void dispose() {
@@ -62,8 +73,16 @@ class _CrearOfertaState extends State<CrearOferta> {
           key: _formKey,
           child: Column(
             children: [
-              customDropdown(titulo: 'Origen:', callback: callbackOrigen),
-              customDropdown(titulo: 'Destino:', callback: callbackDestino),
+              customDropdown(
+                titulo: 'Origen:',
+                callback: callbackOrigen,
+                valorDefecto: dropdownValueOrigen,
+              ),
+              customDropdown(
+                titulo: 'Destino:',
+                callback: callbackDestino,
+                valorDefecto: dropdownValueDestino,
+              ),
               //TODO poner seleccion personalizada de posicion
               Container(
                 width: 300,
@@ -183,20 +202,22 @@ class _CrearOfertaState extends State<CrearOferta> {
                         (dropdownValueOrigen != 'Selecciona uno' &&
                             dropdownValueDestino != 'Selecciona uno' &&
                             selectedTime != '' &&
-                            dropdownValueDestino != dropdownValueOrigen)) {
-                      //TODO poner id del usuario usando la aplicacion aqui
-                      Oferta.nuevoViaje(
+                            dropdownValueDestino != dropdownValueOrigen &&
+                            int.parse(plazasController.text) >=
+                                (widget.oferta.plazasTotales! -
+                                    widget.oferta.plazasDisponibles!))) {
+                      Oferta.actualizarViaje(
+                        widget.oferta.id,
                         dropdownValueOrigen,
                         dropdownValueDestino,
-                        selectedTime,
                         plazasController.text,
-                        descripcionController.text,
+                        selectedTime,
                         tituloController.text,
-                        2,
-                      ).then((value) => Navigator.of(context).pop());
+                        descripcionController.text,
+                      ).then((value) => Navigator.of(context).popUntil(ModalRoute.withName('/')));
                     }
                   },
-                  textoBoton: 'Publicar oferta',
+                  textoBoton: 'Actualizar datos',
                 ),
               )
             ],

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../models/oferta.dart';
 
 class customDropdown extends StatefulWidget {
-  customDropdown({super.key, required this.titulo, required this.callback});
+  customDropdown({super.key, required this.titulo, required this.callback, this.valorDefecto});
   final String titulo;
   Function(String) callback;
+  final String? valorDefecto;
 
   @override
   State<customDropdown> createState() => _customDropdownState();
@@ -13,6 +14,12 @@ class customDropdown extends StatefulWidget {
 
 class _customDropdownState extends State<customDropdown> {
   String dropdownValue = 'Selecciona uno';
+
+  @override
+  void initState() {
+    dropdownValue = widget.valorDefecto ?? 'Selecciona uno';
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

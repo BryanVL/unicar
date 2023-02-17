@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/oferta.dart';
+import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/providers/viaje_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 
@@ -15,6 +16,7 @@ class OfertasScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final datosTarjetasViaje = ref.watch(dataTarjetasViajesOferta);
+    final datosOfertas = ref.watch(ofertaProvider);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

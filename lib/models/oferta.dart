@@ -95,11 +95,26 @@ class Oferta {
     if (plazas > 0) {
       final db = Supabase.instance.client;
       await db.from('Viaje').update({'plazas_disponibles': plazas - 1}).match({'id': id});
-      await db.from('Es_pasajero').insert({
-        'Id_viaje': id,
-        'id_usuario': idUSer,
-      });
+      await db.from('Es_pasajero').insert(
+        {
+          'Id_viaje': id,
+          'id_usuario': idUSer,
+        },
+      );
     }
+  }
+
+  static Future<List<int>> idsDeViajeApuntado(int id) async {
+    return await Supabase.instance.client
+        .from(
+          'Es_pasajero',
+        )
+        .select(
+          'Id_viaje',
+        )
+        .match(
+      {'id_usuario': 1},
+    );
   }
 
   static Future<void> actualizarViaje(

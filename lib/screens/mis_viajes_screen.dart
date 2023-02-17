@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/oferta.dart';
+import 'package:unicar/models/tarjetaViaje.dart';
+import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/providers/viaje_provider.dart';
 
 import '../widgets/seccion_tarjetas.dart';
@@ -13,8 +15,8 @@ class MisViajesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viajesDelUsuario = ref.watch(dataTarjetasViajesUsuario);
-    final viajesApuntado = ref.watch(dataTarjetasViajesApuntado);
+    final viajesDelUsuario = ref.watch(ofertasDelUsuario);
+    final viajesApuntado = ref.watch(ofertasApuntado);
 
     return Scaffold(
       body: Column(
@@ -28,30 +30,9 @@ class MisViajesScreen extends ConsumerWidget {
                   paddingBottom: 16,
                   texto: 'Viajes que ofreces',
                 ),
-                viajesDelUsuario.when(
-                  data: (data) {
-                    return SeccionTarjetas(
-                      tipo: TipoViaje.propio,
-                      datosViaje: data,
-                    );
-                  },
-                  loading: () {
-                    return SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
-                          CircularProgressIndicator(),
-                        ],
-                      ),
-                    );
-                  },
-                  error: (error, stackTrace) {
-                    return Text(
-                        'Hubo un error al cargar los viajes, intentalo de nuevo. Codigo error: $error');
-                  },
+                SeccionTarjetas(
+                  tipo: TipoViaje.propio,
+                  datosViaje: TarjetaViaje.listaDeTarjetasDesdeOfertas(viajesDelUsuario),
                 ),
                 const TextoSeccion(
                   texto: 'Viajes en los que estas apuntado',
@@ -59,11 +40,12 @@ class MisViajesScreen extends ConsumerWidget {
                   paddingBottom: 16,
                   paddingLeft: 16,
                 ),
+                //TODO viajes a los que esta apuntado
                 viajesApuntado.when(
                   data: (data) {
                     return SeccionTarjetas(
                       tipo: TipoViaje.apuntado,
-                      datosViaje: data,
+                      datosViaje: TarjetaViaje.listaDeTarjetasDesdeOfertas(data),
                     );
                   },
                   loading: () {
@@ -83,7 +65,7 @@ class MisViajesScreen extends ConsumerWidget {
                     return Text(
                         'Hubo un error al cargar los viajes, intentalo de nuevo. Codigo error: $error');
                   },
-                ),
+                )
               ],
             ),
           ),

@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/tarjetaViaje.dart';
 
-class TarjetaViajeController extends AsyncNotifier<List<TarjetaViaje>> {
+/*class TarjetaViajeController extends AsyncNotifier<List<TarjetaViaje>> {
   @override
   FutureOr<List<TarjetaViaje>> build() {
     return _inicializarLista();
@@ -28,20 +28,20 @@ class TarjetaViajeController extends AsyncNotifier<List<TarjetaViaje>> {
   }
 
   List<TarjetaViaje> viajesUsuario(int idUsuario) {
-    final listaViajes = ref.read(TarjetaViajeProvider).value ?? [];
+    final listaViajes = ref.read(tarjetaViajeProvider).value ?? [];
     return listaViajes.where((element) => true).toList();
   }
 }
 
 final completedTodosProvider = FutureProvider<List<TarjetaViaje>>(
   (ref) {
-    final listaViajes = ref.watch(TarjetaViajeProvider).value ?? [];
+    final listaViajes = ref.watch(tarjetaViajeProvider).value ?? [];
     return listaViajes.where((element) => true).toList();
     //return todos.where((todo) => todo.isCompleted).toList();
   },
 );
 
-final TarjetaViajeProvider = AsyncNotifierProvider<TarjetaViajeController, List<TarjetaViaje>>(() {
+final tarjetaViajeProvider = AsyncNotifierProvider<TarjetaViajeController, List<TarjetaViaje>>(() {
   return TarjetaViajeController();
 });
 
@@ -134,3 +134,4 @@ final dataTarjetasViajesApuntado = FutureProvider<List<TarjetaViaje>>((ref) asyn
 
   return res;
 });
+*/

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/models/tarjetaViaje.dart';
 import 'package:unicar/providers/oferta_provider.dart';
-import 'package:unicar/providers/viaje_provider.dart';
 
 import '../widgets/seccion_tarjetas.dart';
 import '../widgets/texto.dart';
@@ -30,16 +29,39 @@ class MisViajesScreen extends ConsumerWidget {
                   paddingBottom: 16,
                   texto: 'Viajes que ofreces',
                 ),
-                SeccionTarjetas(
-                  tipo: TipoViaje.propio,
-                  datosViaje: TarjetaViaje.listaDeTarjetasDesdeOfertas(viajesDelUsuario),
+                viajesDelUsuario.when(
+                  data: (data) {
+                    return SeccionTarjetas(
+                      tipo: TipoViaje.propio,
+                      datosViaje: TarjetaViaje.listaDeTarjetasDesdeOfertas(data),
+                    );
+                  },
+                  loading: () {
+                    return SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          CircularProgressIndicator(),
+                        ],
+                      ),
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    return Text(
+                        'Hubo un error al cargar los viajes, intentalo de nuevo. Codigo error: $error');
+                  },
                 ),
+
                 const TextoSeccion(
                   texto: 'Viajes en los que estas apuntado',
                   paddingTop: 48,
                   paddingBottom: 16,
                   paddingLeft: 16,
                 ),
+
                 //TODO viajes a los que esta apuntado
                 viajesApuntado.when(
                   data: (data) {
@@ -68,7 +90,7 @@ class MisViajesScreen extends ConsumerWidget {
                 )
               ],
             ),
-          ),
+          )
         ],
       ),
     );

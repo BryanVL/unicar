@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:unicar/models/tarjetaViaje.dart';
 import 'package:unicar/providers/oferta_provider.dart';
-import 'package:unicar/providers/viaje_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/models/oferta.dart';
 
@@ -199,8 +197,12 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                         1,
                       ).then(
                         (value) {
-                          ref.read(ofertaProvider.notifier).actualizarDatos();
-                          Navigator.of(context).pop();
+                          ref.read(ofertaProvider.notifier).addOferta(1, selectedTime);
+                          //ref.read(ofertaProvider.notifier).actualizarDatos();
+                          //await Future.delayed(const Duration(milliseconds: 500));
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
                         },
                       );
                     }

@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Oferta {
   final int id;
-  final DateTime? creadoEn;
+  final String? creadoEn;
   final String origen;
   final String destino;
   final double? latitudOrigen;
@@ -18,6 +18,7 @@ class Oferta {
   final String? urlIcono;
   final int? creadoPor;
   final String? nombreCreador;
+  //final List<int>? usuariosApuntados;
 
   Oferta({
     required this.id,
@@ -36,7 +37,27 @@ class Oferta {
     this.creadoPor,
     this.nombreCreador,
     this.urlIcono,
+    //this.usuariosApuntados,
   });
+
+  Oferta.fromJson(List json)
+      : id = json[0]['id'],
+        origen = json[0]['Origen'],
+        destino = json[0]['Destino'],
+        hora = json[0]['hora_inicio'],
+        creadoEn = json[0]['created_at'],
+        creadoPor = json[0]['creado_por'],
+        descripcion = json[0]['descripcion'],
+        latitudDestino = json[0]['latitud_destino'],
+        latitudOrigen = json[0]['latitud_origen'],
+        longitudDestino = json[0]['longitud_destino'],
+        longitudOrigen = json[0]['longitud_origen'],
+        nombreCreador = '',
+        plazasDisponibles = json[0]['plazas_disponibles'],
+        plazasTotales = json[0]['plazas_totales'],
+        titulo = json[0]['titulo'],
+        urlIcono = '';
+  // usuariosApuntados = json[0]['usuarios_apuntados'];
 
   static const List<String> ubicaciones = [
     'Selecciona uno',
@@ -102,6 +123,12 @@ class Oferta {
         },
       );
     }
+  }
+
+  static Future<void> cancelarPlaza(int id, int plazas, int idUSer) async {
+    final db = Supabase.instance.client;
+    await db.from('Es_pasajero').delete().match({'Id_viaje': id, 'id_usuario': idUSer});
+    await db.from('Viaje').update({'plazas_disponibles': plazas + 1}).match({'id': id});
   }
 
   static Future<List<int>> idsDeViajeApuntado(int id) async {

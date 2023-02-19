@@ -24,7 +24,7 @@ class OfertaController extends r.AsyncNotifier<List<Oferta>> {
         .limit(1);
 
     state = await r.AsyncValue.guard(() {
-      return Future(() => [Oferta.fromJson(consulta), ...(state.value!)]);
+      return Future(() => Oferta.fromList([consulta, ...(state.value!)]));
     });
   }
 
@@ -75,6 +75,10 @@ class OfertaController extends r.AsyncNotifier<List<Oferta>> {
     state.value!.removeWhere((element) => element.id == id);
     state = state;
   }
+
+  void filtrarPorHora(String hora) {}
+
+  void filtrarPosicion(String? origen, String? destino) {}
 }
 
 //Este proveedor da acceso a todas las ofertas
@@ -133,5 +137,66 @@ final ofertasApuntado = r.FutureProvider<List<Oferta>>(
     return listaViajes.where((element) {
       return datosDeApuntado.contains(element.id);
     }).toList();
+  },
+);
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
+  @override
+  FutureOr<List<Oferta>> build() {
+    return _inicializarLista();
+  }
+
+  Future<List<Oferta>> _inicializarLista() async {
+    final List consulta = await Supabase.instance.client
+        .from(
+          'Viaje',
+        )
+        .select(
+          'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuarios_apuntados, Es_pasajero(id_usuario)',
+        )
+        .neq('creado_por', '1')
+        .eq('Es_pasajero.id_usuario', '1')
+        .order('created_at');
+
+    return Future.value(Oferta.fromList(consulta));
+  }
+
+  void _addOferta(int idUser, String hora) {}
+
+  void eliminarOferta(int id) {}
+
+  Future<void> actualizarDatos() async {}
+
+  void filtrarPorHora(String hora) {}
+
+  void filtrarPosicion(String? origen, String? destino) {}
+}
+
+//Este proveedor da acceso a todas las ofertas disponibles
+final ofertasDisponiblesProvider =
+    r.AsyncNotifierProvider<OfertasDisponiblesController, List<Oferta>>(
+  () {
+    return OfertasDisponiblesController();
   },
 );

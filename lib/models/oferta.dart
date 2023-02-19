@@ -40,24 +40,28 @@ class Oferta {
     //this.usuariosApuntados,
   });
 
-  Oferta.fromJson(List json)
-      : id = json[0]['id'],
-        origen = json[0]['Origen'],
-        destino = json[0]['Destino'],
-        hora = json[0]['hora_inicio'],
-        creadoEn = json[0]['created_at'],
-        creadoPor = json[0]['creado_por'],
-        descripcion = json[0]['descripcion'],
-        latitudDestino = json[0]['latitud_destino'],
-        latitudOrigen = json[0]['latitud_origen'],
-        longitudDestino = json[0]['longitud_destino'],
-        longitudOrigen = json[0]['longitud_origen'],
+  Oferta.fromKeyValue(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        origen = json['Origen']!,
+        destino = json['Destino']!,
+        hora = json['hora_inicio']!,
+        creadoEn = json['created_at'],
+        creadoPor = json['creado_por'] as int,
+        descripcion = json['descripcion'],
+        latitudDestino = json['latitud_destino'] as double?,
+        latitudOrigen = json['latitud_origen'] as double?,
+        longitudDestino = json['longitud_destino'] as double?,
+        longitudOrigen = json['longitud_origen'] as double?,
         nombreCreador = '',
-        plazasDisponibles = json[0]['plazas_disponibles'],
-        plazasTotales = json[0]['plazas_totales'],
-        titulo = json[0]['titulo'],
+        plazasDisponibles = json['plazas_disponibles'] as int,
+        plazasTotales = json['plazas_totales'] as int,
+        titulo = json['titulo'],
         urlIcono = '';
   // usuariosApuntados = json[0]['usuarios_apuntados'];
+
+  static List<Oferta> fromList(List datos) {
+    return datos.map((e) => Oferta.fromKeyValue(e)).toList();
+  }
 
   static const List<String> ubicaciones = [
     'Selecciona uno',

@@ -16,6 +16,7 @@ class MisViajesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final viajesDelUsuario = ref.watch(ofertasDelUsuario);
     final viajesApuntado = ref.watch(ofertasApuntado);
+    //final viajes = ref.watch(ofertaProvider);
 
     return Scaffold(
       body: Column(
@@ -29,6 +30,7 @@ class MisViajesScreen extends ConsumerWidget {
                   paddingBottom: 16,
                   texto: 'Viajes que ofreces',
                 ),
+
                 viajesDelUsuario.when(
                   data: (data) {
                     return SeccionTarjetas(

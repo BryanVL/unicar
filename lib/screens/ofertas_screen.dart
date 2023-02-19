@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/oferta_provider.dart';
-import 'package:unicar/providers/viaje_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 import '../models/tarjetaViaje.dart';
@@ -15,7 +14,7 @@ class OfertasScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viajes = ref.watch(ofertasDisponibles);
+    final viajes = ref.watch(ofertasDisponiblesProvider);
     return Scaffold(
       body: viajes.when(
         data: (data) {
@@ -23,18 +22,20 @@ class OfertasScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                  padding: const EdgeInsets.only(
-                    top: 32,
-                  ),
-                  child: boton(
-                      paddingTop: 16,
-                      paddingBottom: 16,
-                      paddingLeft: 64,
-                      paddingRight: 64,
-                      funcion: () {
-                        Navigator.of(context).pushNamed('/Filtrar');
-                      },
-                      textoBoton: 'Filtrar')),
+                padding: const EdgeInsets.only(
+                  top: 32,
+                ),
+                child: boton(
+                  paddingTop: 16,
+                  paddingBottom: 16,
+                  paddingLeft: 64,
+                  paddingRight: 64,
+                  textoBoton: 'Filtrar',
+                  funcion: () {
+                    Navigator.of(context).pushNamed('/Filtrar');
+                  },
+                ),
+              ),
               Expanded(
                 child: NotificationListener<OverscrollIndicatorNotification>(
                   onNotification: (OverscrollIndicatorNotification overscroll) {
@@ -63,7 +64,17 @@ class OfertasScreen extends ConsumerWidget {
           );
         },
         loading: () {
-          return CircularProgressIndicator();
+          return SizedBox(
+            height: 100,
+            width: 100,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                CircularProgressIndicator(),
+              ],
+            ),
+          );
         },
         error: (error, stackTrace) {
           return Text(

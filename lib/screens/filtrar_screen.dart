@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/providers/oferta_provider.dart';
 
 import '../widgets/buttons.dart';
 import '../widgets/dropdown.dart';
@@ -95,6 +96,16 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                       child: boton(
                         paddingTodo: 8,
                         funcion: () async {
+                          if (selectedTime != '') {
+                            ref.read(ofertaProvider.notifier).filtrarPorHora(selectedTime);
+                          }
+                          if (dropdownValueOrigen != 'Selecciona uno' ||
+                              dropdownValueDestino != 'Selecciona uno') {
+                            ref
+                                .read(ofertaProvider.notifier)
+                                .filtrarPosicion(dropdownValueOrigen, dropdownValueDestino);
+                          }
+                          Navigator.of(context).pop();
                           //TODO Hacer funcion de filtro
                           //Oferta.nuevoViaje().then((value) => Navigator.of(context).pop());
                         },
@@ -107,6 +118,10 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                         colorBoton: Colors.red,
                         paddingTodo: 8,
                         funcion: () async {
+                          ref
+                              .read(ofertaProvider.notifier)
+                              .actualizarDatos()
+                              .then((value) => Navigator.of(context).pop());
                           //TODO Hacer funcion de eliminar filtro
                           //Oferta.nuevoViaje().then((value) => Navigator.of(context).pop());
                         },

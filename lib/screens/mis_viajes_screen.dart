@@ -14,9 +14,8 @@ class MisViajesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viajesDelUsuario = ref.watch(ofertasDelUsuario);
-    final viajesApuntado = ref.watch(ofertasApuntado);
-    //final viajes = ref.watch(ofertaProvider);
+    final viajesDelUsuario = ref.watch(ofertasOfrecidasUsuarioProvider);
+    final viajesApuntado = ref.watch(ofertasUsuarioApuntadoProvider);
 
     return Scaffold(
       body: Column(

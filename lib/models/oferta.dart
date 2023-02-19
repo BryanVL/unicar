@@ -18,7 +18,7 @@ class Oferta {
   final String? urlIcono;
   final int? creadoPor;
   final String? nombreCreador;
-  //final List<int>? usuariosApuntados;
+  final List<int>? usuariosApuntados;
 
   Oferta({
     required this.id,
@@ -37,7 +37,7 @@ class Oferta {
     this.creadoPor,
     this.nombreCreador,
     this.urlIcono,
-    //this.usuariosApuntados,
+    this.usuariosApuntados,
   });
 
   Oferta.fromKeyValue(Map<String, dynamic> json)
@@ -53,15 +53,23 @@ class Oferta {
         longitudDestino = json['longitud_destino'] as double?,
         longitudOrigen = json['longitud_origen'] as double?,
         nombreCreador = '',
-        plazasDisponibles = json['plazas_disponibles'] as int,
-        plazasTotales = json['plazas_totales'] as int,
+        plazasDisponibles = json['plazas_disponibles'] as int?,
+        plazasTotales = json['plazas_totales'] as int?,
         titulo = json['titulo'],
-        urlIcono = '';
-  // usuariosApuntados = json[0]['usuarios_apuntados'];
+        urlIcono = '',
+        usuariosApuntados = [];
 
   static List<Oferta> fromList(List datos) {
     return datos.map((e) => Oferta.fromKeyValue(e)).toList();
   }
+
+  /* static List<Oferta> fromList2(List datos) async {
+    
+    final List<Oferta>viajes = datos.map((e) => Oferta.fromKeyValue(e)).toList();
+    final List pasajero = await Supabase.instance.client.from('Es_pasajero').select('*');
+    pasajero.map((e) => e['']);
+    return 
+  }*/
 
   static const List<String> ubicaciones = [
     'Selecciona uno',

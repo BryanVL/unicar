@@ -216,7 +216,15 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                         tituloController.text,
                         descripcionController.text,
                       ).then((value) {
-                        ref.read(ofertaProvider.notifier).editarOferta();
+                        ref.read(ofertasOfrecidasUsuarioProvider.notifier).editarOferta(
+                              widget.oferta.id,
+                              dropdownValueOrigen,
+                              dropdownValueDestino,
+                              plazasController.text,
+                              selectedTime,
+                              tituloController.text,
+                              descripcionController.text,
+                            );
                         Navigator.of(context).popUntil(ModalRoute.withName('/'));
                       });
                     }

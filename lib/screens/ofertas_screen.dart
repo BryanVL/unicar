@@ -64,17 +64,7 @@ class OfertasScreen extends ConsumerWidget {
           );
         },
         loading: () {
-          return SizedBox(
-            height: 100,
-            width: 100,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(),
-              ],
-            ),
-          );
+          return const Center(child: CircularProgressIndicator());
         },
         error: (error, stackTrace) {
           return Text(

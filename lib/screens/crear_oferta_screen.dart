@@ -197,7 +197,9 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                         1,
                       ).then(
                         (value) {
-                          ref.read(ofertaProvider.notifier).addOferta(1, selectedTime);
+                          ref
+                              .read(ofertasOfrecidasUsuarioProvider.notifier)
+                              .addNewOferta(1, selectedTime);
                           //ref.read(ofertaProvider.notifier).actualizarDatos();
                           //await Future.delayed(const Duration(milliseconds: 500));
                           if (context.mounted) {

@@ -96,18 +96,11 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                       child: boton(
                         paddingTodo: 8,
                         funcion: () async {
-                          if (selectedTime != '') {
-                            ref.read(ofertaProvider.notifier).filtrarPorHora(selectedTime);
-                          }
-                          if (dropdownValueOrigen != 'Selecciona uno' ||
-                              dropdownValueDestino != 'Selecciona uno') {
-                            ref
-                                .read(ofertaProvider.notifier)
-                                .filtrarPosicion(dropdownValueOrigen, dropdownValueDestino);
-                          }
+                          ref
+                              .read(ofertasDisponiblesProvider.notifier)
+                              .filtrar(dropdownValueOrigen, dropdownValueDestino, selectedTime);
+
                           Navigator.of(context).pop();
-                          //TODO Hacer funcion de filtro
-                          //Oferta.nuevoViaje().then((value) => Navigator.of(context).pop());
                         },
                         textoBoton: 'Aplicar filtros',
                       ),
@@ -119,11 +112,9 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                         paddingTodo: 8,
                         funcion: () async {
                           ref
-                              .read(ofertaProvider.notifier)
-                              .actualizarDatos()
+                              .read(ofertasDisponiblesProvider.notifier)
+                              .eliminarFiltros()
                               .then((value) => Navigator.of(context).pop());
-                          //TODO Hacer funcion de eliminar filtro
-                          //Oferta.nuevoViaje().then((value) => Navigator.of(context).pop());
                         },
                         textoBoton: 'Eliminar filtros aplicados',
                       ),

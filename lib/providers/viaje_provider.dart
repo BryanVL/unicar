@@ -1,35 +1,80 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/tarjetaViaje.dart';
 
-final dataTarjetasViajesOferta = FutureProvider<List<TarjetaViaje>>((ref) async {
-  final List contenido = await Supabase.instance.client
-      .from(
-        'Viaje',
-      )
-      .select(
-        'id,Origen,Destino,hora_inicio, titulo',
-      )
-      .neq(
-        'creado_por',
-        1,
-      )
-      .order('created_at');
+/*class TarjetaViajeController extends AsyncNotifier<List<TarjetaViaje>> {
+  @override
+  FutureOr<List<TarjetaViaje>> build() {
+    return _inicializarLista();
+  }
 
-  final List<TarjetaViaje> res = contenido.map(
-    (elemento) {
-      return TarjetaViaje(
-        id: elemento['id'],
-        origen: elemento['Origen'],
-        destino: elemento['Destino'],
-        fechaHora: elemento['hora_inicio'],
-        titulo: elemento['titulo'],
-      );
-    },
-  ).toList();
+  void addTarjetaViaje(TarjetaViaje tarjeta) {
+    state.value!.add(tarjeta);
+  }
 
-  return res;
+  Future<List<TarjetaViaje>> _inicializarLista() async {
+    return await Supabase.instance.client
+        .from(
+          'Viaje',
+        )
+        .select(
+          'id,Origen,Destino,hora_inicio, titulo',
+        )
+        .order('created_at');
+  }
+
+  Future<void> actualizarDatos() async {
+    state = await AsyncValue.guard(_inicializarLista);
+  }
+
+  List<TarjetaViaje> viajesUsuario(int idUsuario) {
+    final listaViajes = ref.read(tarjetaViajeProvider).value ?? [];
+    return listaViajes.where((element) => true).toList();
+  }
+}
+
+final completedTodosProvider = FutureProvider<List<TarjetaViaje>>(
+  (ref) {
+    final listaViajes = ref.watch(tarjetaViajeProvider).value ?? [];
+    return listaViajes.where((element) => true).toList();
+    //return todos.where((todo) => todo.isCompleted).toList();
+  },
+);
+
+final tarjetaViajeProvider = AsyncNotifierProvider<TarjetaViajeController, List<TarjetaViaje>>(() {
+  return TarjetaViajeController();
 });
+
+final dataTarjetasViajesOferta = FutureProvider<List<TarjetaViaje>>(
+  (ref) async {
+    final List contenido = await Supabase.instance.client
+        .from(
+          'Viaje',
+        )
+        .select(
+          'id,Origen,Destino,hora_inicio, titulo',
+        )
+        .neq(
+          'creado_por',
+          1,
+        )
+        .order('created_at');
+
+    final List<TarjetaViaje> res = contenido.map(
+      (elemento) {
+        return TarjetaViaje(
+          id: elemento['id'],
+          origen: elemento['Origen'],
+          destino: elemento['Destino'],
+          fechaHora: elemento['hora_inicio'],
+          titulo: elemento['titulo'],
+        );
+      },
+    ).toList();
+
+    return res;
+  },
+);
 
 final dataTarjetasViajesUsuario = FutureProvider<List<TarjetaViaje>>((ref) async {
   final List contenido = await Supabase.instance.client
@@ -89,3 +134,4 @@ final dataTarjetasViajesApuntado = FutureProvider<List<TarjetaViaje>>((ref) asyn
 
   return res;
 });
+*/

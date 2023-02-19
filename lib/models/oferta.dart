@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Oferta {
   final int id;
-  final DateTime? creadoEn;
+  final String? creadoEn;
   final String origen;
   final String destino;
   final double? latitudOrigen;
@@ -18,6 +18,7 @@ class Oferta {
   final String? urlIcono;
   final int? creadoPor;
   final String? nombreCreador;
+  final List<int>? usuariosApuntados;
 
   Oferta({
     required this.id,
@@ -36,7 +37,39 @@ class Oferta {
     this.creadoPor,
     this.nombreCreador,
     this.urlIcono,
+    this.usuariosApuntados,
   });
+
+  Oferta.fromKeyValue(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        origen = json['Origen']!,
+        destino = json['Destino']!,
+        hora = json['hora_inicio']!,
+        creadoEn = json['created_at'],
+        creadoPor = json['creado_por'] as int,
+        descripcion = json['descripcion'],
+        latitudDestino = json['latitud_destino'] as double?,
+        latitudOrigen = json['latitud_origen'] as double?,
+        longitudDestino = json['longitud_destino'] as double?,
+        longitudOrigen = json['longitud_origen'] as double?,
+        nombreCreador = '',
+        plazasDisponibles = json['plazas_disponibles'] as int?,
+        plazasTotales = json['plazas_totales'] as int?,
+        titulo = json['titulo'],
+        urlIcono = '',
+        usuariosApuntados = [];
+
+  static List<Oferta> fromList(List datos) {
+    return datos.map((e) => Oferta.fromKeyValue(e)).toList();
+  }
+
+  /* static List<Oferta> fromList2(List datos) async {
+    
+    final List<Oferta>viajes = datos.map((e) => Oferta.fromKeyValue(e)).toList();
+    final List pasajero = await Supabase.instance.client.from('Es_pasajero').select('*');
+    pasajero.map((e) => e['']);
+    return 
+  }*/
 
   static const List<String> ubicaciones = [
     'Selecciona uno',
@@ -95,11 +128,32 @@ class Oferta {
     if (plazas > 0) {
       final db = Supabase.instance.client;
       await db.from('Viaje').update({'plazas_disponibles': plazas - 1}).match({'id': id});
-      await db.from('Es_pasajero').insert({
-        'Id_viaje': id,
-        'id_usuario': idUSer,
-      });
+      await db.from('Es_pasajero').insert(
+        {
+          'Id_viaje': id,
+          'id_usuario': idUSer,
+        },
+      );
     }
+  }
+
+  static Future<void> cancelarPlaza(int id, int plazas, int idUSer) async {
+    final db = Supabase.instance.client;
+    await db.from('Es_pasajero').delete().match({'Id_viaje': id, 'id_usuario': idUSer});
+    await db.from('Viaje').update({'plazas_disponibles': plazas + 1}).match({'id': id});
+  }
+
+  static Future<List<int>> idsDeViajeApuntado(int id) async {
+    return await Supabase.instance.client
+        .from(
+          'Es_pasajero',
+        )
+        .select(
+          'Id_viaje',
+        )
+        .match(
+      {'id_usuario': 1},
+    );
   }
 
   static Future<void> actualizarViaje(

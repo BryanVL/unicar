@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 import '../models/oferta.dart';
 
-class VerViajeScreen extends StatelessWidget {
-  VerViajeScreen({
+class VerViajeScreen extends ConsumerWidget {
+  const VerViajeScreen({
     super.key,
     required this.oferta,
     required this.tipo,
@@ -18,7 +20,7 @@ class VerViajeScreen extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final botonEliminar = boton(
       colorBoton: Colors.red,
       paddingTodo: 16,
@@ -32,6 +34,7 @@ class VerViajeScreen extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     Oferta.eliminarViaje(oferta.id);
+                    ref.read(ofertasOfrecidasUsuarioProvider.notifier).eliminarOferta(oferta.id);
                     Navigator.of(context).popUntil(ModalRoute.withName('/'));
                   },
                   child: const Text('Borrar'),
@@ -69,11 +72,13 @@ class VerViajeScreen extends StatelessWidget {
     final botonReservar = boton(
       paddingTodo: 16,
       funcion: () {
+        //TODO aqui poner el id de usuario que este usando la aplicacion y no el creador
         Oferta.reservarPlaza(
           oferta.id,
           oferta.plazasDisponibles ?? 0,
           /*oferta.creadoPor!*/ 1,
-        ); //TODO aqui poner el id de usuario que este usando la aplicacion y no el creador
+        );
+        ref.read(ofertasDisponiblesProvider.notifier).reservarPlaza(oferta);
         Navigator.of(context).pop();
       },
       textoBoton: 'Reservar plaza',
@@ -82,8 +87,12 @@ class VerViajeScreen extends StatelessWidget {
     final botonCancelarPlaza = boton(
       colorBoton: Colors.red,
       paddingTodo: 16,
-      funcion: () {},
-      textoBoton: 'Cancelar plaza',
+      funcion: () {
+        Oferta.cancelarPlaza(oferta.id, oferta.plazasDisponibles ?? 0, 1);
+        ref.read(ofertasUsuarioApuntadoProvider.notifier).cancelarReserva(oferta);
+        Navigator.of(context).pop();
+      },
+      textoBoton: 'Cancelar reserva',
     );
     Widget devolverBoton(TipoViaje t) {
       switch (t) {

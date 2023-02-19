@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/providers/oferta_provider.dart';
 
 import '../widgets/buttons.dart';
 import '../widgets/dropdown.dart';
@@ -95,8 +96,11 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                       child: boton(
                         paddingTodo: 8,
                         funcion: () async {
-                          //TODO Hacer funcion de filtro
-                          //Oferta.nuevoViaje().then((value) => Navigator.of(context).pop());
+                          ref
+                              .read(ofertasDisponiblesProvider.notifier)
+                              .filtrar(dropdownValueOrigen, dropdownValueDestino, selectedTime);
+
+                          Navigator.of(context).pop();
                         },
                         textoBoton: 'Aplicar filtros',
                       ),
@@ -107,8 +111,10 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                         colorBoton: Colors.red,
                         paddingTodo: 8,
                         funcion: () async {
-                          //TODO Hacer funcion de eliminar filtro
-                          //Oferta.nuevoViaje().then((value) => Navigator.of(context).pop());
+                          ref
+                              .read(ofertasDisponiblesProvider.notifier)
+                              .eliminarFiltros()
+                              .then((value) => Navigator.of(context).pop());
                         },
                         textoBoton: 'Eliminar filtros aplicados',
                       ),

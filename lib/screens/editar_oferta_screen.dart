@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/providers/oferta_provider.dart';
 
 import '../models/oferta.dart';
 import '../widgets/buttons.dart';
@@ -214,7 +215,18 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                         selectedTime,
                         tituloController.text,
                         descripcionController.text,
-                      ).then((value) => Navigator.of(context).popUntil(ModalRoute.withName('/')));
+                      ).then((value) {
+                        ref.read(ofertasOfrecidasUsuarioProvider.notifier).editarOferta(
+                              widget.oferta.id,
+                              dropdownValueOrigen,
+                              dropdownValueDestino,
+                              plazasController.text,
+                              selectedTime,
+                              tituloController.text,
+                              descripcionController.text,
+                            );
+                        Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                      });
                     }
                   },
                   textoBoton: 'Actualizar datos',

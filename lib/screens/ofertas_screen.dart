@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/oferta.dart';
-import 'package:unicar/providers/viaje_provider.dart';
+import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 import '../models/tarjetaViaje.dart';
@@ -14,28 +14,29 @@ class OfertasScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final datosTarjetasViaje = ref.watch(dataTarjetasViajesOferta);
+    final viajes = ref.watch(ofertasDisponiblesProvider);
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-              padding: const EdgeInsets.only(
-                top: 32,
-                left: 16,
-              ),
-              child: boton(
+      body: viajes.when(
+        data: (data) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 32,
+                ),
+                child: boton(
                   paddingTop: 16,
                   paddingBottom: 16,
                   paddingLeft: 64,
                   paddingRight: 64,
+                  textoBoton: 'Filtrar',
                   funcion: () {
                     Navigator.of(context).pushNamed('/Filtrar');
                   },
-                  textoBoton: 'Filtrar')),
-          datosTarjetasViaje.when(
-            data: (data) {
-              return Expanded(
+                ),
+              ),
+              Expanded(
                 child: NotificationListener<OverscrollIndicatorNotification>(
                   onNotification: (OverscrollIndicatorNotification overscroll) {
                     overscroll.disallowIndicator();
@@ -51,24 +52,24 @@ class OfertasScreen extends ConsumerWidget {
                           id: data[index].id,
                           origen: data[index].origen,
                           destino: data[index].destino,
-                          fechaHora: data[index].fechaHora,
+                          fechaHora: data[index].hora,
                           titulo: data[index].titulo,
                         ),
                       );
                     },
                   ),
                 ),
-              );
-            },
-            loading: () {
-              return CircularProgressIndicator();
-            },
-            error: (error, stackTrace) {
-              return Text(
-                  'Hubo un error al cargar los viajes, intentalo de nuevo. Codigo error: $error');
-            },
-          ),
-        ],
+              ),
+            ],
+          );
+        },
+        loading: () {
+          return const Center(child: CircularProgressIndicator());
+        },
+        error: (error, stackTrace) {
+          return Text(
+              'Hubo un error al cargar los viajes, intentalo de nuevo. Codigo error: $error');
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(

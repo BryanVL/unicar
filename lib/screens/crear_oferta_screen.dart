@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/models/oferta.dart';
 
 import '../widgets/dropdown.dart';
 
-class CrearOferta extends StatefulWidget {
+class CrearOferta extends ConsumerStatefulWidget {
   const CrearOferta({super.key});
 
   static const kRouteName = "/CrearOferta";
 
   @override
-  State<CrearOferta> createState() => _CrearOfertaState();
+  ConsumerState<CrearOferta> createState() => _CrearOfertaState();
 }
 
-class _CrearOfertaState extends State<CrearOferta> {
+class _CrearOfertaState extends ConsumerState<CrearOferta> {
   String selectedTime = '';
   TimeOfDay valorHora = TimeOfDay.now();
   String dropdownValueOrigen = 'Selecciona uno';
@@ -192,8 +194,19 @@ class _CrearOfertaState extends State<CrearOferta> {
                         plazasController.text,
                         descripcionController.text,
                         tituloController.text,
-                        2,
-                      ).then((value) => Navigator.of(context).pop());
+                        1,
+                      ).then(
+                        (value) {
+                          ref
+                              .read(ofertasOfrecidasUsuarioProvider.notifier)
+                              .addNewOferta(1, selectedTime);
+                          //ref.read(ofertaProvider.notifier).actualizarDatos();
+                          //await Future.delayed(const Duration(milliseconds: 500));
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        },
+                      );
                     }
                   },
                   textoBoton: 'Publicar oferta',

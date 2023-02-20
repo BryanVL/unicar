@@ -16,7 +16,7 @@ class VerViajeScreen extends ConsumerWidget {
   final Oferta oferta;
   final estiloTexto = const TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w500,
   );
 
   @override

@@ -17,7 +17,7 @@ class TarjetaViajeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        bottom: 16,
+        bottom: 8,
         right: 16,
         left: 16,
       ),
@@ -51,17 +51,17 @@ class TarjetaViajeWidget extends StatelessWidget {
           });
         },
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topLeft,
+              begin: Alignment.centerLeft,
               colors: [
-                Color.fromARGB(197, 51, 123, 206),
-                Colors.blue,
+                const Color.fromARGB(197, 51, 123, 206).withOpacity(0.90),
+                Colors.blue.withOpacity(0.80),
               ],
             ),
-            color: Color.fromARGB(197, 51, 123, 206),
-            borderRadius: BorderRadius.all(
-              Radius.circular(25),
+            color: const Color.fromARGB(197, 51, 123, 206),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20),
             ),
           ),
           child: Padding(
@@ -102,7 +102,7 @@ class TarjetaViajeWidget extends StatelessWidget {
                       ),
                       RichText(
                         text: TextSpan(
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                           children: [
                             TextSpan(
                               style: const TextStyle(

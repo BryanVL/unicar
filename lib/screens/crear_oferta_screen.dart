@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/models/oferta.dart';
+import 'package:unicar/widgets/textform.dart';
 
 import '../widgets/dropdown.dart';
 
@@ -76,29 +77,36 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  boton(
-                      paddingLeft: 8,
-                      paddingRight: 8,
-                      funcion: () async {
-                        final TimeOfDay? picked_s = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 8),
+                    child: boton(
+                        paddingTodo: 12,
+                        funcion: () async {
+                          final TimeOfDay? picked_s = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
 
-                        if (picked_s != null) {
-                          setState(() {
-                            valorHora = picked_s;
-                            selectedTime = picked_s.minute < 10
-                                ? '${picked_s.hour}:0${picked_s.minute}'
-                                : '${picked_s.hour}:${picked_s.minute}';
-                          });
-                        }
-                      },
-                      textoBoton: 'Selecciona la hora de comienzo del viaje'),
+                          if (picked_s != null) {
+                            setState(() {
+                              valorHora = picked_s;
+                              selectedTime = picked_s.minute < 10
+                                  ? '${picked_s.hour}:0${picked_s.minute}'
+                                  : '${picked_s.hour}:${picked_s.minute}';
+                            });
+                          }
+                        },
+                        textoBoton: 'Selecciona la hora de comienzo del viaje'),
+                  ),
                 ],
               ),
 
-              Text('Hora seleccionada: $selectedTime'),
+              Text(
+                'Hora seleccionada: $selectedTime',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
@@ -106,63 +114,48 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                   top: 32,
                   bottom: 8,
                 ),
-                child: TextFormField(
-                  controller: plazasController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: (value) {
+                child: MyTextForm(
+                  controlador: plazasController,
+                  label: 'Plazas disponibles del viaje',
+                  funcionValidacion: (value) {
                     return plazasController.text == '' ? 'Este campo no puede estar vacio' : null;
                   },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    )),
-                    labelText: 'Plazas disponibles del viaje',
-                  ),
+                  tipoInput: [FilteringTextInputFormatter.digitsOnly],
+                  tipoTeclado: TextInputType.number,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
-                  top: 8,
+                  top: 16,
+                  bottom: 8,
                 ),
-                child: TextFormField(
-                  controller: tituloController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    )),
-                    labelText: 'Añade un titulo (Opcional)',
-                    hintText: 'Escribe algún titulo',
-                  ),
+                child: MyTextForm(
+                  controlador: tituloController,
+                  label: 'Titulo (Opcional)',
+                  hint: 'Escribe un titulo',
+                  funcionValidacion: null,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
-                  top: 8,
+                  top: 16,
                   bottom: 32,
                 ),
-                child: TextFormField(
-                  controller: descripcionController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      )),
-                      labelText: 'Añade una descripción (Opcional)',
-                      hintText: 'Escribe algo para reconocerte'),
+                child: MyTextForm(
+                  controlador: descripcionController,
+                  label: 'Descripción (Opcional)',
+                  funcionValidacion: null,
+                  hint: 'Escribe algo para reconocerte',
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
                 child: boton(
-                  paddingLeft: 8,
-                  paddingRight: 8,
+                  paddingTodo: 12,
                   funcion: () async {
                     if (dropdownValueDestino == dropdownValueOrigen) {
                       showDialog(

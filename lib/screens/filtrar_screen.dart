@@ -33,6 +33,14 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
   }
 
   @override
+  initState() {
+    super.initState();
+    selectedTime = ref.read(ofertasDisponiblesProvider.notifier).filtroHora;
+    dropdownValueOrigen = ref.read(ofertasDisponiblesProvider.notifier).filtroOrigen;
+    dropdownValueDestino = ref.read(ofertasDisponiblesProvider.notifier).filtroDestino;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -49,8 +57,16 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
           key: _formKey,
           child: Column(
             children: [
-              customDropdown(titulo: 'Origen:', callback: callbackOrigen),
-              customDropdown(titulo: 'Destino:', callback: callbackDestino),
+              customDropdown(
+                titulo: 'Origen:',
+                callback: callbackOrigen,
+                valorDefecto: dropdownValueOrigen,
+              ),
+              customDropdown(
+                titulo: 'Destino:',
+                callback: callbackDestino,
+                valorDefecto: dropdownValueDestino,
+              ),
               //TODO poner seleccion personalizada de posicion
               Container(
                 width: 300,
@@ -61,25 +77,27 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  boton(
-                      paddingLeft: 8,
-                      paddingRight: 8,
-                      funcion: () async {
-                        final TimeOfDay? picked_s = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8, top: 16.0),
+                    child: boton(
+                        paddingTodo: 12,
+                        funcion: () async {
+                          final TimeOfDay? picked_s = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
 
-                        if (picked_s != null) {
-                          setState(() {
-                            valorHora = picked_s;
-                            selectedTime = picked_s.minute < 10
-                                ? '${picked_s.hour}:0${picked_s.minute}'
-                                : '${picked_s.hour}:${picked_s.minute}';
-                          });
-                        }
-                      },
-                      textoBoton: 'Selecciona la hora de comienzo del viaje'),
+                          if (picked_s != null) {
+                            setState(() {
+                              valorHora = picked_s;
+                              selectedTime = picked_s.minute < 10
+                                  ? '${picked_s.hour}:0${picked_s.minute}'
+                                  : '${picked_s.hour}:${picked_s.minute}';
+                            });
+                          }
+                        },
+                        textoBoton: 'Selecciona la hora de comienzo del viaje'),
+                  ),
                 ],
               ),
 
@@ -94,7 +112,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                     Padding(
                       padding: const EdgeInsets.only(right: 16.0),
                       child: boton(
-                        paddingTodo: 8,
+                        paddingTodo: 12,
                         funcion: () async {
                           ref
                               .read(ofertasDisponiblesProvider.notifier)
@@ -109,7 +127,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                       padding: const EdgeInsets.only(left: 16.0),
                       child: boton(
                         colorBoton: Colors.red,
-                        paddingTodo: 8,
+                        paddingTodo: 12,
                         funcion: () async {
                           ref
                               .read(ofertasDisponiblesProvider.notifier)

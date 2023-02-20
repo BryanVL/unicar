@@ -32,7 +32,7 @@ class _customDropdownState extends State<customDropdown> {
           child: Container(
             alignment: Alignment.center,
             width: 80,
-            height: 90,
+            height: 80,
             child: Text(
               widget.titulo,
               style: const TextStyle(
@@ -48,34 +48,35 @@ class _customDropdownState extends State<customDropdown> {
           ),
           child: Container(
             alignment: Alignment.bottomCenter,
+            height: 50,
             width: 225,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 29, 183, 255),
-                border: Border.all(color: Colors.black38, width: 1),
+                color: Colors.transparent, //const Color.fromARGB(255, 29, 183, 255),
+                border: Border.all(color: Colors.blue, width: 3),
                 borderRadius: BorderRadius.circular(20),
+
                 boxShadow: const [
                   BoxShadow(
-                    color: Colors.black,
+                    color: Colors.transparent,
                     blurRadius: 5,
                   )
                 ],
               ),
               child: DropdownButtonFormField(
                   key: widget.key,
-                  validator: (value) {
-                    if (dropdownValue == 'Selecciona uno') {
-                      return 'Debes seleccionar un origen y destino';
-                    }
-                    return null;
-                  },
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                   ),
-                  iconSize: 48,
+                  iconSize: 24,
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                   autofocus: true,
-                  dropdownColor: const Color.fromARGB(255, 167, 209, 236),
+                  dropdownColor: Color.fromARGB(255, 80, 171, 228),
                   isExpanded: true,
                   alignment: Alignment.center,
                   value: dropdownValue,

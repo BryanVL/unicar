@@ -188,6 +188,11 @@ final ofertasApuntado = r.FutureProvider<List<Oferta>>(
 
 //OFERTAS DISPONIBLES
 class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
+  List<Oferta> estadoAux = [];
+  String filtroOrigen = 'Selecciona uno';
+  String filtroDestino = 'Selecciona uno';
+  String filtroHora = '';
+  String get getfiltroHora => filtroHora;
   @override
   FutureOr<List<Oferta>> build() {
     return _inicializarLista();
@@ -217,7 +222,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     final List<Oferta> res = listaViajes.where((e) {
       return !idsQuitar.contains(e.id);
     }).toList();
-    print(res.length);
+
     return Future.value(res);
   }
 
@@ -242,15 +247,24 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   void filtrar(String origen, String destino, String hora) {
-    List<Oferta> ofertas = state.whenData((value) => value).value!;
     List<Oferta> nuevoEstado = [];
     List<Oferta> aux = [];
 
+    if (estadoAux.isEmpty) {
+      estadoAux = state.value!;
+    } else {
+      state = AsyncValue.data(estadoAux);
+    }
+
+    List<Oferta> ofertas = state.whenData((value) => value).value!;
+
     if (origen != 'Selecciona uno') {
+      filtroOrigen = origen;
       nuevoEstado.addAll(ofertas.where((element) => element.origen == origen));
     }
 
     if (destino != 'Selecciona uno') {
+      filtroDestino = destino;
       if (nuevoEstado.isNotEmpty) {
         aux.addAll(nuevoEstado.where((element) => element.destino == destino));
         nuevoEstado = [];
@@ -262,6 +276,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     }
 
     if (hora != '') {
+      filtroHora = hora;
       if (nuevoEstado.isNotEmpty) {
         aux.addAll(nuevoEstado.where((element) => element.hora == hora));
         nuevoEstado = [];
@@ -276,7 +291,11 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   Future<void> eliminarFiltros() async {
-    actualizarDatos();
+    filtroDestino = 'Selecciona uno';
+    filtroOrigen = 'Selecciona uno';
+    filtroHora = '';
+    state = AsyncValue.data(estadoAux);
+    estadoAux = [];
   }
 }
 
@@ -338,14 +357,8 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
     });
   }
 
-  void addOferta(Oferta oferta) {}
-
   void eliminarOferta(int id) {
     state = state.whenData((value) => value.where((element) => element.id != id).toList());
-  }
-
-  Future<void> actualizarDatos() async {
-    build();
   }
 
   void editarOferta(
@@ -444,7 +457,6 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
     eliminarOferta(oferta.id);
   }
 
-  void addNewOferta(int idUser, String hora) {}
   void addOferta(Oferta oferta) async {
     state = await r.AsyncValue.guard(() {
       return Future(() => [oferta, ...(state.value!)]);
@@ -453,10 +465,6 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
 
   void eliminarOferta(int id) {
     state = state.whenData((value) => value.where((element) => element.id != id).toList());
-  }
-
-  Future<void> actualizarDatos() async {
-    build();
   }
 }
 

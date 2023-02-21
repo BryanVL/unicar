@@ -241,11 +241,6 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     eliminarOferta(oferta.id);
   }
 
-  Future<void> actualizarDatos() async {
-    final datos = await _inicializarLista();
-    state = AsyncValue.data(datos);
-  }
-
   void filtrar(String origen, String destino, String hora) {
     List<Oferta> nuevoEstado = [];
     List<Oferta> aux = [];

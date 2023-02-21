@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/screens/crear_oferta_screen.dart';
+import 'package:unicar/screens/filtrar_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 import '../models/tarjetaViaje.dart';
@@ -32,7 +34,7 @@ class OfertasScreen extends ConsumerWidget {
                   paddingRight: 64,
                   textoBoton: 'Filtrar',
                   funcion: () {
-                    Navigator.of(context).pushNamed('/Filtrar');
+                    Navigator.of(context).pushNamed(FiltrarScreen.kRouteName);
                   },
                 ),
               ),
@@ -75,7 +77,7 @@ class OfertasScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: const Color.fromARGB(255, 60, 119, 245),
         onPressed: () {
-          Navigator.of(context).pushNamed('/CrearOferta');
+          Navigator.of(context).pushNamed(CrearOferta.kRouteName);
         },
         label: const Text('Publicar oferta'),
         icon: const Icon(Icons.add),

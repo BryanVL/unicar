@@ -10,6 +10,7 @@ class MyTextForm extends StatelessWidget {
     this.tipoInput,
     this.tipoTeclado,
     this.hint,
+    this.esconder,
   });
   final TextEditingController controlador;
   final String label;
@@ -17,6 +18,7 @@ class MyTextForm extends StatelessWidget {
   final String? Function(String?)? funcionValidacion;
   final List<TextInputFormatter>? tipoInput;
   final TextInputType? tipoTeclado;
+  final bool? esconder;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class MyTextForm extends StatelessWidget {
       keyboardType: tipoTeclado,
       inputFormatters: tipoInput,
       validator: funcionValidacion,
+      obscureText: esconder ?? false,
       decoration: InputDecoration(
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(

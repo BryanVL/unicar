@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/widgets/textform.dart';
@@ -187,12 +188,12 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                         plazasController.text,
                         descripcionController.text,
                         tituloController.text,
-                        1,
+                        ref.read(usuarioProvider),
                       ).then(
                         (value) {
                           ref
                               .read(ofertasOfrecidasUsuarioProvider.notifier)
-                              .addNewOferta(1, selectedTime);
+                              .addNewOferta(selectedTime);
                           //ref.read(ofertaProvider.notifier).actualizarDatos();
                           //await Future.delayed(const Duration(milliseconds: 500));
                           if (context.mounted) {

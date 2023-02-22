@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/oferta.dart';
+import 'package:unicar/providers/usuario_provider.dart';
 
 /*class OfertaController extends r.AsyncNotifier<List<Oferta>> {
   @override
@@ -201,23 +202,23 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   Future<List<Oferta>> _inicializarLista() async {
     final List consultaViajes = await Supabase.instance.client
         .from(
-          'Viaje',
+          'viaje',
         )
         .select(
-          'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuarios_apuntados',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo',
         )
-        .neq('creado_por', '1')
+        .neq('creado_por', ref.read(usuarioProvider))
         .order('created_at');
     final List consultaPasajero = await Supabase.instance.client
         .from(
-          'Es_pasajero',
+          'es_pasajero',
         )
         .select(
-          'Id_viaje',
+          'id_viaje',
         )
-        .eq('id_usuario', '1');
+        .eq('id_usuario', ref.read(usuarioProvider));
     final listaViajes = Oferta.fromList(consultaViajes);
-    final List<int> idsQuitar = consultaPasajero.map((e) => e['Id_viaje'] as int).toList();
+    final List<int> idsQuitar = consultaPasajero.map((e) => e['id_viaje'] as int).toList();
 
     final List<Oferta> res = listaViajes.where((e) {
       return !idsQuitar.contains(e.id);
@@ -324,26 +325,26 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
   Future<List<Oferta>> _inicializarLista() async {
     final List consultaViajes = await Supabase.instance.client
         .from(
-          'Viaje',
+          'viaje',
         )
         .select(
-          'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuarios_apuntados',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo',
         )
-        .eq('creado_por', '1')
+        .eq('creado_por', ref.read(usuarioProvider))
         .order('created_at');
 
     return Future.value(Oferta.fromList(consultaViajes));
   }
 
-  void addNewOferta(int idUser, String hora) async {
+  void addNewOferta(String hora) async {
     final consulta = await Supabase.instance.client
         .from(
-          'Viaje',
+          'viaje',
         )
         .select(
-          'id, created_at, Origen, Destino, latitud_origen, longitud_origen, latitud_destino, longitud_destino, hora_inicio, plazas_totales, plazas_disponibles, descripcion, creado_por, titulo',
+          'id, created_at, origen, destino, latitud_origen, longitud_origen, latitud_destino, longitud_destino, hora_inicio, plazas_totales, plazas_disponibles, descripcion, creado_por, titulo',
         )
-        .match({'creado_por': idUser, 'hora_inicio': hora})
+        .match({'creado_por': ref.read(usuarioProvider), 'hora_inicio': hora})
         .order('created_at')
         .limit(1);
     final viaje = Oferta.fromKeyValue(consulta[0]);
@@ -385,7 +386,6 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
       longitudOrigen: o.longitudOrigen,
       nombreCreador: o.nombreCreador,
       urlIcono: o.urlIcono,
-      usuariosApuntados: o.usuariosApuntados,
     );
 
     state = AsyncValue.data(ofertas);
@@ -422,23 +422,23 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
   Future<List<Oferta>> _inicializarLista() async {
     final List consultaViajes = await Supabase.instance.client
         .from(
-          'Viaje',
+          'viaje',
         )
         .select(
-          'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuarios_apuntados',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo',
         )
-        .neq('creado_por', '1')
+        .neq('creado_por', ref.read(usuarioProvider))
         .order('created_at');
     final List consultaPasajero = await Supabase.instance.client
         .from(
-          'Es_pasajero',
+          'es_pasajero',
         )
         .select(
-          'Id_viaje',
+          'id_viaje',
         )
-        .eq('id_usuario', '1');
+        .eq('id_usuario', ref.read(usuarioProvider));
     final listaViajes = Oferta.fromList(consultaViajes);
-    final List<int> idsQuitar = consultaPasajero.map((e) => e['Id_viaje'] as int).toList();
+    final List<int> idsQuitar = consultaPasajero.map((e) => e['id_viaje'] as int).toList();
 
     final List<Oferta> res = listaViajes.where((e) {
       return idsQuitar.contains(e.id);

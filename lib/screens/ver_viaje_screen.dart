@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
+import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 import '../models/oferta.dart';
@@ -35,7 +37,7 @@ class VerViajeScreen extends ConsumerWidget {
                   onPressed: () {
                     Oferta.eliminarViaje(oferta.id);
                     ref.read(ofertasOfrecidasUsuarioProvider.notifier).eliminarOferta(oferta.id);
-                    Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                    Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));
                   },
                   child: const Text('Borrar'),
                 ),
@@ -76,7 +78,7 @@ class VerViajeScreen extends ConsumerWidget {
         Oferta.reservarPlaza(
           oferta.id,
           oferta.plazasDisponibles ?? 0,
-          /*oferta.creadoPor!*/ 1,
+          /*oferta.creadoPor!*/ ref.read(usuarioProvider),
         );
         ref.read(ofertasDisponiblesProvider.notifier).reservarPlaza(oferta);
         Navigator.of(context).pop();
@@ -88,7 +90,7 @@ class VerViajeScreen extends ConsumerWidget {
       colorBoton: Colors.red,
       paddingTodo: 16,
       funcion: () {
-        Oferta.cancelarPlaza(oferta.id, oferta.plazasDisponibles ?? 0, 1);
+        Oferta.cancelarPlaza(oferta.id, oferta.plazasDisponibles ?? 0, ref.read(usuarioProvider));
         ref.read(ofertasUsuarioApuntadoProvider.notifier).cancelarReserva(oferta);
         Navigator.of(context).pop();
       },

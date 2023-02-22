@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         primaryColor: Colors.blue,
         brightness: Brightness.light,
-        scaffoldBackgroundColor: Color.fromARGB(255, 252, 252,
+        scaffoldBackgroundColor: const Color.fromARGB(255, 252, 252,
             252), //Color.fromARGB(255, 251, 255, 255), //const Color.fromARGB(255, 222, 238, 253),
         iconTheme: const IconThemeData(
           color: Colors.black,

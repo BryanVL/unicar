@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/screens/tab_bar_screen.dart';
 
 import '../models/oferta.dart';
 import '../widgets/buttons.dart';
@@ -225,7 +226,8 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                               tituloController.text,
                               descripcionController.text,
                             );
-                        Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                        Navigator.of(context)
+                            .popUntil(ModalRoute.withName(TabBarScreen.kRouteName));
                       });
                     }
                   },

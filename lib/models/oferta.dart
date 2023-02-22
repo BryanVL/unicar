@@ -16,9 +16,8 @@ class Oferta {
   final String? titulo;
   final String? descripcion;
   final String? urlIcono;
-  final int? creadoPor;
+  final String? creadoPor;
   final String? nombreCreador;
-  final List<int>? usuariosApuntados;
 
   Oferta({
     required this.id,
@@ -37,16 +36,15 @@ class Oferta {
     this.creadoPor,
     this.nombreCreador,
     this.urlIcono,
-    this.usuariosApuntados,
   });
 
   Oferta.fromKeyValue(Map<String, dynamic> json)
       : id = json['id'] as int,
-        origen = json['Origen']!,
-        destino = json['Destino']!,
+        origen = json['origen']!,
+        destino = json['destino']!,
         hora = json['hora_inicio']!,
         creadoEn = json['created_at'],
-        creadoPor = json['creado_por'] as int,
+        creadoPor = json['creado_por'],
         descripcion = json['descripcion'],
         latitudDestino = json['latitud_destino'] as double?,
         latitudOrigen = json['latitud_origen'] as double?,
@@ -56,8 +54,7 @@ class Oferta {
         plazasDisponibles = json['plazas_disponibles'] as int?,
         plazasTotales = json['plazas_totales'] as int?,
         titulo = json['titulo'],
-        urlIcono = '',
-        usuariosApuntados = [];
+        urlIcono = '';
 
   static List<Oferta> fromList(List datos) {
     return datos.map((e) => Oferta.fromKeyValue(e)).toList();
@@ -98,17 +95,17 @@ class Oferta {
   //Oferta.fromDatabase();
   final supabase = Supabase.instance.client;
   Future<Oferta?> recogerDatos() async {
-    final data = await supabase.from('Viaje').select(
+    final data = await supabase.from('viaje').select(
           'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_ocupadas,descripcion, creado_por',
         );
     print(data);
   }
 
   static Future<void> nuevoViaje(String origen, String destino, String hora, String plazas,
-      String descripcion, String titulo, int usuario) async {
-    await Supabase.instance.client.from('Viaje').insert({
-      'Origen': origen,
-      'Destino': destino,
+      String descripcion, String titulo, String usuario) async {
+    await Supabase.instance.client.from('viaje').insert({
+      'origen': origen,
+      'destino': destino,
       'hora_inicio': hora,
       'plazas_totales': plazas,
       'plazas_disponibles': plazas,
@@ -120,39 +117,39 @@ class Oferta {
 
   static Future<void> eliminarViaje(int id) async {
     final db = Supabase.instance.client;
-    await db.from('Es_pasajero').delete().match({'Id_viaje': id});
-    await db.from('Viaje').delete().match({'id': id});
+    await db.from('es_pasajero').delete().match({'id_viaje': id});
+    await db.from('viaje').delete().match({'id': id});
   }
 
-  static Future<void> reservarPlaza(int id, int plazas, int idUSer) async {
+  static Future<void> reservarPlaza(int id, int plazas, String idUSer) async {
     if (plazas > 0) {
       final db = Supabase.instance.client;
-      await db.from('Viaje').update({'plazas_disponibles': plazas - 1}).match({'id': id});
-      await db.from('Es_pasajero').insert(
+      await db.from('viaje').update({'plazas_disponibles': plazas - 1}).match({'id': id});
+      await db.from('es_pasajero').insert(
         {
-          'Id_viaje': id,
+          'id_viaje': id,
           'id_usuario': idUSer,
         },
       );
     }
   }
 
-  static Future<void> cancelarPlaza(int id, int plazas, int idUSer) async {
+  static Future<void> cancelarPlaza(int id, int plazas, String idUSer) async {
     final db = Supabase.instance.client;
-    await db.from('Es_pasajero').delete().match({'Id_viaje': id, 'id_usuario': idUSer});
-    await db.from('Viaje').update({'plazas_disponibles': plazas + 1}).match({'id': id});
+    await db.from('es_pasajero').delete().match({'id_viaje': id, 'id_usuario': idUSer});
+    await db.from('viaje').update({'plazas_disponibles': plazas + 1}).match({'id': id});
   }
 
-  static Future<List<int>> idsDeViajeApuntado(int id) async {
+  static Future<List<int>> idsDeViajeApuntado(String id) async {
     return await Supabase.instance.client
         .from(
-          'Es_pasajero',
+          'es_pasajero',
         )
         .select(
-          'Id_viaje',
+          'id_viaje',
         )
         .match(
-      {'id_usuario': 1},
+      {'id_usuario': id},
     );
   }
 
@@ -166,9 +163,9 @@ class Oferta {
     String descripcion,
   ) async {
     final db = Supabase.instance.client;
-    await db.from('Viaje').update({
-      'Origen': origen,
-      'Destino': destino,
+    await db.from('viaje').update({
+      'origen': origen,
+      'destino': destino,
       'plazas_totales': plazasTotales,
       'hora_inicio': hora,
       'titulo': titulo,
@@ -176,11 +173,12 @@ class Oferta {
     }).match({'id': idViaje});
   }
 
+//TODO eliminar esta funcion
   static Future<List> datosExtra(int id) async {
     return await Supabase.instance.client
-        .from('Viaje')
+        .from('viaje')
         .select(
-          'plazas_totales,plazas_disponibles, descripcion, Usuario!Viaje_creado_por_fkey(nombre, id)',
+          'plazas_totales,plazas_disponibles, descripcion, usuario!viaje_creado_por_fkey(nombre, id)',
         )
         .eq('id', id);
   }

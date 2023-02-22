@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/register_screen.dart';
+import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/widgets/textform.dart';
 import 'package:string_validator/string_validator.dart';
@@ -70,8 +73,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               boton(
                 //TODO funcion para iniciar sesión
-                funcion: () {
-                  if (_formKey.currentState!.validate()) {}
+                funcion: () async {
+                  if (_formKey.currentState!.validate()) {
+                    final AuthResponse res = await Supabase.instance.client.auth.signInWithPassword(
+                      email: correoController.text,
+                      password: passController.text,
+                    );
+                    final Session? session = res.session;
+                    final User? user = res.user;
+                    if (user != null) {
+                      ref.read(usuarioProvider.notifier).state = user.id;
+                      final List comprobarPrimerInicio = await Supabase.instance.client
+                          .from('usuario')
+                          .select('id')
+                          .eq('id', user.id);
+                      if (comprobarPrimerInicio.isEmpty) {
+                        await Supabase.instance.client.from('usuario').insert({'id': user.id});
+                      }
+                      print(user.id);
+                      if (context.mounted) {
+                        Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
+                      }
+                    }
+                  }
                 },
                 textoBoton: 'Iniciar sesión',
                 paddingTodo: 12,

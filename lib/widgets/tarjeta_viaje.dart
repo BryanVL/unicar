@@ -22,6 +22,7 @@ class TarjetaViajeWidget extends StatelessWidget {
         left: 16,
       ),
       child: GestureDetector(
+        //TODO cambiar esto para que directamente coja un objeto oferta
         onTap: () async {
           final Future<List> objFuturo = Oferta.datosExtra(datosTarjeta.id);
           objFuturo.then((value) {
@@ -42,8 +43,8 @@ class TarjetaViajeWidget extends StatelessWidget {
                     descripcion: value[0]['descripcion'],
                     urlIcono: datosTarjeta.iconoURL ??
                         'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
-                    nombreCreador: value[0]['Usuario']['nombre'],
-                    creadoPor: value[0]['Usuario']['id'],
+                    nombreCreador: value[0]['usuario']['nombre'],
+                    creadoPor: value[0]['usuario']['id'],
                   ),
                 ),
               ),

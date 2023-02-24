@@ -196,6 +196,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   String get getfiltroHora => filtroHora;
   @override
   FutureOr<List<Oferta>> build() {
+    ref.watch(usuarioProvider);
     return _inicializarLista();
   }
 
@@ -319,6 +320,7 @@ final ofertasDisponiblesProvider =
 class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
   @override
   FutureOr<List<Oferta>> build() {
+    ref.watch(usuarioProvider);
     return _inicializarLista();
   }
 
@@ -416,6 +418,7 @@ final ofertasOfrecidasUsuarioProvider =
 class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
   @override
   FutureOr<List<Oferta>> build() {
+    ref.watch(usuarioProvider);
     return _inicializarLista();
   }
 

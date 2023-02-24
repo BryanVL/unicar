@@ -98,7 +98,7 @@ class Oferta {
     final data = await supabase.from('viaje').select(
           'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_ocupadas,descripcion, creado_por',
         );
-    print(data);
+    //print(data);
   }
 
   static Future<void> nuevoViaje(String origen, String destino, String hora, String plazas,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/providers/usuario_provider.dart';
+import 'package:unicar/screens/nuevo_usuario_screen.dart';
 import 'package:unicar/screens/register_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
@@ -10,7 +12,7 @@ import 'package:string_validator/string_validator.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
-
+  static const kRouteName = "/Login";
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
 }
@@ -19,6 +21,47 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final correoController = TextEditingController();
   final passController = TextEditingController();
+
+  void _guardarSesion(Session? session) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (session != null) {
+      await prefs.setString('session', session.persistSessionString);
+    }
+  }
+
+  Future<bool> _comprobarPrimerInicio(User user) async {
+    final nombre =
+        await Supabase.instance.client.from('usuario').select('nombre').match({'id': user.id});
+    return nombre[0]['nombre'] == '';
+  }
+
+  void _iniciarSesion(String correo, String password) async {
+    try {
+      final AuthResponse res = await Supabase.instance.client.auth.signInWithPassword(
+        email: correo,
+        password: password,
+      );
+      final Session? session = res.session;
+      final User? user = res.user;
+      if (user != null) {
+        ref.read(usuarioProvider.notifier).state = user.id;
+        _guardarSesion(session);
+        final esNuevoUsuario = _comprobarPrimerInicio(user);
+        esNuevoUsuario.then((value) {
+          if (value) {
+            if (context.mounted) {
+              Navigator.of(context).pushReplacementNamed(NuevoUsuarioScreen.kRouteName);
+            }
+          } else {
+            if (context.mounted) {
+              Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
+            }
+          }
+        });
+      }
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,29 +115,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
               boton(
-                //TODO funcion para iniciar sesión
                 funcion: () async {
                   if (_formKey.currentState!.validate()) {
-                    final AuthResponse res = await Supabase.instance.client.auth.signInWithPassword(
-                      email: correoController.text,
-                      password: passController.text,
-                    );
-                    final Session? session = res.session;
-                    final User? user = res.user;
-                    if (user != null) {
-                      ref.read(usuarioProvider.notifier).state = user.id;
-                      final List comprobarPrimerInicio = await Supabase.instance.client
-                          .from('usuario')
-                          .select('id')
-                          .eq('id', user.id);
-                      if (comprobarPrimerInicio.isEmpty) {
-                        await Supabase.instance.client.from('usuario').insert({'id': user.id});
-                      }
-                      print(user.id);
-                      if (context.mounted) {
-                        Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
-                      }
-                    }
+                    _iniciarSesion(correoController.text, passController.text);
                   }
                 },
                 textoBoton: 'Iniciar sesión',

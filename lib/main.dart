@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/screens/chats_screen.dart';
+import 'package:unicar/screens/comprobacion_sesion_screen.dart';
 import 'package:unicar/screens/configuracion_screen.dart';
 import 'package:unicar/screens/crear_oferta_screen.dart';
 import 'package:unicar/screens/filtrar_screen.dart';
 import 'package:unicar/screens/login_screen.dart';
 import 'package:unicar/screens/mis_viajes_screen.dart';
+import 'package:unicar/screens/nuevo_usuario_screen.dart';
 import 'package:unicar/screens/ofertas_screen.dart';
 import 'package:unicar/screens/register_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
@@ -64,9 +66,10 @@ class MyApp extends StatelessWidget {
           textTheme: ButtonTextTheme.primary,
         ),
       ),
-      home: const LoginScreen(), //const TabBarScreen(title: 'Unicar'),
+      home: const ComprobacionSesionScreen(),
       routes: {
         TabBarScreen.kRouteName: (context) => const TabBarScreen(title: 'Unicar'),
+        LoginScreen.kRouteName: (context) => const LoginScreen(),
         OfertasScreen.kRouteName: (ctx) => const OfertasScreen(),
         MisViajesScreen.kRouteName: (context) => const MisViajesScreen(),
         ChatsScreen.kRouteName: (context) => const ChatsScreen(),
@@ -74,6 +77,7 @@ class MyApp extends StatelessWidget {
         FiltrarScreen.kRouteName: (context) => const FiltrarScreen(),
         ConfiguracionScreen.kRouteName: (context) => const ConfiguracionScreen(),
         RegisterScreen.kRouteName: (context) => const RegisterScreen(),
+        NuevoUsuarioScreen.kRouteName: (context) => const NuevoUsuarioScreen(),
       },
     );
   }

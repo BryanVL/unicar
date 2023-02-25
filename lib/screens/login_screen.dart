@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/providers/usuario_provider.dart';
@@ -10,14 +10,14 @@ import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/widgets/textform.dart';
 import 'package:string_validator/string_validator.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
+class LoginScreen extends r.ConsumerStatefulWidget {
   const LoginScreen({super.key});
   static const kRouteName = "/Login";
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
+  r.ConsumerState<r.ConsumerStatefulWidget> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _LoginScreenState extends r.ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final correoController = TextEditingController();
   final passController = TextEditingController();
@@ -160,7 +160,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       color: Colors.black,
                     ),
                   ),
-                  onPressed: () {},
+                  //TODO iniciar sesion con google
+                  onPressed: () async {
+                    await Supabase.instance.client.auth.signInWithOAuth(Provider.google);
+                  },
                   child: Row(
                     children: const [
                       Image(

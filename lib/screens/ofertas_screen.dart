@@ -6,7 +6,6 @@ import 'package:unicar/screens/crear_oferta_screen.dart';
 import 'package:unicar/screens/filtrar_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 
-import '../models/tarjetaViaje.dart';
 import '../widgets/tarjeta_viaje.dart';
 
 class OfertasScreen extends ConsumerWidget {
@@ -28,11 +27,12 @@ class OfertasScreen extends ConsumerWidget {
                   top: 32,
                 ),
                 child: boton(
-                  paddingTop: 16,
-                  paddingBottom: 16,
-                  paddingLeft: 64,
-                  paddingRight: 64,
+                  paddingTop: 12,
+                  paddingBottom: 12,
+                  paddingLeft: 48,
+                  paddingRight: 48,
                   textoBoton: 'Filtrar',
+                  textSize: 20,
                   funcion: () {
                     Navigator.of(context).pushNamed(FiltrarScreen.kRouteName);
                   },
@@ -50,13 +50,7 @@ class OfertasScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       return TarjetaViajeWidget(
                         tipo: TipoViaje.oferta,
-                        datosTarjeta: TarjetaViaje(
-                          id: data[index].id,
-                          origen: data[index].origen,
-                          destino: data[index].destino,
-                          fechaHora: data[index].hora,
-                          titulo: data[index].titulo,
-                        ),
+                        oferta: data[index],
                       );
                     },
                   ),

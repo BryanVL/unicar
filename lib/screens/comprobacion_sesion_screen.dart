@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/screens/login_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
@@ -15,24 +14,21 @@ class ComprobacionSesionScreen extends ConsumerStatefulWidget {
 }
 
 class _ComprobacionSesionScreenState extends ConsumerState<ComprobacionSesionScreen> {
-  Future<void> comprobarSesionAnterior() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? prefSessionKey = prefs.getString('session');
-    if (prefSessionKey != null) {
-      try {
-        final res = await Supabase.instance.client.auth.recoverSession(prefSessionKey);
-        if (res.user != null) {
-          ref.read(usuarioProvider.notifier).state = res.user!.id;
-          if (context.mounted) {
-            Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
-          }
+  Future<void> comprobarSesion() async {
+    try {
+      final initialSession = await SupabaseAuth.instance.initialSession;
+      if (initialSession != null) {
+        ref.read(usuarioProvider.notifier).state = initialSession.user.id;
+
+        if (context.mounted) {
+          Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
         }
-      } catch (e) {
+      } else {
         if (context.mounted) {
           Navigator.of(context).pushReplacementNamed(LoginScreen.kRouteName);
         }
       }
-    } else {
+    } catch (e) {
       if (context.mounted) {
         Navigator.of(context).pushReplacementNamed(LoginScreen.kRouteName);
       }
@@ -41,7 +37,7 @@ class _ComprobacionSesionScreenState extends ConsumerState<ComprobacionSesionScr
 
   @override
   Widget build(BuildContext context) {
-    comprobarSesionAnterior();
+    comprobarSesion();
     return const Scaffold(
       body: Center(
         child: CircularProgressIndicator(),

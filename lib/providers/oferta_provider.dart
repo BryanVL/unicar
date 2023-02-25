@@ -206,7 +206,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
         )
         .neq('creado_por', ref.read(usuarioProvider))
         .order('created_at');
@@ -330,7 +330,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
         )
         .eq('creado_por', ref.read(usuarioProvider))
         .order('created_at');
@@ -344,7 +344,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
           'viaje',
         )
         .select(
-          'id, created_at, origen, destino, latitud_origen, longitud_origen, latitud_destino, longitud_destino, hora_inicio, plazas_totales, plazas_disponibles, descripcion, creado_por, titulo',
+          'id, created_at, origen, destino, latitud_origen, longitud_origen, latitud_destino, longitud_destino, hora_inicio, plazas_totales, plazas_disponibles, descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
         )
         .match({'creado_por': ref.read(usuarioProvider), 'hora_inicio': hora})
         .order('created_at')
@@ -428,7 +428,7 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
         )
         .neq('creado_por', ref.read(usuarioProvider))
         .order('created_at');

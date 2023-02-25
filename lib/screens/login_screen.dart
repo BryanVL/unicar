@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/nuevo_usuario_screen.dart';
@@ -22,13 +21,6 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
   final correoController = TextEditingController();
   final passController = TextEditingController();
 
-  void _guardarSesion(Session? session) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (session != null) {
-      await prefs.setString('session', session.persistSessionString);
-    }
-  }
-
   Future<bool> _comprobarPrimerInicio(User user) async {
     final nombre =
         await Supabase.instance.client.from('usuario').select('nombre').match({'id': user.id});
@@ -41,11 +33,11 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
         email: correo,
         password: password,
       );
-      final Session? session = res.session;
+
       final User? user = res.user;
       if (user != null) {
         ref.read(usuarioProvider.notifier).state = user.id;
-        _guardarSesion(session);
+
         final esNuevoUsuario = _comprobarPrimerInicio(user);
         esNuevoUsuario.then((value) {
           if (value) {
@@ -174,7 +166,7 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                         ),
                       ),
                       SizedBox(
-                        width: 20,
+                        width: 10,
                       ),
                       Text(
                         'Iniciar sesión con google',

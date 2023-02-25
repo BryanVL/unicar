@@ -34,7 +34,7 @@ class MisViajesScreen extends ConsumerWidget {
                   data: (data) {
                     return SeccionTarjetas(
                       tipo: TipoViaje.propio,
-                      datosViaje: TarjetaViaje.listaDeTarjetasDesdeOfertas(data),
+                      datosViaje: data,
                     );
                   },
                   loading: () {
@@ -68,7 +68,7 @@ class MisViajesScreen extends ConsumerWidget {
                   data: (data) {
                     return SeccionTarjetas(
                       tipo: TipoViaje.apuntado,
-                      datosViaje: TarjetaViaje.listaDeTarjetasDesdeOfertas(data),
+                      datosViaje: data,
                     );
                   },
                   loading: () {

@@ -50,23 +50,18 @@ class Oferta {
         latitudOrigen = json['latitud_origen'] as double?,
         longitudDestino = json['longitud_destino'] as double?,
         longitudOrigen = json['longitud_origen'] as double?,
-        nombreCreador = '',
+        nombreCreador = json['usuario']['nombre'],
         plazasDisponibles = json['plazas_disponibles'] as int?,
         plazasTotales = json['plazas_totales'] as int?,
-        titulo = json['titulo'],
-        urlIcono = '';
+        titulo = (json['titulo'] == null || json['titulo'] == '')
+            ? 'Viaje a ${json['destino']}'
+            : json['titulo'],
+        urlIcono =
+            'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg';
 
   static List<Oferta> fromList(List datos) {
     return datos.map((e) => Oferta.fromKeyValue(e)).toList();
   }
-
-  /* static List<Oferta> fromList2(List datos) async {
-    
-    final List<Oferta>viajes = datos.map((e) => Oferta.fromKeyValue(e)).toList();
-    final List pasajero = await Supabase.instance.client.from('Es_pasajero').select('*');
-    pasajero.map((e) => e['']);
-    return 
-  }*/
 
   static const List<String> ubicaciones = [
     'Selecciona uno',
@@ -92,14 +87,12 @@ class Oferta {
       )
       .toList();
 
-  //Oferta.fromDatabase();
-  final supabase = Supabase.instance.client;
+  /*final supabase = Supabase.instance.client;
   Future<Oferta?> recogerDatos() async {
     final data = await supabase.from('viaje').select(
           'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_ocupadas,descripcion, creado_por',
         );
-    //print(data);
-  }
+  }*/
 
   static Future<void> nuevoViaje(String origen, String destino, String hora, String plazas,
       String descripcion, String titulo, String usuario) async {
@@ -174,14 +167,14 @@ class Oferta {
   }
 
 //TODO eliminar esta funcion
-  static Future<List> datosExtra(int id) async {
+  /*static Future<List> datosExtra(int id) async {
     return await Supabase.instance.client
         .from('viaje')
         .select(
           'plazas_totales,plazas_disponibles, descripcion, usuario!viaje_creado_por_fkey(nombre, id)',
         )
         .eq('id', id);
-  }
+  }*/
 }
 
 enum TipoViaje { propio, apuntado, oferta }

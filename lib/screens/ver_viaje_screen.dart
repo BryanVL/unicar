@@ -109,7 +109,19 @@ class VerViajeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(oferta.titulo!),
+        title: Hero(
+          tag: 'titulo${oferta.id}',
+          child: Material(
+            type: MaterialType.transparency,
+            child: Text(
+              oferta.titulo!,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -147,11 +159,17 @@ class VerViajeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-              child: Text(
-                'Origen: ${oferta.origen}',
-                style: estiloTexto,
+            Hero(
+              tag: 'viajeOD${oferta.id}',
+              child: Material(
+                type: MaterialType.transparency,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
+                  child: Text(
+                    'Origen: ${oferta.origen}',
+                    style: estiloTexto,
+                  ),
+                ),
               ),
             ),
             Padding(
@@ -182,9 +200,15 @@ class VerViajeScreen extends ConsumerWidget {
                 bottom: 8,
                 top: 8,
               ),
-              child: Text(
-                'Hora salida: ${oferta.hora}',
-                style: estiloTexto,
+              child: Hero(
+                tag: 'hora${oferta.id}',
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: Text(
+                    'Hora salida: ${oferta.hora}',
+                    style: estiloTexto,
+                  ),
+                ),
               ),
             ),
             Padding(

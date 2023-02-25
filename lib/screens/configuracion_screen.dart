@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/login_screen.dart';
-import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 class ConfiguracionScreen extends ConsumerStatefulWidget {
@@ -38,8 +36,6 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
                     LoginScreen.kRouteName,
                     (Route<dynamic> route) => false,
                   );
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.remove('session');
                 }
               },
               textoBoton: 'Cerrar sesión',
@@ -69,8 +65,6 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
                                   LoginScreen.kRouteName,
                                   (Route<dynamic> route) => false,
                                 );
-                                final prefs = await SharedPreferences.getInstance();
-                                await prefs.remove('session');
                               }
                             },
                             style: TextButton.styleFrom(backgroundColor: Colors.red),

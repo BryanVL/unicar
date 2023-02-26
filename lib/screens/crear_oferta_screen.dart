@@ -1,3 +1,4 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,13 +18,12 @@ class CrearOferta extends ConsumerStatefulWidget {
 }
 
 class _CrearOfertaState extends ConsumerState<CrearOferta> {
-  String selectedTime = '';
-  TimeOfDay valorHora = TimeOfDay.now();
   String dropdownValueOrigen = 'Selecciona uno';
   String dropdownValueDestino = 'Selecciona uno';
   TextEditingController plazasController = TextEditingController();
   TextEditingController descripcionController = TextEditingController();
   TextEditingController tituloController = TextEditingController();
+  TextEditingController horaController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -33,6 +33,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
     plazasController.dispose();
     descripcionController.dispose();
     tituloController.dispose();
+    horaController.dispose();
   }
 
   callbackOrigen(valorElegido) {
@@ -72,39 +73,29 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                 height: 200,
                 color: Colors.green,
               ),
-              //TODO poner fecha y hora en vez de solo hora
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0, bottom: 8),
-                    child: Boton(
-                        paddingTodo: 12,
-                        funcion: () async {
-                          final TimeOfDay? pickedT = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(),
-                          );
-
-                          if (pickedT != null) {
-                            setState(() {
-                              valorHora = pickedT;
-                              selectedTime = pickedT.minute < 10
-                                  ? '${pickedT.hour}:0${pickedT.minute}'
-                                  : '${pickedT.hour}:${pickedT.minute}';
-                            });
-                          }
+                    child: SizedBox(
+                      height: 75,
+                      width: 300,
+                      child: DateTimePicker(
+                        controller: horaController,
+                        type: DateTimePickerType.dateTime,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(const Duration(days: 7)),
+                        dateLabelText: 'Selecciona una fecha y hora',
+                        validator: (value) {
+                          return horaController.text == ''
+                              ? 'Este campo no puede estar vacio'
+                              : null;
                         },
-                        textoBoton: 'Selecciona la hora de comienzo del viaje'),
+                      ),
+                    ),
                   ),
                 ],
-              ),
-
-              Text(
-                'Hora seleccionada: $selectedTime',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -176,12 +167,12 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                     if (_formKey.currentState!.validate() &&
                         (dropdownValueOrigen != 'Selecciona uno' &&
                             dropdownValueDestino != 'Selecciona uno' &&
-                            selectedTime != '' &&
+                            horaController.text != '' &&
                             dropdownValueDestino != dropdownValueOrigen)) {
                       ref.read(ofertasOfrecidasUsuarioProvider.notifier).addNewOferta(
                             dropdownValueOrigen,
                             dropdownValueDestino,
-                            selectedTime,
+                            DateTime.tryParse(horaController.text)!.toIso8601String(),
                             plazasController.text,
                             descripcionController.text,
                             tituloController.text,

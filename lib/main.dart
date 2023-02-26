@@ -53,7 +53,9 @@ class MyApp extends StatelessWidget {
             ),
           ),
           foregroundColor: Colors.black,
-          backgroundColor: Colors.blue[600], //Color.fromARGB(255, 60, 119, 245),
+          backgroundColor:
+              Colors.blue[600], /*const Color.fromARGB(255, 252, 252,
+            252),*/
         ),
         tabBarTheme: TabBarTheme(
           unselectedLabelColor: Colors.black,

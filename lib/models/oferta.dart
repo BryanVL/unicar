@@ -10,13 +10,13 @@ class Oferta {
   final double? latitudDestino;
   final double? longitudDestino;
   final String hora;
-  final int? plazasTotales;
-  final int? plazasDisponibles;
+  final int plazasTotales;
+  final int plazasDisponibles;
   final String? titulo;
   final String? descripcion;
   final String? urlIcono;
-  final String? creadoPor;
-  final String? nombreCreador;
+  final String creadoPor;
+  final String nombreCreador;
 
   Oferta({
     required this.id,
@@ -28,12 +28,12 @@ class Oferta {
     this.latitudDestino,
     this.longitudDestino,
     required this.hora,
-    this.plazasTotales,
-    this.plazasDisponibles,
+    required this.plazasTotales,
+    required this.plazasDisponibles,
     this.titulo,
     this.descripcion,
-    this.creadoPor,
-    this.nombreCreador,
+    required this.creadoPor,
+    required this.nombreCreador,
     this.urlIcono,
   });
 
@@ -50,8 +50,8 @@ class Oferta {
         longitudDestino = json['longitud_destino'] as double?,
         longitudOrigen = json['longitud_origen'] as double?,
         nombreCreador = json['usuario']['nombre'],
-        plazasDisponibles = json['plazas_disponibles'] as int?,
-        plazasTotales = json['plazas_totales'] as int?,
+        plazasDisponibles = json['plazas_disponibles'] as int,
+        plazasTotales = json['plazas_totales'] as int,
         titulo = (json['titulo'] == null || json['titulo'] == '')
             ? 'Viaje a ${json['destino']}'
             : json['titulo'],

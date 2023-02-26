@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:unicar/screens/ver_viaje_screen.dart';
 
 import '../models/oferta.dart';
@@ -15,6 +16,7 @@ class TarjetaViajeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(oferta.hora);
     return Padding(
       padding: const EdgeInsets.only(
         bottom: 16,
@@ -169,7 +171,7 @@ class TarjetaViajeWidget extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: Text(
-                                'Salida: ${oferta.hora}',
+                                'Salida: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16,

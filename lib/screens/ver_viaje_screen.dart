@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
@@ -141,7 +142,7 @@ class VerViajeScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: Text(
-                      oferta.nombreCreador!,
+                      oferta.nombreCreador,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
@@ -197,7 +198,7 @@ class VerViajeScreen extends ConsumerWidget {
                 child: Material(
                   type: MaterialType.transparency,
                   child: Text(
-                    'Hora salida: ${oferta.hora}',
+                    'Hora salida: ${DateFormat('dd/MM/yyyy  kk:mm').format(DateTime.parse(oferta.hora))}',
                     style: estiloTexto,
                   ),
                 ),

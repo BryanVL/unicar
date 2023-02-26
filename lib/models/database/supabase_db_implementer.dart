@@ -65,7 +65,7 @@ class SupabaseDB implements Database {
         .select(
           'id, created_at, origen, destino, latitud_origen, longitud_origen, latitud_destino, longitud_destino, hora_inicio, plazas_totales, plazas_disponibles, descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
         )
-        .match({'creado_por': idUser, 'hora_inicio': hora})
+        .match({'creado_por': idUser /*, 'hora_inicio': hora*/})
         .order('created_at')
         .limit(1);
   }

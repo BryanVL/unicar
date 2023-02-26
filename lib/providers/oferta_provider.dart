@@ -51,12 +51,12 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   void reservarPlaza(Oferta oferta) {
     ref.read(databaseProvider).reservarPlaza(
           oferta.id,
-          oferta.plazasDisponibles!,
+          oferta.plazasDisponibles,
           ref.read(usuarioProvider),
         );
     ref
         .read(ofertasUsuarioApuntadoProvider.notifier)
-        .addOferta(oferta.copyWith(plazasDisponibles: oferta.plazasDisponibles! - 1));
+        .addOferta(oferta.copyWith(plazasDisponibles: oferta.plazasDisponibles - 1));
     eliminarOferta(oferta.id);
   }
 
@@ -96,12 +96,22 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     if (hora != '') {
       filtroHora = hora;
       if (nuevoEstado.isNotEmpty) {
-        aux.addAll(nuevoEstado.where((element) => element.hora == hora));
+        aux.addAll(nuevoEstado.where((element) {
+          final tElem = DateTime.parse(element.hora);
+          final time = DateTime.parse(hora);
+
+          return tElem.day == time.day && tElem.hour == time.hour && tElem.minute == time.minute;
+        }));
         nuevoEstado = [];
         nuevoEstado.addAll(aux);
         aux = [];
       } else {
-        nuevoEstado.addAll(ofertas.where((element) => element.hora == hora));
+        nuevoEstado.addAll(ofertas.where((element) {
+          final tElem = DateTime.parse(element.hora);
+          final time = DateTime.parse(hora);
+
+          return tElem.day == time.day && tElem.hour == time.hour && tElem.minute == time.minute;
+        }));
       }
     }
 
@@ -266,7 +276,7 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
   void cancelarReserva(Oferta oferta) {
     ref.read(databaseProvider).cancelarPlaza(
           oferta.id,
-          oferta.plazasDisponibles!,
+          oferta.plazasDisponibles,
           ref.read(usuarioProvider),
         );
 

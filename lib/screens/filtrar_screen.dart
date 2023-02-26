@@ -1,3 +1,4 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
@@ -13,10 +14,9 @@ class FiltrarScreen extends ConsumerStatefulWidget {
 }
 
 class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
-  String selectedTime = '';
-  TimeOfDay valorHora = TimeOfDay.now();
   String dropdownValueOrigen = 'Selecciona uno';
   String dropdownValueDestino = 'Selecciona uno';
+  TextEditingController horaController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -35,9 +35,15 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
   @override
   initState() {
     super.initState();
-    selectedTime = ref.read(ofertasDisponiblesProvider.notifier).filtroHora;
+    horaController.text = ref.read(ofertasDisponiblesProvider.notifier).filtroHora;
     dropdownValueOrigen = ref.read(ofertasDisponiblesProvider.notifier).filtroOrigen;
     dropdownValueDestino = ref.read(ofertasDisponiblesProvider.notifier).filtroDestino;
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    horaController.dispose();
   }
 
   @override
@@ -73,36 +79,25 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                 height: 200,
                 color: Colors.green,
               ),
-              //TODO poner fecha y hora en vez de solo hora
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 8, top: 16.0),
-                    child: Boton(
-                        paddingTodo: 12,
-                        funcion: () async {
-                          final TimeOfDay? pickedT = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(),
-                          );
-
-                          if (pickedT != null) {
-                            setState(() {
-                              valorHora = pickedT;
-                              selectedTime = pickedT.minute < 10
-                                  ? '${pickedT.hour}:0${pickedT.minute}'
-                                  : '${pickedT.hour}:${pickedT.minute}';
-                            });
-                          }
-                        },
-                        textoBoton: 'Selecciona la hora de comienzo del viaje'),
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 8),
+                    child: SizedBox(
+                      height: 75,
+                      width: 300,
+                      child: DateTimePicker(
+                        controller: horaController,
+                        type: DateTimePickerType.dateTime,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(const Duration(days: 7)),
+                        dateLabelText: 'Selecciona una fecha y hora',
+                      ),
+                    ),
                   ),
                 ],
               ),
-
-              Text('Hora seleccionada: $selectedTime'),
-
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0, top: 64),
                 child: Row(
@@ -114,10 +109,8 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                       child: Boton(
                         paddingTodo: 12,
                         funcion: () async {
-                          ref
-                              .read(ofertasDisponiblesProvider.notifier)
-                              .filtrar(dropdownValueOrigen, dropdownValueDestino, selectedTime);
-
+                          ref.read(ofertasDisponiblesProvider.notifier).filtrar(
+                              dropdownValueOrigen, dropdownValueDestino, horaController.text);
                           Navigator.of(context).pop();
                         },
                         textoBoton: 'Aplicar filtros',

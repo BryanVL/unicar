@@ -55,9 +55,16 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
           oferta.plazasDisponibles!,
           ref.read(usuarioProvider),
         );
-    throw UnimplementedError('Reservar plaza no esta inplementado');
+    ref
+        .read(ofertasUsuarioApuntadoProvider.notifier)
+        .addOferta(oferta.copyWith(plazasDisponibles: oferta.plazasDisponibles! - 1));
+    eliminarOferta(oferta.id);
   }
 
+//TODO filtros con consultas a la base de datos en vez de local
+//Se puede hacer igual que como esta ahora pero si lo que se recibe no es null se
+//hace una consulta con el origen puesto y si luego se pone un destino se cojen los viajes
+//con ese destino y me quedo con los que coincidan en las dos listas
   void filtrar(String origen, String destino, String hora) {
     List<Oferta> nuevoEstado = [];
     List<Oferta> aux = [];
@@ -264,7 +271,9 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
           oferta.plazasDisponibles!,
           ref.read(usuarioProvider),
         );
-    throw UnimplementedError('Cancelar reserva no esta implementado');
+
+    ref.invalidate(ofertasDisponiblesProvider);
+    eliminarOferta(oferta.id);
   }
 
   void addOferta(Oferta oferta) async {

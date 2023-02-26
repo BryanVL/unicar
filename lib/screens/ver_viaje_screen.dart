@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/providers/oferta_provider.dart';
-import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
@@ -185,7 +184,18 @@ class VerViajeScreen extends ConsumerWidget {
                 style: estiloTexto,
               ),
             ),
-            FutureBuilder(
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                bottom: 8,
+                top: 8,
+              ),
+              child: Text(
+                'Plazas disponibles: ${oferta.plazasDisponibles}', //'Plazas disponibles: ${oferta.plazasDisponibles}',
+                style: estiloTexto,
+              ),
+            ),
+            /*FutureBuilder(
               future: _recogerPlazasDisponibles(oferta),
               builder: (context, snapshot) {
                 return Padding(
@@ -200,7 +210,7 @@ class VerViajeScreen extends ConsumerWidget {
                   ),
                 );
               },
-            ),
+            ),*/
             Padding(
               padding: const EdgeInsets.only(
                 left: 16.0,

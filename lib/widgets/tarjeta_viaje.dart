@@ -57,6 +57,7 @@ class TarjetaViajeWidget extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(20),
+            //TODO puede que al cambiar la oferta este pasando la misma tarjeta de un lado a otro en vez de crear una nueva
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => VerViajeScreen(oferta: oferta, tipo: tipo),

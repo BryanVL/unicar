@@ -16,6 +16,7 @@ class OfertasScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viajes = ref.watch(ofertasDisponiblesProvider);
+    //ref.watch(ofertasUsuarioApuntadoProvider);
     return Scaffold(
       body: viajes.when(
         data: (data) {

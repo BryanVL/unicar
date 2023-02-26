@@ -19,14 +19,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final passController = TextEditingController();
   final repeatPassController = TextEditingController();
 
-  void _comprobarSiYaRegistrado(User user) async {
-    final List comprobarPrimerInicio =
-        await Supabase.instance.client.from('usuario').select('id').eq('id', user.id);
-    if (comprobarPrimerInicio.isEmpty) {
-      await Supabase.instance.client.from('usuario').insert({'id': user.id});
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,7 +121,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
               ),
               boton(
-                //TODO funcion para registrar con correo y contraseña
                 funcion: () async {
                   if (_formKey.currentState!.validate()) {
                     await Supabase.instance.client.auth.signUp(

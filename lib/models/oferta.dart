@@ -59,6 +59,43 @@ class Oferta {
         urlIcono =
             'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg';
 
+  Oferta copyWith({
+    String? creadoEn,
+    String? origen,
+    String? destino,
+    double? latitudOrigen,
+    double? longitudOrigen,
+    double? latitudDestino,
+    double? longitudDestino,
+    String? hora,
+    int? plazasTotales,
+    int? plazasDisponibles,
+    String? titulo,
+    String? descripcion,
+    String? urlIcono,
+    String? creadoPor,
+    String? nombreCreador,
+  }) {
+    return Oferta(
+      id: id,
+      origen: origen ?? this.origen,
+      destino: destino ?? this.destino,
+      hora: hora ?? this.hora,
+      creadoEn: creadoEn ?? this.creadoEn,
+      descripcion: descripcion ?? this.descripcion,
+      latitudDestino: latitudDestino ?? this.latitudDestino,
+      latitudOrigen: latitudOrigen ?? this.latitudOrigen,
+      longitudDestino: longitudDestino ?? this.longitudDestino,
+      longitudOrigen: longitudOrigen ?? this.longitudOrigen,
+      plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
+      plazasTotales: plazasTotales ?? this.plazasTotales,
+      titulo: titulo ?? this.titulo,
+      creadoPor: creadoPor ?? this.creadoPor,
+      nombreCreador: nombreCreador ?? this.nombreCreador,
+      urlIcono: urlIcono ?? this.urlIcono,
+    );
+  }
+
   static List<Oferta> fromList(List datos) {
     return datos.map((e) => Oferta.fromKeyValue(e)).toList();
   }
@@ -94,7 +131,7 @@ class Oferta {
         );
   }*/
 
-  static Future<void> nuevoViaje(String origen, String destino, String hora, String plazas,
+  /*static Future<void> nuevoViaje(String origen, String destino, String hora, String plazas,
       String descripcion, String titulo, String usuario) async {
     await Supabase.instance.client.from('viaje').insert({
       'origen': origen,
@@ -133,7 +170,7 @@ class Oferta {
     await db.from('viaje').update({'plazas_disponibles': plazas + 1}).match({'id': id});
   }
 
-  static Future<List<int>> idsDeViajeApuntado(String id) async {
+  /*static Future<List<int>> idsDeViajeApuntado(String id) async {
     return await Supabase.instance.client
         .from(
           'es_pasajero',
@@ -144,7 +181,7 @@ class Oferta {
         .match(
       {'id_usuario': id},
     );
-  }
+  }*/
 
   static Future<void> actualizarViaje(
     int idViaje,
@@ -174,7 +211,7 @@ class Oferta {
           'plazas_totales,plazas_disponibles, descripcion, usuario!viaje_creado_por_fkey(nombre, id)',
         )
         .eq('id', id);
-  }*/
+  }*/*/
 }
 
 enum TipoViaje { propio, apuntado, oferta }

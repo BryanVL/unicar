@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 
@@ -208,27 +209,17 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                             int.parse(plazasController.text) >=
                                 (widget.oferta.plazasTotales! -
                                     widget.oferta.plazasDisponibles!))) {
-                      Oferta.actualizarViaje(
-                        widget.oferta.id,
-                        dropdownValueOrigen,
-                        dropdownValueDestino,
-                        plazasController.text,
-                        selectedTime,
-                        tituloController.text,
-                        descripcionController.text,
-                      ).then((value) {
-                        ref.read(ofertasOfrecidasUsuarioProvider.notifier).editarOferta(
-                              widget.oferta.id,
-                              dropdownValueOrigen,
-                              dropdownValueDestino,
-                              plazasController.text,
-                              selectedTime,
-                              tituloController.text,
-                              descripcionController.text,
-                            );
-                        Navigator.of(context)
-                            .popUntil(ModalRoute.withName(TabBarScreen.kRouteName));
-                      });
+                      ref.read(ofertasOfrecidasUsuarioProvider.notifier).editarOferta(
+                            widget.oferta.id,
+                            dropdownValueOrigen,
+                            dropdownValueDestino,
+                            plazasController.text,
+                            selectedTime,
+                            tituloController.text,
+                            descripcionController.text,
+                          );
+
+                      Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));
                     }
                   },
                   textoBoton: 'Actualizar datos',

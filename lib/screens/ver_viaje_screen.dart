@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
@@ -21,6 +22,14 @@ class VerViajeScreen extends ConsumerWidget {
     fontWeight: FontWeight.w500,
   );
 
+  Future<int> _recogerPlazasDisponibles(Oferta oferta) async {
+    final res = await Supabase.instance.client
+        .from('viaje')
+        .select('plazas_disponibles')
+        .eq('id', oferta.id);
+    return res[0]['plazas_disponibles'];
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final botonEliminar = boton(
@@ -35,7 +44,6 @@ class VerViajeScreen extends ConsumerWidget {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Oferta.eliminarViaje(oferta.id);
                     ref.read(ofertasOfrecidasUsuarioProvider.notifier).eliminarOferta(oferta.id);
                     Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));
                   },
@@ -74,12 +82,6 @@ class VerViajeScreen extends ConsumerWidget {
     final botonReservar = boton(
       paddingTodo: 16,
       funcion: () {
-        //TODO aqui poner el id de usuario que este usando la aplicacion y no el creador
-        Oferta.reservarPlaza(
-          oferta.id,
-          oferta.plazasDisponibles ?? 0,
-          /*oferta.creadoPor!*/ ref.read(usuarioProvider),
-        );
         ref.read(ofertasDisponiblesProvider.notifier).reservarPlaza(oferta);
         Navigator.of(context).pop();
       },
@@ -90,8 +92,8 @@ class VerViajeScreen extends ConsumerWidget {
       colorBoton: Colors.red,
       paddingTodo: 16,
       funcion: () {
-        Oferta.cancelarPlaza(oferta.id, oferta.plazasDisponibles ?? 0, ref.read(usuarioProvider));
         ref.read(ofertasUsuarioApuntadoProvider.notifier).cancelarReserva(oferta);
+
         Navigator.of(context).pop();
       },
       textoBoton: 'Cancelar reserva',
@@ -115,7 +117,7 @@ class VerViajeScreen extends ConsumerWidget {
             type: MaterialType.transparency,
             child: Text(
               oferta.titulo!,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w500,
               ),
@@ -183,16 +185,21 @@ class VerViajeScreen extends ConsumerWidget {
                 style: estiloTexto,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                bottom: 8,
-                top: 8,
-              ),
-              child: Text(
-                'Plazas disponibles: ${oferta.plazasDisponibles}',
-                style: estiloTexto,
-              ),
+            FutureBuilder(
+              future: _recogerPlazasDisponibles(oferta),
+              builder: (context, snapshot) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    bottom: 8,
+                    top: 8,
+                  ),
+                  child: Text(
+                    'Plazas disponibles: ${snapshot.data}', //'Plazas disponibles: ${oferta.plazasDisponibles}',
+                    style: estiloTexto,
+                  ),
+                );
+              },
             ),
             Padding(
               padding: const EdgeInsets.only(

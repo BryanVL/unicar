@@ -43,17 +43,17 @@ class MyApp extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           elevation: 0,
           surfaceTintColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.circular(25),
             ),
           ),
           foregroundColor: Colors.black,
-          backgroundColor: Color.fromARGB(255, 60, 119, 245),
+          backgroundColor: Colors.blue[600], //Color.fromARGB(255, 60, 119, 245),
         ),
         tabBarTheme: TabBarTheme(
           unselectedLabelColor: Colors.black,

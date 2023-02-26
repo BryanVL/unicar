@@ -90,7 +90,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                       child: DateTimePicker(
                         controller: horaController,
                         type: DateTimePickerType.dateTime,
-                        firstDate: DateTime.now(),
+                        firstDate: DateTime.now().subtract(const Duration(days: 1)),
                         lastDate: DateTime.now().add(const Duration(days: 7)),
                         dateLabelText: 'Selecciona una fecha y hora',
                       ),

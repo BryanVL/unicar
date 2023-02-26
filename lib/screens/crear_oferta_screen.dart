@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
-import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
-import 'package:unicar/models/oferta.dart';
 import 'package:unicar/widgets/textform.dart';
 
 import '../widgets/dropdown.dart';
@@ -180,27 +178,18 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                             dropdownValueDestino != 'Selecciona uno' &&
                             selectedTime != '' &&
                             dropdownValueDestino != dropdownValueOrigen)) {
-                      //TODO poner id del usuario usando la aplicacion aqui
-                      Oferta.nuevoViaje(
-                        dropdownValueOrigen,
-                        dropdownValueDestino,
-                        selectedTime,
-                        plazasController.text,
-                        descripcionController.text,
-                        tituloController.text,
-                        ref.read(usuarioProvider),
-                      ).then(
-                        (value) {
-                          ref
-                              .read(ofertasOfrecidasUsuarioProvider.notifier)
-                              .addNewOferta(selectedTime);
-                          //ref.read(ofertaProvider.notifier).actualizarDatos();
-                          //await Future.delayed(const Duration(milliseconds: 500));
-                          if (context.mounted) {
-                            Navigator.of(context).pop();
-                          }
-                        },
-                      );
+                      ref.read(ofertasOfrecidasUsuarioProvider.notifier).addNewOferta(
+                            dropdownValueOrigen,
+                            dropdownValueDestino,
+                            selectedTime,
+                            plazasController.text,
+                            descripcionController.text,
+                            tituloController.text,
+                          );
+
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
                     }
                   },
                   textoBoton: 'Publicar oferta',

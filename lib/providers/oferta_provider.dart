@@ -1,191 +1,10 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 
-/*class OfertaController extends r.AsyncNotifier<List<Oferta>> {
-  @override
-  FutureOr<List<Oferta>> build() {
-    return _inicializarLista();
-  }
-
-//Añade una oferta al proveedor
-  void addOferta(int idUser, String hora) async {
-    final List consulta = await Supabase.instance.client
-        .from(
-          'Viaje',
-        )
-        .select(
-          'id, created_at, Origen, Destino, latitud_origen, longitud_origen, latitud_destino, longitud_destino, hora_inicio, plazas_totales, plazas_disponibles, descripcion, creado_por, titulo',
-        )
-        .match({'creado_por': idUser, 'hora_inicio': hora})
-        .order('created_at')
-        .limit(1);
-
-    state = await r.AsyncValue.guard(() {
-      return Future(() => Oferta.fromList([consulta, ...(state.value!)]));
-    });
-  }
-
-  void editarOferta() async {
-    state = await r.AsyncValue.guard(_inicializarLista);
-  }
-
-  //Reserva una plaza de una oferta
-  void reservarPlaza() async {
-    state = await r.AsyncValue.guard(_inicializarLista);
-  }
-
-  void cancelarReserva() async {
-    state = await r.AsyncValue.guard(_inicializarLista);
-  }
-
-  //Inicializa los datos del proveedor cogiendo todos los viajes de la tabla
-  Future<List<Oferta>> _inicializarLista() async {
-    final List datos = await Supabase.instance.client
-        .from(
-          'Viaje',
-        )
-        .select(
-          'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuarios_apuntados',
-        )
-        .order('created_at');
-
-    return datos
-        .map(
-          (e) => Oferta(
-            id: e['id'],
-            origen: e['Origen'],
-            destino: e['Destino'],
-            hora: e['hora_inicio'],
-            creadoPor: e['creado_por'],
-            titulo: e['titulo'],
-          ),
-        )
-        .toList();
-  }
-
-  //Actualiza todos los datos
-  Future<void> actualizarDatos() async {
-    state = await r.AsyncValue.guard(_inicializarLista);
-  }
-
-  void eliminarOferta(int id) async {
-    state.value!.removeWhere((element) => element.id == id);
-    state = state;
-  }
-
-  void filtrarPorHora(String hora) {}
-
-  void filtrarPosicion(String? origen, String? destino) {}
-}
-
-//Este proveedor da acceso a todas las ofertas
-final ofertaProvider = r.AsyncNotifierProvider<OfertaController, List<Oferta>>(() {
-  return OfertaController();
-});
-
-//Este proveedor da las ofertas que el usuario puede solicitar
-final ofertasDisponibles = r.FutureProvider<List<Oferta>>(
-  (ref) {
-    final viajesApuntado = ref.watch(ofertasApuntado).value ?? [];
-    final viajesUsuario = ref.watch(ofertasDelUsuario).value ?? [];
-    final listaViajes = ref.watch(ofertaProvider).value ?? [];
-
-    List<Oferta> res = [];
-    if (listaViajes.isNotEmpty) {
-      res = listaViajes.where(
-        (element) {
-          return !viajesApuntado.contains(element) && !viajesUsuario.contains(element);
-        },
-      ).toList();
-    }
-    return res;
-  },
-);
-
-//Este proveedor da las ofertas que el usuario ha creado
-final ofertasDelUsuario = r.FutureProvider<List<Oferta>>(
-  (ref) async {
-    final listaViajes = ref.watch(ofertaProvider).value ?? [];
-
-    return listaViajes.where((element) {
-      return element.creadoPor == 1;
-    }).toList();
-  },
-);
-
-//Este proveedor da las ofertas a las que el usuario se ha apuntado
-final ofertasApuntado = r.FutureProvider<List<Oferta>>(
-  (ref) async {
-    final listaViajes = ref.watch(ofertaProvider).value ?? [];
-    final List apuntado = await Supabase.instance.client
-        .from(
-          'Es_pasajero',
-        )
-        .select(
-          'Id_viaje',
-        )
-        .match(
-      {'id_usuario': 1},
-    );
-    final List datosDeApuntado = apuntado.map((e) {
-      return e['Id_viaje'];
-    }).toList();
-
-    return listaViajes.where((element) {
-      return datosDeApuntado.contains(element.id);
-    }).toList();
-  },
-);
-
-*/
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-//Este proveedor da las ofertas a las que el usuario se ha apuntado
-/*final ofertasAjenas = r.FutureProvider<List<Oferta>>((ref) async {
-  final List datos = await Supabase.instance.client
-      .from(
-        'Viaje',
-      )
-      .select(
-        'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuarios_apuntados',
-      )
-      .order('created_at');
-
-  return Oferta.fromList(datos);
-});*/
+import 'database_provider.dart';
 
 //OFERTAS DISPONIBLES
 class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
@@ -201,23 +20,14 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await Supabase.instance.client
-        .from(
-          'viaje',
-        )
-        .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
-        )
-        .neq('creado_por', ref.read(usuarioProvider))
-        .order('created_at');
-    final List consultaPasajero = await Supabase.instance.client
-        .from(
-          'es_pasajero',
-        )
-        .select(
-          'id_viaje',
-        )
-        .eq('id_usuario', ref.read(usuarioProvider));
+    final List consultaViajes = await ref.read(databaseProvider).recogerViajesAjenos(
+          ref.read(usuarioProvider),
+        );
+
+    final List consultaPasajero = await ref.read(databaseProvider).usuarioEsPasajero(
+          ref.read(usuarioProvider),
+        );
+
     final listaViajes = Oferta.fromList(consultaViajes);
     final List<int> idsQuitar = consultaPasajero.map((e) => e['id_viaje'] as int).toList();
 
@@ -238,11 +48,23 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     state = state.whenData((value) => value.where((element) => element.id != id).toList());
   }
 
+//TODO reservar plaza
   void reservarPlaza(Oferta oferta) {
-    ref.read(ofertasUsuarioApuntadoProvider.notifier).addOferta(oferta);
+    ref.read(databaseProvider).reservarPlaza(
+          oferta.id,
+          oferta.plazasDisponibles!,
+          ref.read(usuarioProvider),
+        );
+    ref
+        .read(ofertasUsuarioApuntadoProvider.notifier)
+        .addOferta(oferta.copyWith(plazasDisponibles: oferta.plazasDisponibles! - 1));
     eliminarOferta(oferta.id);
   }
 
+//TODO filtros con consultas a la base de datos en vez de local
+//Se puede hacer igual que como esta ahora pero si lo que se recibe no es null se
+//hace una consulta con el origen puesto y si luego se pone un destino se cojen los viajes
+//con ese destino y me quedo con los que coincidan en las dos listas
   void filtrar(String origen, String destino, String hora) {
     List<Oferta> nuevoEstado = [];
     List<Oferta> aux = [];
@@ -325,30 +147,36 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await Supabase.instance.client
-        .from(
-          'viaje',
-        )
-        .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
-        )
-        .eq('creado_por', ref.read(usuarioProvider))
-        .order('created_at');
+    final List consultaViajes = await ref.read(databaseProvider).viajesDelUsuario(
+          ref.read(usuarioProvider),
+        );
 
     return Future.value(Oferta.fromList(consultaViajes));
   }
 
-  void addNewOferta(String hora) async {
-    final consulta = await Supabase.instance.client
-        .from(
-          'viaje',
-        )
-        .select(
-          'id, created_at, origen, destino, latitud_origen, longitud_origen, latitud_destino, longitud_destino, hora_inicio, plazas_totales, plazas_disponibles, descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
-        )
-        .match({'creado_por': ref.read(usuarioProvider), 'hora_inicio': hora})
-        .order('created_at')
-        .limit(1);
+  void addNewOferta(
+    String origen,
+    String destino,
+    String hora,
+    String plazas,
+    String descripcion,
+    String titulo,
+  ) async {
+    final idUser = ref.read(usuarioProvider);
+    ref.read(databaseProvider).crearViaje(
+          origen,
+          destino,
+          hora,
+          plazas,
+          descripcion,
+          titulo,
+          idUser,
+        );
+    final consulta = await ref.read(databaseProvider).recogerViajeRecienCreado(
+          idUser,
+          hora,
+        );
+
     final viaje = Oferta.fromKeyValue(consulta[0]);
     state = await r.AsyncValue.guard(() {
       return Future(() => [viaje, ...(state.value!)]);
@@ -356,6 +184,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   void eliminarOferta(int id) {
+    ref.read(databaseProvider).eliminarViaje(id);
     state = state.whenData((value) => value.where((element) => element.id != id).toList());
   }
 
@@ -368,26 +197,20 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
     String titulo,
     String descripcion,
   ) {
+    ref
+        .read(databaseProvider)
+        .actualizarViaje(id, origen, destino, plazas, hora, titulo, descripcion);
+
     List<Oferta> ofertas = state.whenData((value) => value).value!;
     int index = ofertas.indexWhere((value) => value.id == id);
     Oferta o = ofertas[index];
-    ofertas[index] = Oferta(
-      id: id,
+    ofertas[index] = o.copyWith(
       origen: origen,
       destino: destino,
       hora: hora,
       plazasTotales: int.parse(plazas),
-      plazasDisponibles: o.plazasDisponibles,
       titulo: titulo,
       descripcion: descripcion,
-      creadoEn: o.creadoEn,
-      creadoPor: o.creadoPor,
-      latitudDestino: o.latitudDestino,
-      latitudOrigen: o.latitudOrigen,
-      longitudDestino: o.longitudDestino,
-      longitudOrigen: o.longitudOrigen,
-      nombreCreador: o.nombreCreador,
-      urlIcono: o.urlIcono,
     );
 
     state = AsyncValue.data(ofertas);
@@ -423,23 +246,14 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await Supabase.instance.client
-        .from(
-          'viaje',
-        )
-        .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
-        )
-        .neq('creado_por', ref.read(usuarioProvider))
-        .order('created_at');
-    final List consultaPasajero = await Supabase.instance.client
-        .from(
-          'es_pasajero',
-        )
-        .select(
-          'id_viaje',
-        )
-        .eq('id_usuario', ref.read(usuarioProvider));
+    final List consultaViajes = await ref.read(databaseProvider).recogerViajesAjenos(
+          ref.read(usuarioProvider),
+        );
+
+    final List consultaPasajero = await ref.read(databaseProvider).usuarioEsPasajero(
+          ref.read(usuarioProvider),
+        );
+
     final listaViajes = Oferta.fromList(consultaViajes);
     final List<int> idsQuitar = consultaPasajero.map((e) => e['id_viaje'] as int).toList();
 
@@ -450,8 +264,15 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
     return Future.value(res);
   }
 
+//TODO cancelar reserva
   void cancelarReserva(Oferta oferta) {
-    ref.read(ofertasDisponiblesProvider.notifier).addOferta(oferta);
+    ref.read(databaseProvider).cancelarPlaza(
+          oferta.id,
+          oferta.plazasDisponibles!,
+          ref.read(usuarioProvider),
+        );
+
+    ref.invalidate(ofertasDisponiblesProvider);
     eliminarOferta(oferta.id);
   }
 

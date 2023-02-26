@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
@@ -21,17 +20,9 @@ class VerViajeScreen extends ConsumerWidget {
     fontWeight: FontWeight.w500,
   );
 
-  Future<int> _recogerPlazasDisponibles(Oferta oferta) async {
-    final res = await Supabase.instance.client
-        .from('viaje')
-        .select('plazas_disponibles')
-        .eq('id', oferta.id);
-    return res[0]['plazas_disponibles'];
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final botonEliminar = boton(
+    final botonEliminar = Boton(
       colorBoton: Colors.red,
       paddingTodo: 16,
       funcion: () {
@@ -62,7 +53,7 @@ class VerViajeScreen extends ConsumerWidget {
       textoBoton: 'Eliminar oferta',
     );
 
-    final botonEditar = boton(
+    final botonEditar = Boton(
       paddingTodo: 16,
       funcion: () {
         Navigator.of(context).push(
@@ -72,13 +63,13 @@ class VerViajeScreen extends ConsumerWidget {
       textoBoton: 'Editar oferta',
     );
 
-    final botonAbrirChat = boton(
+    final botonAbrirChat = Boton(
       paddingTodo: 16,
       funcion: () {},
       textoBoton: 'Abrir chat',
     );
 
-    final botonReservar = boton(
+    final botonReservar = Boton(
       paddingTodo: 16,
       funcion: () {
         ref.read(ofertasDisponiblesProvider.notifier).reservarPlaza(oferta);
@@ -87,7 +78,7 @@ class VerViajeScreen extends ConsumerWidget {
       textoBoton: 'Reservar plaza',
     );
 
-    final botonCancelarPlaza = boton(
+    final botonCancelarPlaza = Boton(
       colorBoton: Colors.red,
       paddingTodo: 16,
       funcion: () {
@@ -191,26 +182,10 @@ class VerViajeScreen extends ConsumerWidget {
                 top: 8,
               ),
               child: Text(
-                'Plazas disponibles: ${oferta.plazasDisponibles}', //'Plazas disponibles: ${oferta.plazasDisponibles}',
+                'Plazas disponibles: ${oferta.plazasDisponibles}',
                 style: estiloTexto,
               ),
             ),
-            /*FutureBuilder(
-              future: _recogerPlazasDisponibles(oferta),
-              builder: (context, snapshot) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16.0,
-                    bottom: 8,
-                    top: 8,
-                  ),
-                  child: Text(
-                    'Plazas disponibles: ${snapshot.data}', //'Plazas disponibles: ${oferta.plazasDisponibles}',
-                    style: estiloTexto,
-                  ),
-                );
-              },
-            ),*/
             Padding(
               padding: const EdgeInsets.only(
                 left: 16.0,

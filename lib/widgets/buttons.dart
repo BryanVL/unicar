@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class boton extends StatelessWidget {
-  const boton({
+class Boton extends StatelessWidget {
+  const Boton({
     super.key,
     required this.funcion,
     required this.textoBoton,

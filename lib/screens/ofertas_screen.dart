@@ -16,7 +16,7 @@ class OfertasScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viajes = ref.watch(ofertasDisponiblesProvider);
-    //ref.watch(ofertasUsuarioApuntadoProvider);
+
     return Scaffold(
       body: viajes.when(
         data: (data) {
@@ -27,7 +27,7 @@ class OfertasScreen extends ConsumerWidget {
                 padding: const EdgeInsets.only(
                   top: 32,
                 ),
-                child: boton(
+                child: Boton(
                   paddingTop: 12,
                   paddingBottom: 12,
                   paddingLeft: 48,

@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../models/oferta.dart';
 
-class customDropdown extends StatefulWidget {
-  customDropdown({super.key, required this.titulo, required this.callback, this.valorDefecto});
+class CustomDropdown extends StatefulWidget {
+  const CustomDropdown(
+      {super.key, required this.titulo, required this.callback, this.valorDefecto});
   final String titulo;
-  Function(String) callback;
+  final Function(String) callback;
   final String? valorDefecto;
 
   @override
-  State<customDropdown> createState() => _customDropdownState();
+  State<CustomDropdown> createState() => _CustomDropdownState();
 }
 
-class _customDropdownState extends State<customDropdown> {
+class _CustomDropdownState extends State<CustomDropdown> {
   String dropdownValue = 'Selecciona uno';
 
   @override
@@ -76,7 +77,7 @@ class _customDropdownState extends State<customDropdown> {
                   iconSize: 24,
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                   autofocus: true,
-                  dropdownColor: Color.fromARGB(255, 80, 171, 228),
+                  dropdownColor: const Color.fromARGB(255, 80, 171, 228),
                   isExpanded: true,
                   alignment: Alignment.center,
                   value: dropdownValue,

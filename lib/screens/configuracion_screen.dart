@@ -28,7 +28,7 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            boton(
+            Boton(
               funcion: () async {
                 await Supabase.instance.client.auth.signOut();
                 if (context.mounted) {
@@ -43,7 +43,7 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 64.0),
-              child: boton(
+              child: Boton(
                 funcion: () async {
                   showDialog(
                     context: context,

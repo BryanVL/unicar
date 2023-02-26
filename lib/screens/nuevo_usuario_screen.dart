@@ -76,7 +76,7 @@ class _NuevoUsuarioScreen extends ConsumerState<NuevoUsuarioScreen> {
                     },
                   ),
                 ),
-                boton(
+                Boton(
                   funcion: () async {
                     if (_formKey.currentState!.validate()) {
                       _actualizarDatos(nombreController.text);

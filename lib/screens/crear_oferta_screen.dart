@@ -64,8 +64,8 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
           key: _formKey,
           child: Column(
             children: [
-              customDropdown(titulo: 'Origen:', callback: callbackOrigen),
-              customDropdown(titulo: 'Destino:', callback: callbackDestino),
+              CustomDropdown(titulo: 'Origen:', callback: callbackOrigen),
+              CustomDropdown(titulo: 'Destino:', callback: callbackDestino),
               //TODO poner seleccion personalizada de posicion
               Container(
                 width: 300,
@@ -78,20 +78,20 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0, bottom: 8),
-                    child: boton(
+                    child: Boton(
                         paddingTodo: 12,
                         funcion: () async {
-                          final TimeOfDay? picked_s = await showTimePicker(
+                          final TimeOfDay? pickedT = await showTimePicker(
                             context: context,
                             initialTime: TimeOfDay.now(),
                           );
 
-                          if (picked_s != null) {
+                          if (pickedT != null) {
                             setState(() {
-                              valorHora = picked_s;
-                              selectedTime = picked_s.minute < 10
-                                  ? '${picked_s.hour}:0${picked_s.minute}'
-                                  : '${picked_s.hour}:${picked_s.minute}';
+                              valorHora = pickedT;
+                              selectedTime = pickedT.minute < 10
+                                  ? '${pickedT.hour}:0${pickedT.minute}'
+                                  : '${pickedT.hour}:${pickedT.minute}';
                             });
                           }
                         },
@@ -153,7 +153,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
-                child: boton(
+                child: Boton(
                   paddingTodo: 12,
                   funcion: () async {
                     if (dropdownValueDestino == dropdownValueOrigen) {

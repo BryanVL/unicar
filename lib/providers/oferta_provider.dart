@@ -48,7 +48,6 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     state = state.whenData((value) => value.where((element) => element.id != id).toList());
   }
 
-//TODO reservar plaza
   void reservarPlaza(Oferta oferta) {
     ref.read(databaseProvider).reservarPlaza(
           oferta.id,
@@ -264,7 +263,6 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
     return Future.value(res);
   }
 
-//TODO cancelar reserva
   void cancelarReserva(Oferta oferta) {
     ref.read(databaseProvider).cancelarPlaza(
           oferta.id,

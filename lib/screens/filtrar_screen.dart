@@ -57,12 +57,12 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
           key: _formKey,
           child: Column(
             children: [
-              customDropdown(
+              CustomDropdown(
                 titulo: 'Origen:',
                 callback: callbackOrigen,
                 valorDefecto: dropdownValueOrigen,
               ),
-              customDropdown(
+              CustomDropdown(
                 titulo: 'Destino:',
                 callback: callbackDestino,
                 valorDefecto: dropdownValueDestino,
@@ -79,20 +79,20 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8, top: 16.0),
-                    child: boton(
+                    child: Boton(
                         paddingTodo: 12,
                         funcion: () async {
-                          final TimeOfDay? picked_s = await showTimePicker(
+                          final TimeOfDay? pickedT = await showTimePicker(
                             context: context,
                             initialTime: TimeOfDay.now(),
                           );
 
-                          if (picked_s != null) {
+                          if (pickedT != null) {
                             setState(() {
-                              valorHora = picked_s;
-                              selectedTime = picked_s.minute < 10
-                                  ? '${picked_s.hour}:0${picked_s.minute}'
-                                  : '${picked_s.hour}:${picked_s.minute}';
+                              valorHora = pickedT;
+                              selectedTime = pickedT.minute < 10
+                                  ? '${pickedT.hour}:0${pickedT.minute}'
+                                  : '${pickedT.hour}:${pickedT.minute}';
                             });
                           }
                         },
@@ -111,7 +111,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 16.0),
-                      child: boton(
+                      child: Boton(
                         paddingTodo: 12,
                         funcion: () async {
                           ref
@@ -125,7 +125,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0),
-                      child: boton(
+                      child: Boton(
                         colorBoton: Colors.red,
                         paddingTodo: 12,
                         funcion: () async {

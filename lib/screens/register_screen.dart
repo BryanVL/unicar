@@ -120,7 +120,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   },
                 ),
               ),
-              boton(
+              Boton(
                 funcion: () async {
                   if (_formKey.currentState!.validate()) {
                     await Supabase.instance.client.auth.signUp(

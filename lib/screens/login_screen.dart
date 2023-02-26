@@ -51,7 +51,16 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
           }
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      final snackBar = SnackBar(
+        backgroundColor: Colors.blue[400],
+        shape: const RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        content: const Text('Hubo un problema al iniciar sesión, intentalo de nuevo más tarde'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
@@ -106,7 +115,7 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                   },
                 ),
               ),
-              boton(
+              Boton(
                 funcion: () async {
                   if (_formKey.currentState!.validate()) {
                     _iniciarSesion(correoController.text, passController.text);

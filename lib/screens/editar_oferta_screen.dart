@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 
@@ -76,12 +75,12 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
           key: _formKey,
           child: Column(
             children: [
-              customDropdown(
+              CustomDropdown(
                 titulo: 'Origen:',
                 callback: callbackOrigen,
                 valorDefecto: dropdownValueOrigen,
               ),
-              customDropdown(
+              CustomDropdown(
                 titulo: 'Destino:',
                 callback: callbackDestino,
                 valorDefecto: dropdownValueDestino,
@@ -96,21 +95,21 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  boton(
+                  Boton(
                       paddingLeft: 8,
                       paddingRight: 8,
                       funcion: () async {
-                        final TimeOfDay? picked_s = await showTimePicker(
+                        final TimeOfDay? pickedT = await showTimePicker(
                           context: context,
                           initialTime: TimeOfDay.now(),
                         );
 
-                        if (picked_s != null) {
+                        if (pickedT != null) {
                           setState(() {
-                            valorHora = picked_s;
-                            selectedTime = picked_s.minute < 10
-                                ? '${picked_s.hour}:0${picked_s.minute}'
-                                : '${picked_s.hour}:${picked_s.minute}';
+                            valorHora = pickedT;
+                            selectedTime = pickedT.minute < 10
+                                ? '${pickedT.hour}:0${pickedT.minute}'
+                                : '${pickedT.hour}:${pickedT.minute}';
                           });
                         }
                       },
@@ -180,7 +179,7 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
-                child: boton(
+                child: Boton(
                   paddingLeft: 8,
                   paddingRight: 8,
                   funcion: () async {

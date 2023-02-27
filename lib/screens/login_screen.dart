@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,6 +22,8 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final correoController = TextEditingController();
   final passController = TextEditingController();
+  late final StreamSubscription<AuthState> _authStateSubscription;
+  bool _redirecting = false;
 
   Future<bool> _comprobarPrimerInicio(User user) async {
     final nombre =
@@ -61,6 +65,60 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+  }
+
+  void _iniciarSesionProvider(Provider provider) async {
+    try {
+      await Supabase.instance.client.auth
+          .signInWithOAuth(provider, redirectTo: 'com.example.unicar://login-callback/');
+    } catch (e) {
+      final snackBar = SnackBar(
+        backgroundColor: Colors.blue[400],
+        shape: const RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        content: const Text('Hubo un problema al iniciar sesión, intentalo de nuevo más tarde'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  @override
+  initState() {
+    _authStateSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      if (_redirecting) return;
+      final session = data.session;
+
+      if (session != null) {
+        _redirecting = true;
+        final User user = data.session!.user;
+
+        ref.read(usuarioProvider.notifier).state = user.id;
+
+        final esNuevoUsuario = _comprobarPrimerInicio(user);
+        esNuevoUsuario.then((value) {
+          if (value) {
+            if (context.mounted) {
+              Navigator.of(context).pushReplacementNamed(NuevoUsuarioScreen.kRouteName);
+            }
+          } else {
+            if (context.mounted) {
+              Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
+            }
+          }
+        });
+      }
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _authStateSubscription.cancel();
+    correoController.dispose();
+    passController.dispose();
+    super.dispose();
   }
 
   @override
@@ -116,7 +174,7 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                 ),
               ),
               Boton(
-                funcion: () async {
+                funcion: () {
                   if (_formKey.currentState!.validate()) {
                     _iniciarSesion(correoController.text, passController.text);
                   }
@@ -153,7 +211,7 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                         Radius.circular(10),
                       ),
                     ),
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.blue[50],
                     padding: const EdgeInsets.all(16),
                     alignment: Alignment.center,
                     textStyle: const TextStyle(
@@ -161,9 +219,8 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                       color: Colors.black,
                     ),
                   ),
-                  //TODO iniciar sesion con google
-                  onPressed: () async {
-                    await Supabase.instance.client.auth.signInWithOAuth(Provider.google);
+                  onPressed: () {
+                    _iniciarSesionProvider(Provider.discord);
                   },
                   child: Row(
                     children: const [
@@ -171,14 +228,14 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                         height: 30,
                         width: 30,
                         image: AssetImage(
-                          'lib/assets/googleIcon.png',
+                          'lib/assets/discordLogo1.png',
                         ),
                       ),
                       SizedBox(
                         width: 10,
                       ),
                       Text(
-                        'Iniciar sesión con google',
+                        'Iniciar sesión con Discord',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       )

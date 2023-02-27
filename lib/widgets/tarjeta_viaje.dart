@@ -16,7 +16,6 @@ class TarjetaViajeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(oferta.hora);
     return Padding(
       padding: const EdgeInsets.only(
         bottom: 16,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unicar/screens/configuracion_screen.dart';
 
+//Appbar de la app con las páginas de inicio
 class MyAppbar extends StatelessWidget {
   const MyAppbar({super.key, required this.tabController});
 

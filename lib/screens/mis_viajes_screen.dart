@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/oferta.dart';
-import 'package:unicar/models/tarjetaViaje.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 
 import '../widgets/seccion_tarjetas.dart';
@@ -29,12 +28,11 @@ class MisViajesScreen extends ConsumerWidget {
                   paddingBottom: 16,
                   texto: 'Viajes que ofreces',
                 ),
-
                 viajesDelUsuario.when(
                   data: (data) {
                     return SeccionTarjetas(
                       tipo: TipoViaje.propio,
-                      datosViaje: TarjetaViaje.listaDeTarjetasDesdeOfertas(data),
+                      datosViaje: data,
                     );
                   },
                   loading: () {
@@ -55,20 +53,17 @@ class MisViajesScreen extends ConsumerWidget {
                         'Hubo un error al cargar los viajes, intentalo de nuevo. Codigo error: $error');
                   },
                 ),
-
                 const TextoSeccion(
                   texto: 'Viajes en los que estas apuntado',
                   paddingTop: 48,
                   paddingBottom: 16,
                   paddingLeft: 16,
                 ),
-
-                //TODO viajes a los que esta apuntado
                 viajesApuntado.when(
                   data: (data) {
                     return SeccionTarjetas(
                       tipo: TipoViaje.apuntado,
-                      datosViaje: TarjetaViaje.listaDeTarjetasDesdeOfertas(data),
+                      datosViaje: data,
                     );
                   },
                   loading: () {

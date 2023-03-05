@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Oferta {
   final int id;
@@ -11,14 +10,13 @@ class Oferta {
   final double? latitudDestino;
   final double? longitudDestino;
   final String hora;
-  final int? plazasTotales;
-  final int? plazasDisponibles;
+  final int plazasTotales;
+  final int plazasDisponibles;
   final String? titulo;
   final String? descripcion;
   final String? urlIcono;
-  final int? creadoPor;
-  final String? nombreCreador;
-  final List<int>? usuariosApuntados;
+  final String creadoPor;
+  final String nombreCreador;
 
   Oferta({
     required this.id,
@@ -30,46 +28,76 @@ class Oferta {
     this.latitudDestino,
     this.longitudDestino,
     required this.hora,
-    this.plazasTotales,
-    this.plazasDisponibles,
+    required this.plazasTotales,
+    required this.plazasDisponibles,
     this.titulo,
     this.descripcion,
-    this.creadoPor,
-    this.nombreCreador,
+    required this.creadoPor,
+    required this.nombreCreador,
     this.urlIcono,
-    this.usuariosApuntados,
   });
 
   Oferta.fromKeyValue(Map<String, dynamic> json)
       : id = json['id'] as int,
-        origen = json['Origen']!,
-        destino = json['Destino']!,
+        origen = json['origen']!,
+        destino = json['destino']!,
         hora = json['hora_inicio']!,
         creadoEn = json['created_at'],
-        creadoPor = json['creado_por'] as int,
+        creadoPor = json['creado_por'],
         descripcion = json['descripcion'],
         latitudDestino = json['latitud_destino'] as double?,
         latitudOrigen = json['latitud_origen'] as double?,
         longitudDestino = json['longitud_destino'] as double?,
         longitudOrigen = json['longitud_origen'] as double?,
-        nombreCreador = '',
-        plazasDisponibles = json['plazas_disponibles'] as int?,
-        plazasTotales = json['plazas_totales'] as int?,
-        titulo = json['titulo'],
-        urlIcono = '',
-        usuariosApuntados = [];
+        nombreCreador = json['usuario']['nombre'],
+        plazasDisponibles = json['plazas_disponibles'] as int,
+        plazasTotales = json['plazas_totales'] as int,
+        titulo = (json['titulo'] == null || json['titulo'] == '')
+            ? 'Viaje a ${json['destino']}'
+            : json['titulo'],
+        urlIcono =
+            'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg';
+
+  Oferta copyWith({
+    String? creadoEn,
+    String? origen,
+    String? destino,
+    double? latitudOrigen,
+    double? longitudOrigen,
+    double? latitudDestino,
+    double? longitudDestino,
+    String? hora,
+    int? plazasTotales,
+    int? plazasDisponibles,
+    String? titulo,
+    String? descripcion,
+    String? urlIcono,
+    String? creadoPor,
+    String? nombreCreador,
+  }) {
+    return Oferta(
+      id: id,
+      origen: origen ?? this.origen,
+      destino: destino ?? this.destino,
+      hora: hora ?? this.hora,
+      creadoEn: creadoEn ?? this.creadoEn,
+      descripcion: descripcion ?? this.descripcion,
+      latitudDestino: latitudDestino ?? this.latitudDestino,
+      latitudOrigen: latitudOrigen ?? this.latitudOrigen,
+      longitudDestino: longitudDestino ?? this.longitudDestino,
+      longitudOrigen: longitudOrigen ?? this.longitudOrigen,
+      plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
+      plazasTotales: plazasTotales ?? this.plazasTotales,
+      titulo: titulo ?? this.titulo,
+      creadoPor: creadoPor ?? this.creadoPor,
+      nombreCreador: nombreCreador ?? this.nombreCreador,
+      urlIcono: urlIcono ?? this.urlIcono,
+    );
+  }
 
   static List<Oferta> fromList(List datos) {
     return datos.map((e) => Oferta.fromKeyValue(e)).toList();
   }
-
-  /* static List<Oferta> fromList2(List datos) async {
-    
-    final List<Oferta>viajes = datos.map((e) => Oferta.fromKeyValue(e)).toList();
-    final List pasajero = await Supabase.instance.client.from('Es_pasajero').select('*');
-    pasajero.map((e) => e['']);
-    return 
-  }*/
 
   static const List<String> ubicaciones = [
     'Selecciona uno',
@@ -94,96 +122,6 @@ class Oferta {
         ),
       )
       .toList();
-
-  //Oferta.fromDatabase();
-  final supabase = Supabase.instance.client;
-  Future<Oferta?> recogerDatos() async {
-    final data = await supabase.from('Viaje').select(
-          'id,created_at,Origen,Destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_ocupadas,descripcion, creado_por',
-        );
-    print(data);
-  }
-
-  static Future<void> nuevoViaje(String origen, String destino, String hora, String plazas,
-      String descripcion, String titulo, int usuario) async {
-    await Supabase.instance.client.from('Viaje').insert({
-      'Origen': origen,
-      'Destino': destino,
-      'hora_inicio': hora,
-      'plazas_totales': plazas,
-      'plazas_disponibles': plazas,
-      'descripcion': descripcion,
-      'titulo': titulo,
-      'creado_por': usuario
-    });
-  }
-
-  static Future<void> eliminarViaje(int id) async {
-    final db = Supabase.instance.client;
-    await db.from('Es_pasajero').delete().match({'Id_viaje': id});
-    await db.from('Viaje').delete().match({'id': id});
-  }
-
-  static Future<void> reservarPlaza(int id, int plazas, int idUSer) async {
-    if (plazas > 0) {
-      final db = Supabase.instance.client;
-      await db.from('Viaje').update({'plazas_disponibles': plazas - 1}).match({'id': id});
-      await db.from('Es_pasajero').insert(
-        {
-          'Id_viaje': id,
-          'id_usuario': idUSer,
-        },
-      );
-    }
-  }
-
-  static Future<void> cancelarPlaza(int id, int plazas, int idUSer) async {
-    final db = Supabase.instance.client;
-    await db.from('Es_pasajero').delete().match({'Id_viaje': id, 'id_usuario': idUSer});
-    await db.from('Viaje').update({'plazas_disponibles': plazas + 1}).match({'id': id});
-  }
-
-  static Future<List<int>> idsDeViajeApuntado(int id) async {
-    return await Supabase.instance.client
-        .from(
-          'Es_pasajero',
-        )
-        .select(
-          'Id_viaje',
-        )
-        .match(
-      {'id_usuario': 1},
-    );
-  }
-
-  static Future<void> actualizarViaje(
-    int idViaje,
-    String origen,
-    String destino,
-    String plazasTotales,
-    String hora,
-    String titulo,
-    String descripcion,
-  ) async {
-    final db = Supabase.instance.client;
-    await db.from('Viaje').update({
-      'Origen': origen,
-      'Destino': destino,
-      'plazas_totales': plazasTotales,
-      'hora_inicio': hora,
-      'titulo': titulo,
-      'descripcion': descripcion,
-    }).match({'id': idViaje});
-  }
-
-  static Future<List> datosExtra(int id) async {
-    return await Supabase.instance.client
-        .from('Viaje')
-        .select(
-          'plazas_totales,plazas_disponibles, descripcion, Usuario!Viaje_creado_por_fkey(nombre, id)',
-        )
-        .eq('id', id);
-  }
 }
 
 enum TipoViaje { propio, apuntado, oferta }

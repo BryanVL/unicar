@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class boton extends StatelessWidget {
-  const boton({
+class Boton extends StatelessWidget {
+  const Boton({
     super.key,
     required this.funcion,
     required this.textoBoton,
@@ -11,6 +11,7 @@ class boton extends StatelessWidget {
     this.paddingRight,
     this.paddingTodo,
     this.colorBoton,
+    this.textSize,
   });
   final VoidCallback funcion;
   final String textoBoton;
@@ -20,6 +21,7 @@ class boton extends StatelessWidget {
   final double? paddingRight;
   final double? paddingTodo;
   final Color? colorBoton;
+  final double? textSize;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -36,7 +38,12 @@ class boton extends StatelessWidget {
         ),
       ),
       onPressed: funcion,
-      child: Text(textoBoton),
+      child: Text(
+        textoBoton,
+        style: TextStyle(
+          fontSize: textSize,
+        ),
+      ),
     );
   }
 }

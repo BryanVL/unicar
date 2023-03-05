@@ -1,3 +1,4 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
@@ -13,10 +14,9 @@ class FiltrarScreen extends ConsumerStatefulWidget {
 }
 
 class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
-  String selectedTime = '';
-  TimeOfDay valorHora = TimeOfDay.now();
   String dropdownValueOrigen = 'Selecciona uno';
   String dropdownValueDestino = 'Selecciona uno';
+  TextEditingController horaController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -30,6 +30,20 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
     setState(() {
       dropdownValueDestino = valorElegido;
     });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    horaController.text = ref.read(ofertasDisponiblesProvider.notifier).filtroHora;
+    dropdownValueOrigen = ref.read(ofertasDisponiblesProvider.notifier).filtroOrigen;
+    dropdownValueDestino = ref.read(ofertasDisponiblesProvider.notifier).filtroDestino;
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    horaController.dispose();
   }
 
   @override
@@ -49,42 +63,41 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
           key: _formKey,
           child: Column(
             children: [
-              customDropdown(titulo: 'Origen:', callback: callbackOrigen),
-              customDropdown(titulo: 'Destino:', callback: callbackDestino),
+              CustomDropdown(
+                titulo: 'Origen:',
+                callback: callbackOrigen,
+                valorDefecto: dropdownValueOrigen,
+              ),
+              CustomDropdown(
+                titulo: 'Destino:',
+                callback: callbackDestino,
+                valorDefecto: dropdownValueDestino,
+              ),
               //TODO poner seleccion personalizada de posicion
               Container(
                 width: 300,
                 height: 200,
                 color: Colors.green,
               ),
-              //TODO poner fecha y hora en vez de solo hora
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  boton(
-                      paddingLeft: 8,
-                      paddingRight: 8,
-                      funcion: () async {
-                        final TimeOfDay? picked_s = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-
-                        if (picked_s != null) {
-                          setState(() {
-                            valorHora = picked_s;
-                            selectedTime = picked_s.minute < 10
-                                ? '${picked_s.hour}:0${picked_s.minute}'
-                                : '${picked_s.hour}:${picked_s.minute}';
-                          });
-                        }
-                      },
-                      textoBoton: 'Selecciona la hora de comienzo del viaje'),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 8),
+                    child: SizedBox(
+                      height: 75,
+                      width: 300,
+                      child: DateTimePicker(
+                        controller: horaController,
+                        type: DateTimePickerType.dateTime,
+                        firstDate: DateTime.now().subtract(const Duration(days: 1)),
+                        lastDate: DateTime.now().add(const Duration(days: 7)),
+                        dateLabelText: 'Selecciona una fecha y hora',
+                      ),
+                    ),
+                  ),
                 ],
               ),
-
-              Text('Hora seleccionada: $selectedTime'),
-
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0, top: 64),
                 child: Row(
@@ -93,13 +106,11 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 16.0),
-                      child: boton(
-                        paddingTodo: 8,
+                      child: Boton(
+                        paddingTodo: 12,
                         funcion: () async {
-                          ref
-                              .read(ofertasDisponiblesProvider.notifier)
-                              .filtrar(dropdownValueOrigen, dropdownValueDestino, selectedTime);
-
+                          ref.read(ofertasDisponiblesProvider.notifier).filtrar(
+                              dropdownValueOrigen, dropdownValueDestino, horaController.text);
                           Navigator.of(context).pop();
                         },
                         textoBoton: 'Aplicar filtros',
@@ -107,9 +118,9 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0),
-                      child: boton(
+                      child: Boton(
                         colorBoton: Colors.red,
-                        paddingTodo: 8,
+                        paddingTodo: 12,
                         funcion: () async {
                           ref
                               .read(ofertasDisponiblesProvider.notifier)

@@ -1,7 +1,9 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/screens/tab_bar_screen.dart';
 
 import '../models/oferta.dart';
 import '../widgets/buttons.dart';
@@ -16,13 +18,12 @@ class EditarOfertaScreen extends ConsumerStatefulWidget {
 }
 
 class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
-  String selectedTime = '';
-  TimeOfDay valorHora = TimeOfDay.now();
   String dropdownValueOrigen = '';
   String dropdownValueDestino = '';
   TextEditingController plazasController = TextEditingController();
   TextEditingController descripcionController = TextEditingController();
   TextEditingController tituloController = TextEditingController();
+  TextEditingController horaController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -31,10 +32,10 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
     super.initState();
     dropdownValueOrigen = widget.oferta.origen;
     dropdownValueDestino = widget.oferta.destino;
-    selectedTime = widget.oferta.hora;
     plazasController.text = '${widget.oferta.plazasTotales}';
     descripcionController.text = widget.oferta.descripcion ?? '';
     tituloController.text = widget.oferta.titulo ?? '';
+    horaController.text = widget.oferta.hora;
   }
 
   @override
@@ -43,6 +44,7 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
     plazasController.dispose();
     descripcionController.dispose();
     tituloController.dispose();
+    horaController.dispose();
   }
 
   callbackOrigen(valorElegido) {
@@ -74,12 +76,12 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
           key: _formKey,
           child: Column(
             children: [
-              customDropdown(
+              CustomDropdown(
                 titulo: 'Origen:',
                 callback: callbackOrigen,
                 valorDefecto: dropdownValueOrigen,
               ),
-              customDropdown(
+              CustomDropdown(
                 titulo: 'Destino:',
                 callback: callbackDestino,
                 valorDefecto: dropdownValueDestino,
@@ -90,33 +92,30 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                 height: 200,
                 color: Colors.green,
               ),
-              //TODO poner fecha y hora en vez de solo hora
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  boton(
-                      paddingLeft: 8,
-                      paddingRight: 8,
-                      funcion: () async {
-                        final TimeOfDay? picked_s = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-
-                        if (picked_s != null) {
-                          setState(() {
-                            valorHora = picked_s;
-                            selectedTime = picked_s.minute < 10
-                                ? '${picked_s.hour}:0${picked_s.minute}'
-                                : '${picked_s.hour}:${picked_s.minute}';
-                          });
-                        }
-                      },
-                      textoBoton: 'Selecciona la hora de comienzo del viaje'),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 8),
+                    child: SizedBox(
+                      height: 75,
+                      width: 300,
+                      child: DateTimePicker(
+                        controller: horaController,
+                        type: DateTimePickerType.dateTime,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(const Duration(days: 7)),
+                        dateLabelText: 'Selecciona una fecha y hora',
+                        validator: (value) {
+                          return horaController.text == ''
+                              ? 'Este campo no puede estar vacio'
+                              : null;
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
-
-              Text('Hora seleccionada: $selectedTime'),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
@@ -178,7 +177,7 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
-                child: boton(
+                child: Boton(
                   paddingLeft: 8,
                   paddingRight: 8,
                   funcion: () async {
@@ -202,31 +201,21 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                     if (_formKey.currentState!.validate() &&
                         (dropdownValueOrigen != 'Selecciona uno' &&
                             dropdownValueDestino != 'Selecciona uno' &&
-                            selectedTime != '' &&
+                            horaController.text != '' &&
                             dropdownValueDestino != dropdownValueOrigen &&
                             int.parse(plazasController.text) >=
-                                (widget.oferta.plazasTotales! -
-                                    widget.oferta.plazasDisponibles!))) {
-                      Oferta.actualizarViaje(
-                        widget.oferta.id,
-                        dropdownValueOrigen,
-                        dropdownValueDestino,
-                        plazasController.text,
-                        selectedTime,
-                        tituloController.text,
-                        descripcionController.text,
-                      ).then((value) {
-                        ref.read(ofertasOfrecidasUsuarioProvider.notifier).editarOferta(
-                              widget.oferta.id,
-                              dropdownValueOrigen,
-                              dropdownValueDestino,
-                              plazasController.text,
-                              selectedTime,
-                              tituloController.text,
-                              descripcionController.text,
-                            );
-                        Navigator.of(context).popUntil(ModalRoute.withName('/'));
-                      });
+                                (widget.oferta.plazasTotales - widget.oferta.plazasDisponibles))) {
+                      ref.read(ofertasOfrecidasUsuarioProvider.notifier).editarOferta(
+                            widget.oferta.id,
+                            dropdownValueOrigen,
+                            dropdownValueDestino,
+                            plazasController.text,
+                            DateTime.tryParse(horaController.text)!.toIso8601String(),
+                            tituloController.text,
+                            descripcionController.text,
+                          );
+
+                      Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));
                     }
                   },
                   textoBoton: 'Actualizar datos',

@@ -32,6 +32,8 @@ dependencies:
   riverpod_annotation: ^1.1.1
   image_picker: ^0.8.6+1
   date_time_picker: ^2.1.0
+  string_validator: ^0.3.0
+  intl: 0.17.0
   flutter:
     sdk: flutter
 
@@ -54,9 +56,16 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "lib/assets/googleIcon.png"
+
 # The following section is specific to Flutter packages.
 flutter:
-
+  assets:
+    - lib/assets/googleIcon.png
+    - lib/assets/discordLogo1.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

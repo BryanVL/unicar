@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:unicar/screens/configuracion_screen.dart';
 
+//Appbar de la app con las páginas de inicio
 class MyAppbar extends StatelessWidget {
   const MyAppbar({super.key, required this.tabController});
 
@@ -15,7 +17,7 @@ class MyAppbar extends StatelessWidget {
       actions: [
         IconButton(
           onPressed: () {
-            Navigator.of(context).pushNamed('/Configuracion');
+            Navigator.of(context).pushNamed(ConfiguracionScreen.kRouteName);
           },
           icon: Icon(
             Icons.settings,

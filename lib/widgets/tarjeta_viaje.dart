@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:unicar/models/tarjetaViaje.dart';
+import 'package:intl/intl.dart';
 import 'package:unicar/screens/ver_viaje_screen.dart';
 
 import '../models/oferta.dart';
@@ -7,10 +7,11 @@ import '../models/oferta.dart';
 class TarjetaViajeWidget extends StatelessWidget {
   const TarjetaViajeWidget({
     super.key,
-    required this.datosTarjeta,
     required this.tipo,
+    required this.oferta,
   });
-  final TarjetaViaje datosTarjeta;
+
+  final Oferta oferta;
   final TipoViaje tipo;
 
   @override
@@ -18,123 +19,168 @@ class TarjetaViajeWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(
         bottom: 16,
-        right: 16,
-        left: 16,
+        right: 8,
+        left: 8,
       ),
-      child: GestureDetector(
-        onTap: () async {
-          final Future<List> objFuturo = Oferta.datosExtra(datosTarjeta.id);
-          objFuturo.then((value) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => VerViajeScreen(
-                  tipo: tipo,
-                  oferta: Oferta(
-                    id: datosTarjeta.id,
-                    origen: datosTarjeta.origen,
-                    destino: datosTarjeta.destino,
-                    hora: datosTarjeta.fechaHora,
-                    plazasTotales: value[0]['plazas_totales'] ?? 0,
-                    plazasDisponibles: value[0]['plazas_disponibles'] ?? 0,
-                    titulo: datosTarjeta.titulo == null || datosTarjeta.titulo == ''
-                        ? 'Viaje a ${datosTarjeta.destino}'
-                        : datosTarjeta.titulo,
-                    descripcion: value[0]['descripcion'],
-                    urlIcono: datosTarjeta.iconoURL ??
-                        'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
-                    nombreCreador: value[0]['Usuario']['nombre'],
-                    creadoPor: value[0]['Usuario']['id'],
-                  ),
-                ),
+      child: Container(
+        decoration: BoxDecoration(
+          /*border: const Border.fromBorderSide(
+              BorderSide(
+                color: Colors.blue,
+                width: 1,
               ),
-            );
-          });
-        },
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              colors: [
-                Color.fromARGB(197, 51, 123, 206),
-                Colors.blue,
-              ],
+            ),*/
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade500,
+              offset: const Offset(4.0, 4.0),
+              blurRadius: 15,
+              spreadRadius: 1,
             ),
-            color: Color.fromARGB(197, 51, 123, 206),
-            borderRadius: BorderRadius.all(
-              Radius.circular(25),
+            const BoxShadow(
+              color: Colors.white,
+              offset: Offset(-4.0, -4.0),
+              blurRadius: 15,
+              spreadRadius: 1,
             ),
+          ],
+          color: /*Color.fromARGB(255, 240, 240, 255),*/
+              Colors.white,
+          /*Colors.blue[400],*/
+          borderRadius: const BorderRadius.all(
+            Radius.circular(20),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
+        ),
+        child: Material(
+          elevation: 0,
+          color: Colors.transparent,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => VerViajeScreen(oferta: oferta, tipo: tipo),
+              ));
+            },
+            splashColor: Colors.blue[300],
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Hero(
-                    tag: 'imagenUsuario${datosTarjeta.id}',
-                    child: const CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      backgroundImage: NetworkImage(
-                          'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg'),
-                      radius: 35,
+                Hero(
+                  tag: 'imagenUsuario${oferta.id}',
+                  child: Container(
+                    height: 80,
+                    width: 80,
+                    margin: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          oferta.urlIcono ??
+                              'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
+                        ),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
+                /*Expanded(
+                    flex: 1,
+                    child: Hero(
+                      tag: 'imagenUsuario${datosTarjeta.id}',
+                      child: const CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        backgroundImage: NetworkImage(
+                            'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg'),
+                        radius: 35,
+                      ),
+                    ),
+                  ),*/
                 Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        maxLines: 1,
-                        (datosTarjeta.titulo == null || datosTarjeta.titulo == ''
-                            ? 'Viaje a ${datosTarjeta.destino}'
-                            : datosTarjeta.titulo)!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 22.0,
-                          overflow: TextOverflow.ellipsis,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 0.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          height: 10,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          style: TextStyle(color: Colors.black),
-                          children: [
-                            TextSpan(
+                        Hero(
+                          tag: 'titulo${oferta.id}',
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: Text(
+                              maxLines: 1,
+                              (oferta.titulo == null || oferta.titulo == ''
+                                  ? 'Viaje a ${oferta.destino}'
+                                  : oferta.titulo)!,
                               style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              text: datosTarjeta.origen,
-                            ),
-                            const WidgetSpan(
-                              child: Icon(
-                                Icons.arrow_right_alt_rounded,
-                                size: 16,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 22.0,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            TextSpan(
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              text: datosTarjeta.destino,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Salida: ${datosTarjeta.fechaHora}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                        const SizedBox(
+                          height: 5,
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Hero(
+                            tag: 'viajeOD${oferta.id}',
+                            child: Material(
+                              type: MaterialType.transparency,
+                              child: RichText(
+                                text: TextSpan(
+                                  style: const TextStyle(color: Colors.black),
+                                  children: [
+                                    TextSpan(
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                      text: oferta.origen,
+                                    ),
+                                    const WidgetSpan(
+                                      child: Icon(
+                                        Icons.arrow_right_alt_rounded,
+                                        size: 16,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                      text: oferta.destino,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Hero(
+                          tag: 'hora${oferta.id}',
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Text(
+                                'Salida: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -142,6 +188,7 @@ class TarjetaViajeWidget extends StatelessWidget {
           ),
         ),
       ),
+      //),
     );
   }
 }

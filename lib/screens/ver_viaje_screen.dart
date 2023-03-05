@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
+import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 import '../models/oferta.dart';
@@ -16,12 +18,12 @@ class VerViajeScreen extends ConsumerWidget {
   final Oferta oferta;
   final estiloTexto = const TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w500,
   );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final botonEliminar = boton(
+    final botonEliminar = Boton(
       colorBoton: Colors.red,
       paddingTodo: 16,
       funcion: () {
@@ -33,9 +35,8 @@ class VerViajeScreen extends ConsumerWidget {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Oferta.eliminarViaje(oferta.id);
                     ref.read(ofertasOfrecidasUsuarioProvider.notifier).eliminarOferta(oferta.id);
-                    Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                    Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));
                   },
                   child: const Text('Borrar'),
                 ),
@@ -53,7 +54,7 @@ class VerViajeScreen extends ConsumerWidget {
       textoBoton: 'Eliminar oferta',
     );
 
-    final botonEditar = boton(
+    final botonEditar = Boton(
       paddingTodo: 16,
       funcion: () {
         Navigator.of(context).push(
@@ -63,33 +64,27 @@ class VerViajeScreen extends ConsumerWidget {
       textoBoton: 'Editar oferta',
     );
 
-    final botonAbrirChat = boton(
+    final botonAbrirChat = Boton(
       paddingTodo: 16,
       funcion: () {},
       textoBoton: 'Abrir chat',
     );
 
-    final botonReservar = boton(
+    final botonReservar = Boton(
       paddingTodo: 16,
       funcion: () {
-        //TODO aqui poner el id de usuario que este usando la aplicacion y no el creador
-        Oferta.reservarPlaza(
-          oferta.id,
-          oferta.plazasDisponibles ?? 0,
-          /*oferta.creadoPor!*/ 1,
-        );
         ref.read(ofertasDisponiblesProvider.notifier).reservarPlaza(oferta);
         Navigator.of(context).pop();
       },
       textoBoton: 'Reservar plaza',
     );
 
-    final botonCancelarPlaza = boton(
+    final botonCancelarPlaza = Boton(
       colorBoton: Colors.red,
       paddingTodo: 16,
       funcion: () {
-        Oferta.cancelarPlaza(oferta.id, oferta.plazasDisponibles ?? 0, 1);
         ref.read(ofertasUsuarioApuntadoProvider.notifier).cancelarReserva(oferta);
+
         Navigator.of(context).pop();
       },
       textoBoton: 'Cancelar reserva',
@@ -107,7 +102,19 @@ class VerViajeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(oferta.titulo!),
+        title: Hero(
+          tag: 'titulo${oferta.id}',
+          child: Material(
+            type: MaterialType.transparency,
+            child: Text(
+              oferta.titulo!,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -135,7 +142,7 @@ class VerViajeScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: Text(
-                      oferta.nombreCreador!,
+                      oferta.nombreCreador,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
@@ -145,11 +152,17 @@ class VerViajeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-              child: Text(
-                'Origen: ${oferta.origen}',
-                style: estiloTexto,
+            Hero(
+              tag: 'viajeOD${oferta.id}',
+              child: Material(
+                type: MaterialType.transparency,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
+                  child: Text(
+                    'Origen: ${oferta.origen}',
+                    style: estiloTexto,
+                  ),
+                ),
               ),
             ),
             Padding(
@@ -180,9 +193,15 @@ class VerViajeScreen extends ConsumerWidget {
                 bottom: 8,
                 top: 8,
               ),
-              child: Text(
-                'Hora salida: ${oferta.hora}',
-                style: estiloTexto,
+              child: Hero(
+                tag: 'hora${oferta.id}',
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: Text(
+                    'Hora salida: ${DateFormat('dd/MM/yyyy  kk:mm').format(DateTime.parse(oferta.hora))}',
+                    style: estiloTexto,
+                  ),
+                ),
               ),
             ),
             Padding(

@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/screens/chats_screen.dart';
+import 'package:unicar/screens/comprobacion_sesion_screen.dart';
 import 'package:unicar/screens/configuracion_screen.dart';
 import 'package:unicar/screens/crear_oferta_screen.dart';
 import 'package:unicar/screens/filtrar_screen.dart';
+import 'package:unicar/screens/login_screen.dart';
 import 'package:unicar/screens/mis_viajes_screen.dart';
+import 'package:unicar/screens/nuevo_usuario_screen.dart';
 import 'package:unicar/screens/ofertas_screen.dart';
+import 'package:unicar/screens/register_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 
 Future<void> main() async {
@@ -31,43 +35,51 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Unicar',
       theme: ThemeData(
-          primarySwatch: Colors.blue,
-          primaryColor: Colors.blue,
-          brightness: Brightness.light,
-          scaffoldBackgroundColor: const Color.fromARGB(255, 222, 238, 253),
-          iconTheme: const IconThemeData(
-            color: Colors.black,
-          ),
-          appBarTheme: const AppBarTheme(
-            elevation: 0,
-            surfaceTintColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(25),
-              ),
-            ),
-            foregroundColor: Colors.black,
-            backgroundColor: Color.fromARGB(255, 60, 119, 245),
-          ),
-          tabBarTheme: TabBarTheme(
-            unselectedLabelColor: Colors.black,
-            indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(25.0),
-              color: Colors.lightBlue,
+        primarySwatch: Colors.blue,
+        primaryColor: Colors.blue,
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: const Color.fromARGB(255, 252, 252,
+            252), //Color.fromARGB(255, 251, 255, 255), //const Color.fromARGB(255, 222, 238, 253),
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
+        appBarTheme: AppBarTheme(
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(25),
             ),
           ),
-          buttonTheme: const ButtonThemeData(
-            textTheme: ButtonTextTheme.primary,
-          )),
-      home: const TabBarScreen(title: 'Unicar'),
+          foregroundColor: Colors.black,
+          backgroundColor:
+              Colors.blue[600], /*const Color.fromARGB(255, 252, 252,
+            252),*/
+        ),
+        tabBarTheme: TabBarTheme(
+          unselectedLabelColor: Colors.black,
+          indicator: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            color: Colors.lightBlue,
+          ),
+        ),
+        buttonTheme: const ButtonThemeData(
+          textTheme: ButtonTextTheme.primary,
+        ),
+      ),
+      home: const ComprobacionSesionScreen(),
       routes: {
+        TabBarScreen.kRouteName: (context) => const TabBarScreen(title: 'Unicar'),
+        LoginScreen.kRouteName: (context) => const LoginScreen(),
         OfertasScreen.kRouteName: (ctx) => const OfertasScreen(),
         MisViajesScreen.kRouteName: (context) => const MisViajesScreen(),
         ChatsScreen.kRouteName: (context) => const ChatsScreen(),
         CrearOferta.kRouteName: (context) => const CrearOferta(),
         FiltrarScreen.kRouteName: (context) => const FiltrarScreen(),
         ConfiguracionScreen.kRouteName: (context) => const ConfiguracionScreen(),
+        RegisterScreen.kRouteName: (context) => const RegisterScreen(),
+        NuevoUsuarioScreen.kRouteName: (context) => const NuevoUsuarioScreen(),
       },
     );
   }

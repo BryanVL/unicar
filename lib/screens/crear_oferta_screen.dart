@@ -1,9 +1,10 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
-import 'package:unicar/models/oferta.dart';
+import 'package:unicar/widgets/textform.dart';
 
 import '../widgets/dropdown.dart';
 
@@ -17,13 +18,12 @@ class CrearOferta extends ConsumerStatefulWidget {
 }
 
 class _CrearOfertaState extends ConsumerState<CrearOferta> {
-  String selectedTime = '';
-  TimeOfDay valorHora = TimeOfDay.now();
   String dropdownValueOrigen = 'Selecciona uno';
   String dropdownValueDestino = 'Selecciona uno';
   TextEditingController plazasController = TextEditingController();
   TextEditingController descripcionController = TextEditingController();
   TextEditingController tituloController = TextEditingController();
+  TextEditingController horaController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -33,6 +33,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
     plazasController.dispose();
     descripcionController.dispose();
     tituloController.dispose();
+    horaController.dispose();
   }
 
   callbackOrigen(valorElegido) {
@@ -64,41 +65,38 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
           key: _formKey,
           child: Column(
             children: [
-              customDropdown(titulo: 'Origen:', callback: callbackOrigen),
-              customDropdown(titulo: 'Destino:', callback: callbackDestino),
+              CustomDropdown(titulo: 'Origen:', callback: callbackOrigen),
+              CustomDropdown(titulo: 'Destino:', callback: callbackDestino),
               //TODO poner seleccion personalizada de posicion
               Container(
                 width: 300,
                 height: 200,
                 color: Colors.green,
               ),
-              //TODO poner fecha y hora en vez de solo hora
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  boton(
-                      paddingLeft: 8,
-                      paddingRight: 8,
-                      funcion: () async {
-                        final TimeOfDay? picked_s = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-
-                        if (picked_s != null) {
-                          setState(() {
-                            valorHora = picked_s;
-                            selectedTime = picked_s.minute < 10
-                                ? '${picked_s.hour}:0${picked_s.minute}'
-                                : '${picked_s.hour}:${picked_s.minute}';
-                          });
-                        }
-                      },
-                      textoBoton: 'Selecciona la hora de comienzo del viaje'),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 8),
+                    child: SizedBox(
+                      height: 75,
+                      width: 300,
+                      child: DateTimePicker(
+                        controller: horaController,
+                        type: DateTimePickerType.dateTime,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(const Duration(days: 7)),
+                        dateLabelText: 'Selecciona una fecha y hora',
+                        validator: (value) {
+                          return horaController.text == ''
+                              ? 'Este campo no puede estar vacio'
+                              : null;
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
-
-              Text('Hora seleccionada: $selectedTime'),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
@@ -106,63 +104,48 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                   top: 32,
                   bottom: 8,
                 ),
-                child: TextFormField(
-                  controller: plazasController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: (value) {
+                child: MyTextForm(
+                  controlador: plazasController,
+                  label: 'Plazas disponibles del viaje',
+                  funcionValidacion: (value) {
                     return plazasController.text == '' ? 'Este campo no puede estar vacio' : null;
                   },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    )),
-                    labelText: 'Plazas disponibles del viaje',
-                  ),
+                  tipoInput: [FilteringTextInputFormatter.digitsOnly],
+                  tipoTeclado: TextInputType.number,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
-                  top: 8,
+                  top: 16,
+                  bottom: 8,
                 ),
-                child: TextFormField(
-                  controller: tituloController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    )),
-                    labelText: 'Añade un titulo (Opcional)',
-                    hintText: 'Escribe algún titulo',
-                  ),
+                child: MyTextForm(
+                  controlador: tituloController,
+                  label: 'Titulo (Opcional)',
+                  hint: 'Escribe un titulo',
+                  funcionValidacion: null,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
-                  top: 8,
+                  top: 16,
                   bottom: 32,
                 ),
-                child: TextFormField(
-                  controller: descripcionController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      )),
-                      labelText: 'Añade una descripción (Opcional)',
-                      hintText: 'Escribe algo para reconocerte'),
+                child: MyTextForm(
+                  controlador: descripcionController,
+                  label: 'Descripción (Opcional)',
+                  funcionValidacion: null,
+                  hint: 'Escribe algo para reconocerte',
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
-                child: boton(
-                  paddingLeft: 8,
-                  paddingRight: 8,
+                child: Boton(
+                  paddingTodo: 12,
                   funcion: () async {
                     if (dropdownValueDestino == dropdownValueOrigen) {
                       showDialog(
@@ -184,29 +167,20 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                     if (_formKey.currentState!.validate() &&
                         (dropdownValueOrigen != 'Selecciona uno' &&
                             dropdownValueDestino != 'Selecciona uno' &&
-                            selectedTime != '' &&
+                            horaController.text != '' &&
                             dropdownValueDestino != dropdownValueOrigen)) {
-                      //TODO poner id del usuario usando la aplicacion aqui
-                      Oferta.nuevoViaje(
-                        dropdownValueOrigen,
-                        dropdownValueDestino,
-                        selectedTime,
-                        plazasController.text,
-                        descripcionController.text,
-                        tituloController.text,
-                        1,
-                      ).then(
-                        (value) {
-                          ref
-                              .read(ofertasOfrecidasUsuarioProvider.notifier)
-                              .addNewOferta(1, selectedTime);
-                          //ref.read(ofertaProvider.notifier).actualizarDatos();
-                          //await Future.delayed(const Duration(milliseconds: 500));
-                          if (context.mounted) {
-                            Navigator.of(context).pop();
-                          }
-                        },
-                      );
+                      ref.read(ofertasOfrecidasUsuarioProvider.notifier).addNewOferta(
+                            dropdownValueOrigen,
+                            dropdownValueDestino,
+                            DateTime.tryParse(horaController.text)!.toIso8601String(),
+                            plazasController.text,
+                            descripcionController.text,
+                            tituloController.text,
+                          );
+
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
                     }
                   },
                   textoBoton: 'Publicar oferta',

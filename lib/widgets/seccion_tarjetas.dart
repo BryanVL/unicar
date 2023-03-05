@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:unicar/models/oferta.dart';
-import 'package:unicar/models/tarjetaViaje.dart';
 import 'package:unicar/widgets/tarjeta_viaje.dart';
 
 class SeccionTarjetas extends StatelessWidget {
@@ -9,7 +8,7 @@ class SeccionTarjetas extends StatelessWidget {
     required this.datosViaje,
     required this.tipo,
   });
-  final List<TarjetaViaje> datosViaje;
+  final List<Oferta> datosViaje;
   final TipoViaje tipo;
 
   @override
@@ -26,7 +25,7 @@ class SeccionTarjetas extends StatelessWidget {
         itemBuilder: (context, index) {
           return TarjetaViajeWidget(
             tipo: tipo,
-            datosTarjeta: datosViaje[index],
+            oferta: datosViaje[index],
           );
         },
       ),

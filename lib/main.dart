@@ -14,11 +14,15 @@ import 'package:unicar/screens/register_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 
 Future<void> main() async {
-  await Supabase.initialize(
-    url: 'https://nfblnvdvegjgqkxhrowm.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5mYmxudmR2ZWdqZ3FreGhyb3dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU2ODIyOTcsImV4cCI6MTk5MTI1ODI5N30.k7g7SCRdraTHjnIx-MsVde4NR2thrZW4OF8XSNNlJj4',
-  );
+  try {
+    await Supabase.initialize(
+      url: 'https://nfblnvdvegjgqkxhrowm.supabase.co',
+      anonKey:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5mYmxudmR2ZWdqZ3FreGhyb3dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU2ODIyOTcsImV4cCI6MTk5MTI1ODI5N30.k7g7SCRdraTHjnIx-MsVde4NR2thrZW4OF8XSNNlJj4',
+    );
+  } catch (e) {
+    //TODO handle AuthException when refresh token expires
+  }
 
   runApp(
     const ProviderScope(

@@ -225,10 +225,12 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
     List<Oferta> ofertas = state.whenData((value) => value).value!;
     int index = ofertas.indexWhere((value) => value.id == id);
     Oferta o = ofertas[index];
+    int plazasDisp = o.plazasDisponibles;
     ofertas[index] = o.copyWith(
       origen: origen,
       destino: destino,
       hora: hora,
+      plazasDisponibles: plazasDisp + (int.parse(plazas) - plazasDisp).abs(),
       plazasTotales: int.parse(plazas),
       titulo: titulo,
       descripcion: descripcion,

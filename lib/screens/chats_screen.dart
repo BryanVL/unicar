@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/providers/chat_provider.dart';
 
-import '../providers/oferta_provider.dart';
 import '../widgets/tarjeta_chat.dart';
 
 class ChatsScreen extends ConsumerWidget {
@@ -11,9 +11,9 @@ class ChatsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viajes = ref.watch(ofertasDisponiblesProvider);
+    final chats = ref.watch(chatProvider);
     return Scaffold(
-      body: viajes.when(
+      body: chats.when(
         data: (data) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,7 +28,9 @@ class ChatsScreen extends ConsumerWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: data.length,
                     itemBuilder: (context, index) {
-                      return TarjetaChat();
+                      return TarjetaChat(
+                        chat: data[index],
+                      );
                     },
                   ),
                 ),

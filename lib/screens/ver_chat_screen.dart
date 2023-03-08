@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-
-import '../models/oferta.dart';
+import 'package:unicar/models/usuario.dart';
 
 class VerChatScreen extends ConsumerWidget {
-  const VerChatScreen({
+  const VerChatScreen(
+    this.usuarioAjeno, {
     super.key,
   });
 
+  final Usuario usuarioAjeno;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Nombre usuario', //TODO
+        title: Text(
+          usuarioAjeno.nombre!,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,

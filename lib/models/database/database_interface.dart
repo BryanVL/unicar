@@ -33,4 +33,11 @@ abstract class Database {
   void cerrarSesion();
   void borrarCuenta(String idUser);
   Future<Session?> comprobarSesion();
+  Future<List> recogerChats(String idUser);
+  void crearChat(
+    String idCreador,
+    String idReceptor,
+  );
+  Future<List> recogerUltimoIdChatCreado(String idUser);
+  Future<List> usuarioDesdeId(String id);
 }

@@ -64,6 +64,7 @@ class VerViajeScreen extends ConsumerWidget {
       textoBoton: 'Editar oferta',
     );
 
+//TODO boton de abrir chat
     final botonAbrirChat = Boton(
       paddingTodo: 16,
       funcion: () {},

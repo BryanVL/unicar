@@ -65,7 +65,7 @@ class SupabaseDB implements Database {
     return await sp
         .from('viaje')
         .select(
-          'id, created_at, origen, destino, latitud_origen, longitud_origen, latitud_destino, longitud_destino, hora_inicio, plazas_totales, plazas_disponibles, descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
+          'id',
         )
         .match({'creado_por': idUser})
         .order('created_at')
@@ -161,5 +161,38 @@ class SupabaseDB implements Database {
   @override
   Future<Session?> comprobarSesion() async {
     return await SupabaseAuth.instance.initialSession;
+  }
+
+  @override
+  Future<List> recogerChats(String idUser) async {
+    return await sp
+        .from(
+          'chat',
+        )
+        .select(
+          'id, usuario_creador, usuario_receptor',
+        )
+        .or('usuario_creador.eq.$idUser,usuario_receptor.eq.$idUser')
+        .order('created_at');
+  }
+
+  @override
+  void crearChat(String idCreador, String idReceptor) async {
+    await sp.from('chat').insert({'usuario_creador': idCreador, 'usuario_receptor': idReceptor});
+  }
+
+  @override
+  Future<List> recogerUltimoIdChatCreado(String idUser) async {
+    return await sp
+        .from('chat')
+        .select('id')
+        .match({'usuario_creador': idUser})
+        .order('created_at')
+        .limit(1);
+  }
+
+  @override
+  Future<List> usuarioDesdeId(String id) async {
+    return await sp.from('usuario').select('id,nombre').match({'id': id});
   }
 }

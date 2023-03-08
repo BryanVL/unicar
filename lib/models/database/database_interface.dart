@@ -1,8 +1,11 @@
+import 'dart:async';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 abstract class Database {
   Future<List> recogerViajesAjenos(String idUser);
   Future<List> usuarioEsPasajero(String idUser);
   Future<List> viajesDelUsuario(String idUser);
-  Future<List> recogerViajeRecienCreado(String idUser, String hora);
+  Future<List> recogerViajeRecienCreado(String idUser);
   void crearViaje(
     String origen,
     String destino,
@@ -24,4 +27,10 @@ abstract class Database {
     String titulo,
     String descripcion,
   );
+  Future<String> nombreUsuario(String idUser);
+  Future<AuthResponse> iniciarSesion(String correo, String password);
+  void iniciarSesionConProvider(Provider provider);
+  void cerrarSesion();
+  void borrarCuenta(String idUser);
+  Future<Session?> comprobarSesion();
 }

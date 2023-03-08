@@ -21,11 +21,11 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
 
   Future<List<Oferta>> _inicializarLista() async {
     final List consultaViajes = await ref.read(databaseProvider).recogerViajesAjenos(
-          ref.read(usuarioProvider),
+          ref.read(usuarioProvider)!.id,
         );
 
     final List consultaPasajero = await ref.read(databaseProvider).usuarioEsPasajero(
-          ref.read(usuarioProvider),
+          ref.read(usuarioProvider)!.id,
         );
 
     final listaViajes = Oferta.fromList(consultaViajes);
@@ -52,7 +52,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     ref.read(databaseProvider).reservarPlaza(
           oferta.id,
           oferta.plazasDisponibles,
-          ref.read(usuarioProvider),
+          ref.read(usuarioProvider)!.id,
         );
     ref
         .read(ofertasUsuarioApuntadoProvider.notifier)
@@ -157,7 +157,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
 
   Future<List<Oferta>> _inicializarLista() async {
     final List consultaViajes = await ref.read(databaseProvider).viajesDelUsuario(
-          ref.read(usuarioProvider),
+          ref.read(usuarioProvider)!.id,
         );
 
     return Future.value(Oferta.fromList(consultaViajes));
@@ -171,7 +171,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
     String descripcion,
     String titulo,
   ) async {
-    final idUser = ref.read(usuarioProvider);
+    final user = ref.read(usuarioProvider);
     ref.read(databaseProvider).crearViaje(
           origen,
           destino,
@@ -179,14 +179,26 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
           plazas,
           descripcion,
           titulo,
-          idUser,
+          user!.id,
         );
     final consulta = await ref.read(databaseProvider).recogerViajeRecienCreado(
-          idUser,
-          hora,
+          user.id,
         );
 
-    final viaje = Oferta.fromKeyValue(consulta[0]);
+    final viaje = Oferta(
+      id: consulta[0]['id'],
+      origen: origen,
+      destino: destino,
+      hora: hora,
+      plazasTotales: int.parse(plazas),
+      plazasDisponibles: int.parse(plazas),
+      titulo: titulo,
+      descripcion: descripcion,
+      creadoPor: user.id,
+      nombreCreador: user.nombre!,
+      urlIcono: 'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
+    );
+
     state = await r.AsyncValue.guard(() {
       return Future(() => [viaje, ...(state.value!)]);
     });
@@ -256,11 +268,11 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
 
   Future<List<Oferta>> _inicializarLista() async {
     final List consultaViajes = await ref.read(databaseProvider).recogerViajesAjenos(
-          ref.read(usuarioProvider),
+          ref.read(usuarioProvider)!.id,
         );
 
     final List consultaPasajero = await ref.read(databaseProvider).usuarioEsPasajero(
-          ref.read(usuarioProvider),
+          ref.read(usuarioProvider)!.id,
         );
 
     final listaViajes = Oferta.fromList(consultaViajes);
@@ -277,7 +289,7 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
     ref.read(databaseProvider).cancelarPlaza(
           oferta.id,
           oferta.plazasDisponibles,
-          ref.read(usuarioProvider),
+          ref.read(usuarioProvider)!.id,
         );
 
     ref.invalidate(ofertasDisponiblesProvider);

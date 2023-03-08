@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:unicar/providers/usuario_provider.dart';
-import 'package:unicar/screens/login_screen.dart';
+import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 class ConfiguracionScreen extends ConsumerStatefulWidget {
@@ -29,14 +27,8 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
         child: Column(
           children: [
             Boton(
-              funcion: () async {
-                await Supabase.instance.client.auth.signOut();
-                if (context.mounted) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    LoginScreen.kRouteName,
-                    (Route<dynamic> route) => false,
-                  );
-                }
+              funcion: () {
+                ref.read(databaseProvider.notifier).cerrarSesion(context);
               },
               textoBoton: 'Cerrar sesión',
               paddingTodo: 12,
@@ -55,17 +47,8 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
                         ),
                         actions: [
                           TextButton(
-                            onPressed: () async {
-                              final sp = Supabase.instance.client;
-                              await sp.auth.signOut();
-                              await sp
-                                  .rpc('deleteUser', params: {'iduser': ref.read(usuarioProvider)});
-                              if (context.mounted) {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  LoginScreen.kRouteName,
-                                  (Route<dynamic> route) => false,
-                                );
-                              }
+                            onPressed: () {
+                              ref.read(databaseProvider.notifier).borrarCuenta(context);
                             },
                             style: TextButton.styleFrom(backgroundColor: Colors.red),
                             child: const Text(

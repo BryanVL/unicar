@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/database/database_interface.dart';
 
@@ -59,13 +61,13 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List> recogerViajeRecienCreado(String idUser, String hora) async {
+  Future<List> recogerViajeRecienCreado(String idUser) async {
     return await sp
         .from('viaje')
         .select(
           'id, created_at, origen, destino, latitud_origen, longitud_origen, latitud_destino, longitud_destino, hora_inicio, plazas_totales, plazas_disponibles, descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
         )
-        .match({'creado_por': idUser /*, 'hora_inicio': hora*/})
+        .match({'creado_por': idUser})
         .order('created_at')
         .limit(1);
   }
@@ -119,5 +121,45 @@ class SupabaseDB implements Database {
         )
         .eq('creado_por', idUser)
         .order('created_at');
+  }
+
+  @override
+  Future<String> nombreUsuario(String idUser) async {
+    final List consulta = await sp
+        .from(
+          'usuario',
+        )
+        .select('nombre')
+        .match({'id': idUser});
+    return Future.value(consulta[0]['nombre']);
+  }
+
+  @override
+  Future<AuthResponse> iniciarSesion(String correo, String password) async {
+    return await sp.auth.signInWithPassword(
+      email: correo,
+      password: password,
+    );
+  }
+
+  @override
+  void iniciarSesionConProvider(Provider provider) async {
+    await sp.auth.signInWithOAuth(provider, redirectTo: 'com.example.unicar://login-callback/');
+  }
+
+  @override
+  void borrarCuenta(String idUser) async {
+    await sp.auth.signOut();
+    await sp.rpc('deleteUser', params: {'iduser': idUser});
+  }
+
+  @override
+  void cerrarSesion() async {
+    await sp.auth.signOut();
+  }
+
+  @override
+  Future<Session?> comprobarSesion() async {
+    return await SupabaseAuth.instance.initialSession;
   }
 }

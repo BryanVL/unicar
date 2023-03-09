@@ -38,6 +38,8 @@ abstract class Database {
     String idCreador,
     String idReceptor,
   );
-  Future<List> recogerUltimoIdChatCreado(String idUser);
+  Future<int> recogerUltimoIdChatCreado(String idUser);
   Future<List> usuarioDesdeId(String id);
+
+  Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat);
 }

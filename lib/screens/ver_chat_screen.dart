@@ -7,7 +7,8 @@ class VerChatScreen extends ConsumerWidget {
     this.usuarioAjeno, {
     super.key,
   });
-
+//TODO mostrar mensajes del chat seleccionado
+//TODO escuchar mensajes provider y a lo que escucha pornerle un .listen() y en base a eso hacer cosas
   final Usuario usuarioAjeno;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,7 +16,7 @@ class VerChatScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           usuarioAjeno.nombre!,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,
           ),
@@ -35,7 +36,7 @@ class VerChatScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [],
+                children: const [],
               ),
             ),
           ],

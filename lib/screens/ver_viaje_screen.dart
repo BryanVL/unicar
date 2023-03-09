@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:unicar/providers/chat_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
+import 'package:unicar/screens/ver_chat_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 
 import '../models/oferta.dart';
@@ -64,10 +67,18 @@ class VerViajeScreen extends ConsumerWidget {
       textoBoton: 'Editar oferta',
     );
 
-//TODO boton de abrir chat
     final botonAbrirChat = Boton(
       paddingTodo: 16,
-      funcion: () {},
+      funcion: () async {
+        if (context.mounted) {
+          ref.read(chatProvider.notifier).crearChat(oferta.creadoPor);
+          final usuarioreceptor = ref.read(usuarioAjeno(oferta.creadoPor));
+          usuarioreceptor
+              .whenData((value) => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => VerChatScreen(value),
+                  )));
+        }
+      },
       textoBoton: 'Abrir chat',
     );
 

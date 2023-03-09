@@ -182,17 +182,26 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List> recogerUltimoIdChatCreado(String idUser) async {
-    return await sp
+  Future<int> recogerUltimoIdChatCreado(String idUser) async {
+    List consulta = await sp
         .from('chat')
         .select('id')
         .match({'usuario_creador': idUser})
         .order('created_at')
         .limit(1);
+    return int.parse(consulta[0]['id']);
   }
 
   @override
   Future<List> usuarioDesdeId(String id) async {
     return await sp.from('usuario').select('id,nombre').match({'id': id});
+  }
+
+//TODO puedo hacer un Provider con .family que de uno de estos y luego en el chat escuchar lo
+  @override
+  Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat) {
+    final consulta =
+        sp.from('mensajes').stream(primaryKey: ['id']).eq('chat_id', idChat); //.listen((event) {});
+    return consulta;
   }
 }

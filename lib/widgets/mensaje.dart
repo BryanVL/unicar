@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-class Mensaje extends StatelessWidget {
-  const Mensaje({super.key, required this.contenido});
-  final String contenido;
+import '../models/mensaje.dart';
+
+//TODO burbuja de mensaje
+class MensajeWidget extends StatelessWidget {
+  const MensajeWidget({super.key, required this.msg});
+  final Mensaje msg;
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -15,7 +18,7 @@ class Mensaje extends StatelessWidget {
           color: Colors.blue[200],
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(contenido),
+        child: Text(msg.contenido),
       ),
     );
   }

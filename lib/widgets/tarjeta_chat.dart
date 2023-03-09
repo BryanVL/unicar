@@ -85,7 +85,7 @@ class TarjetaChat extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Material(
@@ -93,14 +93,14 @@ class TarjetaChat extends ConsumerWidget {
                               child: Text(
                                 maxLines: 1,
                                 data.nombre!,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 22.0,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                           ],

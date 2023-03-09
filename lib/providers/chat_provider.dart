@@ -22,8 +22,15 @@ class ChatController extends AsyncNotifier<List<Chat>> {
     return Future.value(listaChats);
   }
 
-  //TODO Crear chat
-  void crearChat() {}
+  void crearChat(String idReceptor) async {
+    final String idUsuario = ref.read(usuarioProvider)!.id;
+    ref.read(databaseProvider).crearChat(idUsuario, idReceptor);
+    final int idChat = await ref.read(databaseProvider).recogerUltimoIdChatCreado(idUsuario);
+    final nuevoChat = Chat(idChat, idUsuario, idReceptor);
+    state = await AsyncValue.guard(() {
+      return Future(() => [nuevoChat, ...(state.value!)]);
+    });
+  }
 }
 
 final chatProvider = AsyncNotifierProvider<ChatController, List<Chat>>(() {

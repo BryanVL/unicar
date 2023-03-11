@@ -164,21 +164,32 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List> recogerChats(String idUser) async {
-    return await sp
+  Future<List> recogerIdsChats(String idUser) async {
+    final List consulta = await sp
         .from(
-          'chat',
+          'participantes_chat',
         )
         .select(
-          'id, usuario_creador, usuario_receptor',
+          'chat_id',
         )
-        .or('usuario_creador.eq.$idUser,usuario_receptor.eq.$idUser')
-        .order('created_at');
+        .match({'usuario_id': idUser});
+
+    final List idsChat = consulta.map((e) {
+      return e['chat_id'];
+    }).toList();
+
+    return idsChat;
   }
 
+//TODO
   @override
-  void crearChat(String idCreador, String idReceptor) async {
-    await sp.from('chat').insert({'usuario_creador': idCreador, 'usuario_receptor': idReceptor});
+  Future<int> crearChat(String otroUsuario) async {
+    return await sp.rpc('crear_chat', params: {'other_user_id': otroUsuario});
+    //await sp.from('chat').insert({});
+    //recogerUltimoIdChatCreado(idUser)
+    /*await sp
+        .from('participantes_chat')
+        .insert({'usuario_id': idCreador, 'usuario_receptor': idReceptor});*/
   }
 
   @override
@@ -203,5 +214,17 @@ class SupabaseDB implements Database {
     final consulta =
         sp.from('mensajes').stream(primaryKey: ['id']).eq('chat_id', idChat); //.listen((event) {});
     return consulta;
+  }
+
+  @override
+  Future<List> recogerUsuariosAjenosChat(int idChat, String idUser) async {
+    final List consulta = await sp
+        .from('participantes_chat')
+        .select('usuario_id')
+        .eq('chat_id', idChat)
+        .neq('usuario_id', idUser);
+    return consulta.map((e) {
+      return e['usuario_id'];
+    }).toList();
   }
 }

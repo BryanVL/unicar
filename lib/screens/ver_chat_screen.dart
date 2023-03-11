@@ -2,24 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/usuario.dart';
 
+import '../providers/usuario_provider.dart';
+
 class VerChatScreen extends ConsumerWidget {
   const VerChatScreen(
-    this.usuarioAjeno, {
+    this.idUsuarioAjeno, {
     super.key,
   });
 //TODO mostrar mensajes del chat seleccionado
 //TODO escuchar mensajes provider y a lo que escucha pornerle un .listen() y en base a eso hacer cosas
-  final Usuario usuarioAjeno;
+  final String idUsuarioAjeno;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final usuario = ref.watch(usuarioAjeno(idUsuarioAjeno));
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          usuarioAjeno.nombre!,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w500,
-          ),
+        title: usuario.when(
+          data: (data) {
+            return Text(
+              data.nombre!,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            );
+          },
+          error: (error, stackTrace) {
+            return const Text('Hubo un problema al cargar el nombre del usuario');
+          },
+          loading: () {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

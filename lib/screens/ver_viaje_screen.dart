@@ -72,11 +72,9 @@ class VerViajeScreen extends ConsumerWidget {
       funcion: () async {
         if (context.mounted) {
           ref.read(chatProvider.notifier).crearChat(oferta.creadoPor);
-          final usuarioreceptor = ref.read(usuarioAjeno(oferta.creadoPor));
-          usuarioreceptor
-              .whenData((value) => Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => VerChatScreen(value),
-                  )));
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => VerChatScreen(oferta.creadoPor),
+          ));
         }
       },
       textoBoton: 'Abrir chat',

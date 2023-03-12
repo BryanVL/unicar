@@ -181,7 +181,6 @@ class SupabaseDB implements Database {
     return idsChat;
   }
 
-//TODO
   @override
   Future<int> crearChat(String otroUsuario) async {
     return await sp.rpc('crear_chat', params: {'other_user_id': otroUsuario});
@@ -208,14 +207,10 @@ class SupabaseDB implements Database {
     return await sp.from('usuario').select('id,nombre').match({'id': id});
   }
 
-//TODO puedo hacer un Provider con .family que de uno de estos y luego en el chat escuchar lo
   @override
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat) {
-    final consulta = sp
-        .from('mensaje')
-        .stream(primaryKey: ['id'])
-        .eq('chat_id', idChat)
-        .order('created_at'); //.listen((event) {});
+    final consulta =
+        sp.from('mensaje').stream(primaryKey: ['id']).eq('chat_id', idChat).order('created_at');
     return consulta;
   }
 

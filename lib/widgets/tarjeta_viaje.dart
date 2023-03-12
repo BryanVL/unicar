@@ -18,11 +18,11 @@ class TarjetaViajeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        bottom: 16,
-        right: 8,
-        left: 8,
+        bottom: 20,
+        right: 16,
+        left: 16,
       ),
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           /*border: const Border.fromBorderSide(
               BorderSide(

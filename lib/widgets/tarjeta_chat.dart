@@ -22,11 +22,11 @@ class TarjetaChat extends ConsumerWidget {
       data: (data) {
         return Padding(
           padding: const EdgeInsets.only(
-            bottom: 16,
-            right: 8,
-            left: 8,
+            bottom: 24,
+            right: 16,
+            left: 16,
           ),
-          child: Container(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
@@ -64,8 +64,8 @@ class TarjetaChat extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                      height: 80,
-                      width: 80,
+                      height: 60,
+                      width: 60,
                       margin: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
@@ -79,32 +79,26 @@ class TarjetaChat extends ConsumerWidget {
                       ),
                     ),
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 0.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Material(
-                              type: MaterialType.transparency,
-                              child: Text(
-                                maxLines: 1,
-                                data.nombre!,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 22.0,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Material(
+                            type: MaterialType.transparency,
+                            child: Text(
+                              maxLines: 1,
+                              data.nombre!,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 22.0,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

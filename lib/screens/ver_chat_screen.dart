@@ -13,8 +13,7 @@ class VerChatScreen extends ConsumerWidget {
     this.idUsuarioAjeno, {
     super.key,
   });
-//TODO mostrar mensajes del chat seleccionado
-//TODO escuchar mensajes provider y a lo que escucha pornerle un .listen() y en base a eso hacer cosas
+
   final String idUsuarioAjeno;
 
   @override

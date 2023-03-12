@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/usuario.dart';
 
 import '../providers/usuario_provider.dart';
+import '../widgets/cuadro_envio_mensaje.dart';
 
 class VerChatScreen extends ConsumerWidget {
   const VerChatScreen(
@@ -43,19 +44,14 @@ class VerChatScreen extends ConsumerWidget {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: const [],
-              ),
-            ),
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: const [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: EnvioMensajeWidget(),
+          ),
+        ],
       ),
     );
   }

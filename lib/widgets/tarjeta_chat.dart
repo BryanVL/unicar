@@ -56,7 +56,7 @@ class TarjetaChat extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => VerChatScreen(data),
+                    builder: (context) => VerChatScreen(data.id),
                   ));
                 },
                 splashColor: Colors.blue[300],

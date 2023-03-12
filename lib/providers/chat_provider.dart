@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/chat.dart';
 import 'package:unicar/providers/usuario_provider.dart';
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
 import 'database_provider.dart';
@@ -46,15 +46,16 @@ class ChatController extends AsyncNotifier<List<Chat>> {
     return Future.value(res);
   }
 
-//TODO comprobar si existe ya el chat de manera local para no volver a añadirlo
   void crearChat(String idReceptor) async {
-    final String idUsuario = ref.read(usuarioProvider)!.id;
-    final int idChat = await ref.read(databaseProvider).crearChat(idReceptor);
+    if (buscarIdDeChat(idReceptor) == -1) {
+      final String idUsuario = ref.read(usuarioProvider)!.id;
+      final int idChat = await ref.read(databaseProvider).crearChat(idReceptor);
 
-    final nuevoChat = Chat(idChat, idUsuario, idReceptor);
-    state = await AsyncValue.guard(() {
-      return Future(() => [nuevoChat, ...(state.value!)]);
-    });
+      final nuevoChat = Chat(idChat, idUsuario, idReceptor);
+      state = await AsyncValue.guard(() {
+        return Future(() => [nuevoChat, ...(state.value!)]);
+      });
+    }
   }
 
   int buscarIdDeChat(String idReceptor) {

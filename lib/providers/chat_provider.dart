@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/chat.dart';
 import 'package:unicar/providers/usuario_provider.dart';
+import 'package:collection/collection.dart';
 
 import 'database_provider.dart';
 
@@ -53,6 +55,14 @@ class ChatController extends AsyncNotifier<List<Chat>> {
     state = await AsyncValue.guard(() {
       return Future(() => [nuevoChat, ...(state.value!)]);
     });
+  }
+
+  int buscarIdDeChat(String idReceptor) {
+    final Chat? chatBuscado = state.value!.firstWhereOrNull(
+      (element) => element.usuarioReceptor == idReceptor,
+    );
+
+    return chatBuscado == null ? -1 : chatBuscado.id;
   }
 }
 

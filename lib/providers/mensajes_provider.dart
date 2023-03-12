@@ -6,6 +6,6 @@ import 'package:unicar/providers/database_provider.dart';
   return ref.read(databaseProvider).escucharMensajesChat(idChat);
 });*/
 
-final msgProvider = StreamProvider.family<List<Map<String, dynamic>>, int>((ref, idChat) {
+final mensajesProvider = StreamProvider.family<List<Map<String, dynamic>>, int>((ref, idChat) {
   return ref.read(databaseProvider).escucharMensajesChat(idChat);
 });

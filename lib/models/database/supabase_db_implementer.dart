@@ -211,8 +211,11 @@ class SupabaseDB implements Database {
 //TODO puedo hacer un Provider con .family que de uno de estos y luego en el chat escuchar lo
   @override
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat) {
-    final consulta =
-        sp.from('mensajes').stream(primaryKey: ['id']).eq('chat_id', idChat); //.listen((event) {});
+    final consulta = sp
+        .from('mensaje')
+        .stream(primaryKey: ['id'])
+        .eq('chat_id', idChat)
+        .order('created_at'); //.listen((event) {});
     return consulta;
   }
 
@@ -226,5 +229,14 @@ class SupabaseDB implements Database {
     return consulta.map((e) {
       return e['usuario_id'];
     }).toList();
+  }
+
+  @override
+  void enviarMensaje(int chatId, String text, String creadorId) async {
+    await sp.from('mensaje').insert({
+      'chat_id': chatId,
+      'contenido': text,
+      'creador': creadorId,
+    });
   }
 }

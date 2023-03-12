@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:unicar/models/usuario.dart';
+import 'package:unicar/models/mensaje.dart';
+import 'package:unicar/providers/chat_provider.dart';
+import 'package:unicar/providers/mensajes_provider.dart';
+import 'package:unicar/widgets/mensaje.dart';
 
 import '../providers/usuario_provider.dart';
 import '../widgets/cuadro_envio_mensaje.dart';
@@ -13,9 +16,12 @@ class VerChatScreen extends ConsumerWidget {
 //TODO mostrar mensajes del chat seleccionado
 //TODO escuchar mensajes provider y a lo que escucha pornerle un .listen() y en base a eso hacer cosas
   final String idUsuarioAjeno;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final usuario = ref.watch(usuarioAjeno(idUsuarioAjeno));
+    final idChat = ref.read(chatProvider.notifier).buscarIdDeChat(idUsuarioAjeno);
+    final mensajes = ref.watch(mensajesProvider(idChat));
     return Scaffold(
       appBar: AppBar(
         title: usuario.when(
@@ -46,10 +52,30 @@ class VerChatScreen extends ConsumerWidget {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: const [
+        children: [
+          Expanded(
+            child: mensajes.when(
+              data: (data) {
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    //print(data);
+                    return MensajeWidget(msg: Mensaje.fromKeyValue(data[index]));
+                  },
+                );
+              },
+              error: (error, stackTrace) => Text('Error al cargar los mensajes, Codigo: $error'),
+              loading: () {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
+          ),
           Padding(
-            padding: EdgeInsets.all(8.0),
-            child: EnvioMensajeWidget(),
+            padding: const EdgeInsets.all(8.0),
+            child: EnvioMensajeWidget(idUsuarioAjeno),
           ),
         ],
       ),

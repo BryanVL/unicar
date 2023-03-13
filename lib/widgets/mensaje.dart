@@ -8,7 +8,7 @@ class MensajeWidget extends ConsumerWidget {
   final Mensaje msg;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final esDelUsuario = msg.idUsuarioCreador == ref.read(usuarioProvider)!.id;
+    final esDelUsuario = msg.idUsuarioCreador == ref.watch(usuarioProvider)!.id;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
       child: Align(

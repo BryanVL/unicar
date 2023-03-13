@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/providers/mensajes_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/ver_chat_screen.dart';
 
@@ -14,10 +15,11 @@ class TarjetaChat extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String idBuscar = ref.read(usuarioProvider)!.id == chat.usuarioCreador
+    final String idBuscar = ref.watch(usuarioProvider)!.id == chat.usuarioCreador
         ? chat.usuarioReceptor
         : chat.usuarioCreador;
     final otroUsuario = ref.watch(usuarioAjeno(idBuscar));
+    final ultimoMensaje = ref.watch(mensajesProvider(chat.id));
     return otroUsuario.when(
       data: (data) {
         return Padding(
@@ -96,6 +98,30 @@ class TarjetaChat extends ConsumerWidget {
                                 fontSize: 22.0,
                                 overflow: TextOverflow.ellipsis,
                               ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 4.0),
+                            child: ultimoMensaje.when(
+                              data: (value) {
+                                return Text(
+                                  value.isEmpty ? '' : value[0]['contenido'],
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    fontSize: 18.0,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                );
+                              },
+                              error: (error, stackTrace) => const Text('Error'),
+                              loading: () => const Center(
+                                  child: CircularProgressIndicator(
+                                strokeWidth: 0,
+                              )),
                             ),
                           ),
                         ],

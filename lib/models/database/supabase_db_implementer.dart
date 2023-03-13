@@ -184,11 +184,6 @@ class SupabaseDB implements Database {
   @override
   Future<int> crearChat(String otroUsuario) async {
     return await sp.rpc('crear_chat', params: {'other_user_id': otroUsuario});
-    //await sp.from('chat').insert({});
-    //recogerUltimoIdChatCreado(idUser)
-    /*await sp
-        .from('participantes_chat')
-        .insert({'usuario_id': idCreador, 'usuario_receptor': idReceptor});*/
   }
 
   @override
@@ -209,9 +204,7 @@ class SupabaseDB implements Database {
 
   @override
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat) {
-    final consulta =
-        sp.from('mensaje').stream(primaryKey: ['id']).eq('chat_id', idChat).order('created_at');
-    return consulta;
+    return sp.from('mensaje').stream(primaryKey: ['id']).eq('chat_id', idChat).order('created_at');
   }
 
   @override
@@ -233,5 +226,20 @@ class SupabaseDB implements Database {
       'contenido': text,
       'creador': creadorId,
     });
+    await sp
+        .from('chat')
+        .update({'ultimo_mensaje_mandado': DateTime.now().toIso8601String()}).match({'id': chatId});
   }
+
+  // @override
+  // Future<Mensaje> recogerUltimoMensajeDeChat(int idChat) async {
+  //   final List consulta = await sp
+  //       .from('mensaje')
+  //       .select('id, chat_id, contenido, created_at, creador, visto')
+  //       .eq('chat_id', idChat)
+  //       .order('created_at')
+  //       .limit(1);
+
+  //   return consulta.isEmpty ? Mensaje.vacio() : Mensaje.fromKeyValue(consulta[0]);
+  // }
 }

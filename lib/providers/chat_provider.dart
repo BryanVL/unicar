@@ -21,15 +21,6 @@ class ChatController extends AsyncNotifier<List<Chat>> {
         );
 
     List<Chat> res = [];
-    /*consultaChats.forEach((element) async {
-      final List listausuarios = await ref.read(databaseProvider).recogerUsuariosAjenosChat(
-            element['id'],
-            ref.read(usuarioProvider)!.id,
-          );
-      listausuarios.forEach((element2) {
-        res.add(Chat(element['id'], ref.read(usuarioProvider)!.id, element2['id']));
-      });
-    });*/
 
     for (int element in consultaChats) {
       final List listausuarios = await ref.read(databaseProvider).recogerUsuariosAjenosChat(
@@ -41,7 +32,6 @@ class ChatController extends AsyncNotifier<List<Chat>> {
         res.add(Chat(element, ref.read(usuarioProvider)!.id, element2));
       }
     }
-    //final listaChats = Chat.fromList(consultaChats);
 
     return Future.value(res);
   }

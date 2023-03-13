@@ -41,4 +41,5 @@ abstract class Database {
 
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat);
   void enviarMensaje(int chatId, String text, String creadorId);
+  void actualizarEstadoMensajes(int chatId, String usuarioAjenoId);
 }

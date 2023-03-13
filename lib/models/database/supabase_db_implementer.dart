@@ -231,6 +231,13 @@ class SupabaseDB implements Database {
         .update({'ultimo_mensaje_mandado': DateTime.now().toIso8601String()}).match({'id': chatId});
   }
 
+  @override
+  void actualizarEstadoMensajes(int chatId, String usuarioAjenoId) async {
+    await sp
+        .from('mensaje')
+        .update({'visto': true}).match({'chat_id': chatId, 'creador': usuarioAjenoId});
+  }
+
   // @override
   // Future<Mensaje> recogerUltimoMensajeDeChat(int idChat) async {
   //   final List consulta = await sp

@@ -55,6 +55,10 @@ class ChatController extends AsyncNotifier<List<Chat>> {
 
     return chatBuscado == null ? -1 : chatBuscado.id;
   }
+
+  void actualizarMensajesVistos(int idChat, String idUsuarioAjeno) {
+    ref.read(databaseProvider).actualizarEstadoMensajes(idChat, idUsuarioAjeno);
+  }
 }
 
 final chatProvider = AsyncNotifierProvider<ChatController, List<Chat>>(() {

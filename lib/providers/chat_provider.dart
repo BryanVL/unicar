@@ -21,7 +21,11 @@ class ChatController extends AsyncNotifier<List<Chat>> {
         );
 
     List<Chat> res = [];
-
+/*TODO si aqui para cada id de chat (element) hago una consulta a la tabla chat para recoger
+la fecha del ultimo mensaje, puedo tambien ordenar.
+Otra opcion sería mover el atributo ultimo_mensaje a la tabla participante de chat y al recoger
+la fila de los dos usuario comparar las fechas y quedarme con el mas reciente y con
+eso ordenar los chats*/
     for (int element in consultaChats) {
       final List listausuarios = await ref.read(databaseProvider).recogerUsuariosAjenosChat(
             element,
@@ -58,6 +62,16 @@ class ChatController extends AsyncNotifier<List<Chat>> {
 
   void actualizarMensajesVistos(int idChat, String idUsuarioAjeno) {
     ref.read(databaseProvider).actualizarEstadoMensajes(idChat, idUsuarioAjeno);
+  }
+
+  void ponerChatAlPrincipio(int idChat) async {
+    final estado = state.value!;
+    final chat = estado.firstWhere((element) => element.id == idChat);
+    estado.remove(chat);
+    estado.insert(0, chat);
+    state = await AsyncValue.guard(() {
+      return Future(() => estado);
+    });
   }
 }
 

@@ -21,6 +21,10 @@ class TarjetaChat extends ConsumerWidget {
         : chat.usuarioCreador;
     final otroUsuario = ref.watch(usuarioAjeno(idBuscar));
     final ultimoMensaje = ref.watch(mensajesProvider(chat.id));
+    //Este listen hace que el chat se ponga el primero si alguien manda un mensaje
+    ref.listen(mensajesProvider(chat.id), (previous, next) {
+      ref.read(chatProvider.notifier).ponerChatAlPrincipio(chat.id);
+    });
     return otroUsuario.when(
       data: (data) {
         return Padding(

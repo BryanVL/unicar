@@ -215,13 +215,20 @@ class VerViajeScreen extends ConsumerWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-              child: Text('Descripción', style: estiloTexto),
+              child: Text(
+                'Descripción',
+                style: estiloTexto,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0, left: 16),
               child: Text(
-                oferta.descripcion ?? 'Sin descripción',
-                style: estiloTexto,
+                oferta.descripcion == '' ? 'Sin descripción' : oferta.descripcion!,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ),
             Padding(

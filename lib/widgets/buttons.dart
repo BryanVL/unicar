@@ -28,10 +28,10 @@ class Boton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: colorBoton,
         padding: EdgeInsets.only(
-          top: paddingTop ?? paddingTodo ?? 0,
-          bottom: paddingBottom ?? paddingTodo ?? 0,
-          left: paddingLeft ?? paddingTodo ?? 0,
-          right: paddingRight ?? paddingTodo ?? 0,
+          top: paddingTop ?? paddingTodo ?? 12,
+          bottom: paddingBottom ?? paddingTodo ?? 12,
+          left: paddingLeft ?? paddingTodo ?? 12,
+          right: paddingRight ?? paddingTodo ?? 12,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),

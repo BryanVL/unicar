@@ -7,6 +7,7 @@ import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/widgets/textform.dart';
 
 import '../widgets/dropdown.dart';
+import '../widgets/mapa.dart';
 
 class CrearOferta extends ConsumerStatefulWidget {
   const CrearOferta({super.key});
@@ -68,11 +69,12 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
               CustomDropdown(titulo: 'Origen:', callback: callbackOrigen),
               CustomDropdown(titulo: 'Destino:', callback: callbackDestino),
               //TODO poner seleccion personalizada de posicion
-              Container(
-                width: 300,
-                height: 200,
-                color: Colors.green,
-              ),
+              Boton(
+                  funcion: () {
+                    Navigator.of(context).pushNamed('routeName');
+                  },
+                  textoBoton: 'Selecciona una posición personalizada'),
+              //const Mapa(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

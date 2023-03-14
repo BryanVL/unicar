@@ -74,7 +74,10 @@ class OfertasScreen extends ConsumerWidget {
         onPressed: () {
           Navigator.of(context).pushNamed(CrearOferta.kRouteName);
         },
-        label: const Text('Publicar oferta'),
+        label: const Text(
+          'Publicar oferta',
+          style: TextStyle(fontSize: 16),
+        ),
         icon: const Icon(Icons.add),
       ),
     );

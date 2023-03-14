@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Mensaje {
   final int id;
   //final int idChat;

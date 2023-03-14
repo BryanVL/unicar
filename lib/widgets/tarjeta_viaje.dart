@@ -137,23 +137,33 @@ class TarjetaViajeWidget extends StatelessWidget {
                                 text: TextSpan(
                                   style: const TextStyle(color: Colors.black),
                                   children: [
+                                    const WidgetSpan(
+                                      child: Icon(
+                                        Icons.map_outlined,
+                                        size: 18,
+                                        //color: Colors.blue,
+                                      ),
+                                    ),
                                     TextSpan(
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
+                                        color: Colors.blue[800],
                                       ),
                                       text: oferta.origen,
                                     ),
-                                    const WidgetSpan(
+                                    WidgetSpan(
                                       child: Icon(
                                         Icons.arrow_right_alt_rounded,
                                         size: 16,
+                                        color: Colors.blue[700],
                                       ),
                                     ),
                                     TextSpan(
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
+                                        color: Colors.blue[800],
                                       ),
                                       text: oferta.destino,
                                     ),
@@ -169,12 +179,20 @@ class TarjetaViajeWidget extends StatelessWidget {
                             type: MaterialType.transparency,
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Text(
-                                'Salida: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.timelapse,
+                                    size: 18,
+                                  ),
+                                  Text(
+                                    'Salida: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        color: Color.fromARGB(255, 53, 27, 145)),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

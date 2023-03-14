@@ -14,26 +14,23 @@ class Mapa extends ConsumerStatefulWidget {
 class _MapaState extends ConsumerState<Mapa> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: FlutterMap(
-        options: MapOptions(
-          center: LatLng(51.509364, -0.128928),
-          zoom: 9.2,
-        ),
-        nonRotatedChildren: [
-          AttributionWidget.defaultWidget(
-            source: 'OpenStreetMap contributors',
-            onSourceTapped: null,
-          ),
-        ],
-        children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.example.unicar',
-          ),
-        ],
+    return FlutterMap(
+      options: MapOptions(
+        center: LatLng(36.72016000, -4.42034000),
+        zoom: 18,
       ),
+      nonRotatedChildren: [
+        AttributionWidget.defaultWidget(
+          source: 'OpenStreetMap contributors',
+          onSourceTapped: null,
+        ),
+      ],
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.example.unicar',
+        ),
+      ],
     );
   }
 }

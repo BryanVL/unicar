@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/screens/mapa_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/widgets/textform.dart';
 
@@ -71,10 +72,11 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
               //TODO poner seleccion personalizada de posicion
               Boton(
                   funcion: () {
-                    Navigator.of(context).pushNamed('routeName');
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => MapaScreen()),
+                    );
                   },
                   textoBoton: 'Selecciona una posición personalizada'),
-              //const Mapa(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

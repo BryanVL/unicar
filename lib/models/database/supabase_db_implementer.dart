@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:unicar/models/database/database_interface.dart';
+import 'package:unicar/models/interfaces/database_interface.dart';
 
 class SupabaseDB implements Database {
   final sp = Supabase.instance.client;

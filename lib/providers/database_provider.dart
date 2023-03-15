@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:unicar/models/database/database_interface.dart';
+import 'package:unicar/models/interfaces/database_interface.dart';
 import 'package:unicar/models/usuario.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import '../models/database/supabase_db_implementer.dart';

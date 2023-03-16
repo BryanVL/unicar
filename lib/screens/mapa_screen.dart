@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +9,7 @@ import '../providers/localizacion_provider.dart';
 
 class MapaScreen extends ConsumerStatefulWidget {
   const MapaScreen(this.callback, {super.key});
-  final Function(String, LatLng, String) callback;
+  final Function(String, LatLng, String, String) callback;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MapaScreenState();
 }
@@ -20,7 +18,8 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
   TextEditingController buscador = TextEditingController();
   double radio = 0.1;
   LatLng? posicionElegida;
-  String? lugarElegido = '';
+  String lugarElegido = '';
+  String localidad = '';
   List<Marker> posicionesMarcadores = [];
   List<CircleMarker> posCirculos = [];
   MapController controladorMapa = MapController();
@@ -72,10 +71,11 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
   @override
   Widget build(BuildContext context) {
     final posicionActual = ref.watch(localizacionActualUsuarioProvider);
-    List<CircleMarker> listaCirculos = [];
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: const Text('Elige una localización y radio'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -103,7 +103,8 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                     final lg = await ref.read(geolocationProvider).lugarDesdeCordenadas(point);
 
                     setState(() {
-                      lugarElegido = lg;
+                      lugarElegido = lg != null ? '${lg['calle']}, ${lg['localidad']}' : '';
+                      localidad = lg != null ? lg['localidad']! : '';
                       _ponerMarcadorEnMapa(point);
                       _ponerCirculoEnMapa(point, radio);
                     });
@@ -165,7 +166,6 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                                   ? (value) {
                                       setState(() {
                                         radio = value;
-                                        //TODO esto puede que falle si se usa el slider antes de hacer click
                                         _ponerCirculoEnMapa(posicionElegida!, radio);
                                       });
                                     }
@@ -221,9 +221,11 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                         padding: const EdgeInsets.only(bottom: 32.0),
                         child: Boton(
                             funcion: () {
-                              if (lugarElegido != null && posicionElegida != null) {
-                                widget.callback(lugarElegido!, posicionElegida!,
-                                    (radio * 1000).toStringAsFixed(0));
+                              if (localidad != '' &&
+                                  lugarElegido != '' &&
+                                  posicionElegida != null) {
+                                widget.callback(lugarElegido, posicionElegida!,
+                                    (radio * 1000).toStringAsFixed(0), localidad);
                               }
                               Navigator.of(context).pop();
                             },

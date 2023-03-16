@@ -82,12 +82,12 @@ class GeolocationNative implements Geolocation {
   }
 
   @override
-  Future<String?> lugarDesdeCordenadas(LatLng coordenadas) async {
+  Future<Map<String, String>?> lugarDesdeCordenadas(LatLng coordenadas) async {
     List<Placemark> locations =
         await placemarkFromCoordinates(coordenadas.latitude, coordenadas.longitude);
-    String? res;
+    Map<String, String>? res;
     if (locations.isNotEmpty) {
-      res = '${locations[0].street}, ${locations[0].locality}';
+      res = {'calle': '${locations[0].street}', 'localidad': '${locations[0].locality}'};
     }
     return Future.value(res);
   }

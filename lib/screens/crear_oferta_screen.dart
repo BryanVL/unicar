@@ -11,7 +11,6 @@ import 'package:unicar/widgets/textform.dart';
 import 'package:unicar/widgets/texto.dart';
 
 import '../widgets/dropdown.dart';
-import '../widgets/mapa.dart';
 
 class CrearOferta extends ConsumerStatefulWidget {
   const CrearOferta({super.key});
@@ -62,16 +61,20 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
     });
   }
 
-  callbackOrigenPersonalizado(String lugarElegido, LatLng coordenadas, String radio) {
+  callbackOrigenPersonalizado(
+      String lugarElegido, LatLng coordenadas, String radio, String origen) {
     setState(() {
+      dropdownValueOrigen = origen;
       coordOrigen = coordenadas;
       origenPersonalizado = lugarElegido;
       radioOrigen = int.parse(radio);
     });
   }
 
-  callbackDestinoPersonalizado(String lugarElegido, LatLng coordenadas, String radio) {
+  callbackDestinoPersonalizado(
+      String lugarElegido, LatLng coordenadas, String radio, String destino) {
     setState(() {
+      dropdownValueDestino = destino;
       coordDestino = coordenadas;
       destinoPersonalizado = lugarElegido;
       radioDestino = int.parse(radio);
@@ -367,13 +370,14 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                           });
                     }
                     if (_formKey.currentState!.validate() &&
-                        (dropdownValueOrigen != 'Selecciona uno' &&
-                            dropdownValueDestino != 'Selecciona uno' &&
+                        (((dropdownValueOrigen != 'Selecciona uno' &&
+                                    dropdownValueDestino != 'Selecciona uno') ||
+                                (origenPersonalizado != null && destinoPersonalizado != null)) &&
                             horaController.text != '' &&
                             dropdownValueDestino != dropdownValueOrigen)) {
                       ref.read(ofertasOfrecidasUsuarioProvider.notifier).addNewOferta(
-                            dropdownValueOrigen,
-                            dropdownValueDestino,
+                            dropdownValueOrigen, //indiceSeleccionado == 0 ? dropdownValueOrigen : origenPersonalizado!,
+                            dropdownValueDestino, //indiceSeleccionado == 0 ? dropdownValueDestino : destinoPersonalizado!,
                             DateTime.tryParse(horaController.text)!.toIso8601String(),
                             plazasController.text,
                             descripcionController.text,

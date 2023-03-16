@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 class Oferta {
   final int id;
   final String? creadoEn;
   final String origen;
   final String destino;
-  final double? latitudOrigen;
-  final double? longitudOrigen;
-  final double? latitudDestino;
-  final double? longitudDestino;
+  final LatLng? coordOrigen;
+  final LatLng? coordDestino;
   final String hora;
   final int plazasTotales;
   final int plazasDisponibles;
@@ -22,10 +21,8 @@ class Oferta {
     this.creadoEn,
     required this.origen,
     required this.destino,
-    this.latitudOrigen,
-    this.longitudOrigen,
-    this.latitudDestino,
-    this.longitudDestino,
+    this.coordOrigen,
+    this.coordDestino,
     required this.hora,
     required this.plazasTotales,
     required this.plazasDisponibles,
@@ -39,14 +36,16 @@ class Oferta {
       : id = json['id'] as int,
         origen = json['origen']!,
         destino = json['destino']!,
-        hora = json['hora_inicio']!,
+        hora = json['hora']!,
         creadoEn = json['created_at'],
         creadoPor = json['creado_por'],
         descripcion = json['descripcion'],
-        latitudDestino = json['latitud_destino'] as double?,
-        latitudOrigen = json['latitud_origen'] as double?,
-        longitudDestino = json['longitud_destino'] as double?,
-        longitudOrigen = json['longitud_origen'] as double?,
+        coordOrigen = json['latitud_origen'] == null
+            ? null
+            : LatLng(json['latitud_origen'] as double, json['longitud_origen'] as double),
+        coordDestino = json['latitud_destino'] == null
+            ? null
+            : LatLng(json['latitud_destino'] as double, json['longitud_destino'] as double),
         nombreCreador = json['usuario']['nombre'],
         plazasDisponibles = json['plazas_disponibles'] as int,
         plazasTotales = json['plazas_totales'] as int,
@@ -58,10 +57,8 @@ class Oferta {
     String? creadoEn,
     String? origen,
     String? destino,
-    double? latitudOrigen,
-    double? longitudOrigen,
-    double? latitudDestino,
-    double? longitudDestino,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
     String? hora,
     int? plazasTotales,
     int? plazasDisponibles,
@@ -77,10 +74,8 @@ class Oferta {
       hora: hora ?? this.hora,
       creadoEn: creadoEn ?? this.creadoEn,
       descripcion: descripcion ?? this.descripcion,
-      latitudDestino: latitudDestino ?? this.latitudDestino,
-      latitudOrigen: latitudOrigen ?? this.latitudOrigen,
-      longitudDestino: longitudDestino ?? this.longitudDestino,
-      longitudOrigen: longitudOrigen ?? this.longitudOrigen,
+      coordOrigen: coordOrigen ?? this.coordOrigen,
+      coordDestino: coordDestino ?? this.coordDestino,
       plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
       plazasTotales: plazasTotales ?? this.plazasTotales,
       titulo: titulo ?? this.titulo,

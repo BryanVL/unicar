@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class Database {
@@ -6,15 +7,20 @@ abstract class Database {
   Future<List> usuarioEsPasajero(String idUser);
   Future<List> viajesDelUsuario(String idUser);
   Future<List> recogerViajeRecienCreado(String idUser);
-  void crearViaje(
-    String origen,
-    String destino,
-    String hora,
-    String plazas,
-    String descripcion,
-    String titulo,
-    String usuario,
-  );
+  void crearViaje({
+    required String origen,
+    required String destino,
+    required String hora,
+    required String plazas,
+    required String descripcion,
+    required String titulo,
+    required String usuario,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
+    int? radioOrigen,
+    int? radioDestino,
+    required bool paraEstarA,
+  });
   void eliminarViaje(int id);
   void reservarPlaza(int id, int plazas, String idUSer);
   void cancelarPlaza(int id, int plazas, String idUSer);

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/interfaces/database_interface.dart';
 
@@ -20,7 +21,7 @@ class SupabaseDB implements Database {
       'origen': origen,
       'destino': destino,
       'plazas_totales': plazasTotales,
-      'hora_inicio': hora,
+      'hora': hora,
       'titulo': titulo,
       'descripcion': descripcion,
     }).match({'id': idViaje});
@@ -33,24 +34,36 @@ class SupabaseDB implements Database {
   }
 
   @override
-  void crearViaje(
-    String origen,
-    String destino,
-    String hora,
-    String plazas,
-    String descripcion,
-    String titulo,
-    String usuario,
-  ) async {
+  void crearViaje({
+    required String origen,
+    required String destino,
+    required String hora,
+    required String plazas,
+    required String descripcion,
+    required String titulo,
+    required String usuario,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
+    int? radioOrigen,
+    int? radioDestino,
+    required bool paraEstarA,
+  }) async {
     await sp.from('viaje').insert({
       'origen': origen,
       'destino': destino,
-      'hora_inicio': hora,
+      'hora': hora,
       'plazas_totales': plazas,
       'plazas_disponibles': plazas,
       'descripcion': descripcion,
       'titulo': titulo,
-      'creado_por': usuario
+      'creado_por': usuario,
+      'latitud_origen': coordOrigen != null ? coordOrigen.latitude : null,
+      'longitud_origen': coordOrigen != null ? coordOrigen.longitude : null,
+      'latitud_destino': coordDestino != null ? coordDestino.latitude : null,
+      'longitud_destino': coordDestino != null ? coordDestino.longitude : null,
+      'radio_origen': radioOrigen,
+      'radio_destino': radioDestino,
+      'para_estar_a': paraEstarA,
     });
   }
 
@@ -79,7 +92,7 @@ class SupabaseDB implements Database {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, usuario!viaje_creado_por_fkey(nombre)',
         )
         .neq('creado_por', idUser)
         .order('created_at');
@@ -117,7 +130,7 @@ class SupabaseDB implements Database {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora_inicio,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, usuario!viaje_creado_por_fkey(nombre)',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, usuario!viaje_creado_por_fkey(nombre)',
         )
         .eq('creado_por', idUser)
         .order('created_at');

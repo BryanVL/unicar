@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
+import 'package:latlong2/latlong.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/usuario_provider.dart';
@@ -170,16 +171,26 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
     String plazas,
     String descripcion,
     String titulo,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
+    int? radioOrigen,
+    int? radioDestino,
+    bool paraEstarA,
   ) async {
     final user = ref.read(usuarioProvider);
     ref.read(databaseProvider).crearViaje(
-          origen,
-          destino,
-          hora,
-          plazas,
-          descripcion,
-          titulo,
-          user!.id,
+          origen: origen,
+          destino: destino,
+          hora: hora,
+          plazas: plazas,
+          descripcion: descripcion,
+          titulo: titulo,
+          usuario: user!.id,
+          paraEstarA: paraEstarA,
+          coordOrigen: coordOrigen,
+          coordDestino: coordDestino,
+          radioOrigen: radioOrigen,
+          radioDestino: radioDestino,
         );
     final consulta = await ref.read(databaseProvider).recogerViajeRecienCreado(
           user.id,

@@ -10,8 +10,8 @@ import 'package:unicar/widgets/mapa.dart';
 import '../providers/localizacion_provider.dart';
 
 class MapaScreen extends ConsumerStatefulWidget {
-  const MapaScreen({super.key});
-
+  const MapaScreen(this.callback, {super.key});
+  final Function(String, LatLng, String) callback;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MapaScreenState();
 }
@@ -219,7 +219,15 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32.0),
-                        child: Boton(funcion: () {}, textoBoton: 'Seleccionar posicion'),
+                        child: Boton(
+                            funcion: () {
+                              if (lugarElegido != null && posicionElegida != null) {
+                                widget.callback(lugarElegido!, posicionElegida!,
+                                    (radio * 1000).toStringAsFixed(0));
+                              }
+                              Navigator.of(context).pop();
+                            },
+                            textoBoton: 'Seleccionar posicion'),
                       )
                     ],
                   ),

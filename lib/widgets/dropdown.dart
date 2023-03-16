@@ -77,7 +77,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
                   iconSize: 24,
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                   autofocus: true,
-                  dropdownColor: const Color.fromARGB(255, 80, 171, 228),
+                  dropdownColor: Colors.white, //const Color.fromARGB(255, 80, 171, 228),
                   isExpanded: true,
                   alignment: Alignment.center,
                   value: dropdownValue,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/screens/chats_screen.dart';
@@ -23,7 +24,9 @@ Future<void> main() async {
   } catch (e) {
     //TODO handle AuthException when refresh token expires
   }
-
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(
     const ProviderScope(
       child: MyApp(),

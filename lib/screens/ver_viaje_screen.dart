@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:unicar/providers/chat_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/screens/ver_chat_screen.dart';
@@ -144,7 +145,9 @@ class VerViajeScreen extends ConsumerWidget {
                     tag: 'imagenUsuario${oferta.id}',
                     child: CircleAvatar(
                       backgroundColor: Colors.grey,
-                      backgroundImage: NetworkImage(oferta.urlIcono!), //TODO cosa de imagen
+                      backgroundImage: ref.read(imagenDefectoProvider),
+                      /*AssetImage(
+                          'lib/assets/defaultProfile.png'),*/ //NetworkImage(oferta.urlIcono!), //TODO cosa de imagen
                       radius: 35,
                     ),
                   ),

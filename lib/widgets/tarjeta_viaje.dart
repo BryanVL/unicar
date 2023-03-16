@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/ver_viaje_screen.dart';
 
 import '../models/oferta.dart';
 
-class TarjetaViajeWidget extends StatelessWidget {
+class TarjetaViajeWidget extends ConsumerWidget {
   const TarjetaViajeWidget({
     super.key,
     required this.tipo,
@@ -15,7 +17,7 @@ class TarjetaViajeWidget extends StatelessWidget {
   final TipoViaje tipo;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(
         bottom: 20,
@@ -76,10 +78,12 @@ class TarjetaViajeWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                        image: NetworkImage(
-                          oferta.urlIcono ??
-                              'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
-                        ),
+                        //TODO imagen del usuario
+                        image: ref.read(imagenDefectoProvider),
+                        //AssetImage('lib/assets/defaultProfile.png'),
+                        /*oferta.urlIcono == null
+                            ? const AssetImage('lib/assets/defaultProfile.png')
+                            : NetworkImage(oferta.urlIcono!) as ImageProvider<Object>,*/
                         fit: BoxFit.cover,
                       ),
                     ),

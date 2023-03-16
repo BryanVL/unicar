@@ -83,11 +83,13 @@ class TarjetaChat extends ConsumerWidget {
                             margin: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              image: const DecorationImage(
-                                image: NetworkImage(
+                              image: DecorationImage(
+                                image: ref.read(
+                                    imagenDefectoProvider), //AssetImage('lib/assets/defaultProfile.png'),
+                                /*NetworkImage(
                                   //TODO icono
                                   'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
-                                ),
+                                ),*/
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -147,7 +149,14 @@ class TarjetaChat extends ConsumerWidget {
         return Text('Error al cargar los chats, Codigo: $error');
       },
       loading: () {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          ),
+        );
       },
     );
   }

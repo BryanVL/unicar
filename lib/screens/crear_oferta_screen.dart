@@ -37,6 +37,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
   int? radioDestino;
   int indiceSeleccionado = 0;
   Widget? pos;
+  int groupValue = 0;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -234,35 +235,69 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                 },
               ),
               const SizedBox(height: 24),
-              //TODO poner seleccion personalizada de posicion
               const TextoTitulo(
                 texto: 'Selección de hora',
                 padding: EdgeInsets.only(top: 8, left: 16),
               ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0, bottom: 8),
-                    child: SizedBox(
-                      height: 75,
-                      width: 300,
-                      child: DateTimePicker(
-                        controller: horaController,
-                        type: DateTimePickerType.dateTime,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 7)),
-                        dateLabelText: 'Selecciona una fecha y hora',
-                        validator: (value) {
-                          return horaController.text == ''
-                              ? 'Este campo no puede estar vacio'
-                              : null;
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text(
+                          'Estar a',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        value: 0,
+                        groupValue: groupValue,
+                        onChanged: (value) {
+                          setState(() {
+                            groupValue = 0;
+                          });
                         },
                       ),
                     ),
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text(
+                          'Salir a',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        value: 1,
+                        groupValue: groupValue,
+                        onChanged: (value) {
+                          setState(() {
+                            groupValue = 1;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 0.0, bottom: 8),
+                child: SizedBox(
+                  height: 75,
+                  width: 300,
+                  child: DateTimePicker(
+                    controller: horaController,
+                    type: DateTimePickerType.dateTime,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 7)),
+                    dateLabelText: 'Selecciona una fecha y hora',
+                    validator: (value) {
+                      return horaController.text == '' ? 'Este campo no puede estar vacio' : null;
+                    },
                   ),
-                ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              const TextoTitulo(
+                texto: 'Plazas y otros',
+                padding: EdgeInsets.only(top: 8, left: 16),
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -343,6 +378,11 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                             plazasController.text,
                             descripcionController.text,
                             tituloController.text,
+                            coordOrigen,
+                            coordDestino,
+                            radioOrigen,
+                            radioDestino,
+                            groupValue == 0,
                           );
 
                       if (context.mounted) {

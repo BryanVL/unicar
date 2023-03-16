@@ -196,7 +196,6 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
       descripcion: descripcion,
       creadoPor: user.id,
       nombreCreador: user.nombre!,
-      urlIcono: 'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
     );
 
     state = await r.AsyncValue.guard(() {

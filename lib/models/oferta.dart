@@ -14,7 +14,6 @@ class Oferta {
   final int plazasDisponibles;
   final String? titulo;
   final String? descripcion;
-  final String? urlIcono;
   final String creadoPor;
   final String nombreCreador;
 
@@ -34,7 +33,6 @@ class Oferta {
     this.descripcion,
     required this.creadoPor,
     required this.nombreCreador,
-    this.urlIcono,
   });
 
   Oferta.fromKeyValue(Map<String, dynamic> json)
@@ -54,9 +52,7 @@ class Oferta {
         plazasTotales = json['plazas_totales'] as int,
         titulo = (json['titulo'] == null || json['titulo'] == '')
             ? 'Viaje a ${json['destino']}'
-            : json['titulo'],
-        urlIcono =
-            'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg';
+            : json['titulo'];
 
   Oferta copyWith({
     String? creadoEn,
@@ -71,7 +67,6 @@ class Oferta {
     int? plazasDisponibles,
     String? titulo,
     String? descripcion,
-    String? urlIcono,
     String? creadoPor,
     String? nombreCreador,
   }) {
@@ -91,7 +86,6 @@ class Oferta {
       titulo: titulo ?? this.titulo,
       creadoPor: creadoPor ?? this.creadoPor,
       nombreCreador: nombreCreador ?? this.nombreCreador,
-      urlIcono: urlIcono ?? this.urlIcono,
     );
   }
 

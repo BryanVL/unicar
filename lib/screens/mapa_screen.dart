@@ -31,6 +31,8 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
     }
 
     final marcador = Marker(
+      width: 50,
+      rotate: true,
       point: posicionPulsada,
       builder: (context) => const Icon(
         Icons.location_on,
@@ -125,11 +127,14 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SafeArea(
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                        child: Text('Lugar seleccionado: $lugarElegido'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SafeArea(
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                          child: Text('Lugar seleccionado: $lugarElegido'),
+                        ),
                       ),
                     ),
                   ),
@@ -156,12 +161,15 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                                   radio = value;
                                 });
                               },*/
-                              onChanged: (value) {
-                                setState(() {
-                                  radio = value;
-                                  _ponerCirculoEnMapa(posicionElegida!, radio);
-                                });
-                              },
+                              onChanged: posicionElegida != null
+                                  ? (value) {
+                                      setState(() {
+                                        radio = value;
+                                        //TODO esto puede que falle si se usa el slider antes de hacer click
+                                        _ponerCirculoEnMapa(posicionElegida!, radio);
+                                      });
+                                    }
+                                  : null,
                               max: 1,
                               min: 0.1,
                             ),

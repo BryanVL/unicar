@@ -50,6 +50,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: const Text('Elige el valor por el que filtrar'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

@@ -112,6 +112,7 @@ class VerViajeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Hero(
           tag: 'titulo${oferta.id}',
           child: Material(

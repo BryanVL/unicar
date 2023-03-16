@@ -122,7 +122,7 @@ class TarjetaViajeWidget extends ConsumerWidget {
                                   : oferta.titulo)!,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w800,
-                                fontSize: 22.0,
+                                fontSize: 20.0,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -144,14 +144,14 @@ class TarjetaViajeWidget extends ConsumerWidget {
                                     const WidgetSpan(
                                       child: Icon(
                                         Icons.map_outlined,
-                                        size: 18,
+                                        size: 19,
                                         //color: Colors.blue,
                                       ),
                                     ),
                                     TextSpan(
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 16,
+                                        fontSize: 17,
                                         color: Colors.blue[800],
                                       ),
                                       text: oferta.origen,
@@ -159,14 +159,14 @@ class TarjetaViajeWidget extends ConsumerWidget {
                                     WidgetSpan(
                                       child: Icon(
                                         Icons.arrow_right_alt_rounded,
-                                        size: 16,
+                                        size: 17,
                                         color: Colors.blue[700],
                                       ),
                                     ),
                                     TextSpan(
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 16,
+                                        fontSize: 17,
                                         color: Colors.blue[800],
                                       ),
                                       text: oferta.destino,
@@ -187,13 +187,13 @@ class TarjetaViajeWidget extends ConsumerWidget {
                                 children: [
                                   const Icon(
                                     Icons.timelapse,
-                                    size: 18,
+                                    size: 19,
                                   ),
                                   Text(
                                     'Salida: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 16,
+                                        fontSize: 17,
                                         color: Color.fromARGB(255, 53, 27, 145)),
                                   ),
                                 ],

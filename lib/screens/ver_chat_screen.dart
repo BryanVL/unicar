@@ -22,7 +22,9 @@ class VerChatScreen extends ConsumerWidget {
     final idChat = ref.read(chatProvider.notifier).buscarIdDeChat(idUsuarioAjeno);
     final mensajes = ref.watch(mensajesProvider(idChat));
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.blue, //Color.fromARGB(198, 35, 86, 255),
         title: usuario.when(
           data: (data) {
             return Text(

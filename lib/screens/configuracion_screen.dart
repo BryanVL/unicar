@@ -15,6 +15,7 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: const Text('Ajustes'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

@@ -8,15 +8,20 @@ class SupabaseDB implements Database {
   final sp = Supabase.instance.client;
 
   @override
-  void actualizarViaje(
-    int idViaje,
-    String origen,
-    String destino,
-    String plazasTotales,
-    String hora,
-    String titulo,
-    String descripcion,
-  ) async {
+  void actualizarViaje({
+    required int idViaje,
+    required String origen,
+    required String destino,
+    required String plazasTotales,
+    required String hora,
+    required String titulo,
+    required String descripcion,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
+    int? radioOrigen,
+    int? radioDestino,
+    required bool paraEstarA,
+  }) async {
     await sp.from('viaje').update({
       'origen': origen,
       'destino': destino,
@@ -24,6 +29,13 @@ class SupabaseDB implements Database {
       'hora': hora,
       'titulo': titulo,
       'descripcion': descripcion,
+      'latitud_origen': coordOrigen != null ? coordOrigen.latitude : null,
+      'longitud_origen': coordOrigen != null ? coordOrigen.longitude : null,
+      'latitud_destino': coordDestino != null ? coordDestino.latitude : null,
+      'longitud_destino': coordDestino != null ? coordDestino.longitude : null,
+      'radio_origen': radioOrigen,
+      'radio_destino': radioDestino,
+      'para_estar_a': paraEstarA,
     }).match({'id': idViaje});
   }
 

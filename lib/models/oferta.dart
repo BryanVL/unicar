@@ -49,11 +49,11 @@ class Oferta {
         coordOrigen = json['latitud_origen'] == null
             ? null
             : LatLng(json['latitud_origen'] as double, json['longitud_origen'] as double),
-        radioOrigen = json['radio_origen'] as int,
+        radioOrigen = json['radio_origen'] as int?,
         coordDestino = json['latitud_destino'] == null
             ? null
             : LatLng(json['latitud_destino'] as double, json['longitud_destino'] as double),
-        radioDestino = json['radio_destino'] as int,
+        radioDestino = json['radio_destino'] as int?,
         nombreCreador = json['usuario']['nombre'],
         plazasDisponibles = json['plazas_disponibles'] as int,
         plazasTotales = json['plazas_totales'] as int,
@@ -90,6 +90,43 @@ class Oferta {
       radioOrigen: radioOrigen ?? this.radioOrigen,
       coordDestino: coordDestino ?? this.coordDestino,
       radioDestino: radioDestino ?? this.radioDestino,
+      plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
+      plazasTotales: plazasTotales ?? this.plazasTotales,
+      titulo: titulo ?? this.titulo,
+      creadoPor: creadoPor ?? this.creadoPor,
+      nombreCreador: nombreCreador ?? this.nombreCreador,
+      paraEstarA: paraEstarA ?? this.paraEstarA,
+    );
+  }
+
+  Oferta copyWithWithoutCoords({
+    String? creadoEn,
+    String? origen,
+    String? destino,
+    LatLng? coordOrigen,
+    int? radioOrigen,
+    LatLng? coordDestino,
+    int? radioDestino,
+    String? hora,
+    int? plazasTotales,
+    int? plazasDisponibles,
+    String? titulo,
+    String? descripcion,
+    String? creadoPor,
+    String? nombreCreador,
+    bool? paraEstarA,
+  }) {
+    return Oferta(
+      id: id,
+      origen: origen ?? this.origen,
+      destino: destino ?? this.destino,
+      hora: hora ?? this.hora,
+      creadoEn: creadoEn ?? this.creadoEn,
+      descripcion: descripcion ?? this.descripcion,
+      coordOrigen: coordOrigen,
+      radioOrigen: radioOrigen,
+      coordDestino: coordDestino,
+      radioDestino: radioDestino,
       plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
       plazasTotales: plazasTotales ?? this.plazasTotales,
       titulo: titulo ?? this.titulo,

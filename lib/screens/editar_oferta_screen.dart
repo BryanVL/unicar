@@ -2,12 +2,17 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 
 import '../models/oferta.dart';
 import '../widgets/buttons.dart';
 import '../widgets/dropdown.dart';
+import '../widgets/textform.dart';
+import '../widgets/texto.dart';
+import 'mapa_screen.dart';
 
 class EditarOfertaScreen extends ConsumerStatefulWidget {
   const EditarOfertaScreen(this.oferta, {super.key});
@@ -18,20 +23,41 @@ class EditarOfertaScreen extends ConsumerStatefulWidget {
 }
 
 class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
-  String dropdownValueOrigen = '';
-  String dropdownValueDestino = '';
+  String dropdownValueOrigen = 'Selecciona uno';
+  String dropdownValueDestino = 'Selecciona uno';
   TextEditingController plazasController = TextEditingController();
   TextEditingController descripcionController = TextEditingController();
   TextEditingController tituloController = TextEditingController();
   TextEditingController horaController = TextEditingController();
-
+  String? origenPersonalizado;
+  String? destinoPersonalizado;
+  String localidadOrigen = '';
+  String localidadDestino = '';
+  LatLng? coordOrigen;
+  LatLng? coordDestino;
+  int? radioOrigen;
+  int? radioDestino;
+  int indiceSeleccionado = 0;
+  Widget? pos;
+  int groupValue = 0;
   final _formKey = GlobalKey<FormState>();
 
   @override
   initState() {
     super.initState();
-    dropdownValueOrigen = widget.oferta.origen;
-    dropdownValueDestino = widget.oferta.destino;
+    if (widget.oferta.coordOrigen != null) {
+      coordOrigen = widget.oferta.coordOrigen;
+      coordDestino = widget.oferta.coordDestino;
+      origenPersonalizado = widget.oferta.origen;
+      destinoPersonalizado = widget.oferta.destino;
+      radioOrigen = widget.oferta.radioOrigen;
+      radioDestino = widget.oferta.radioDestino;
+      indiceSeleccionado = 1;
+    } else {
+      dropdownValueOrigen = widget.oferta.origen;
+      dropdownValueDestino = widget.oferta.destino;
+    }
+    groupValue = widget.oferta.paraEstarA ? 0 : 1;
     plazasController.text = '${widget.oferta.plazasTotales}';
     descripcionController.text = widget.oferta.descripcion ?? '';
     tituloController.text = widget.oferta.titulo ?? '';
@@ -59,10 +85,123 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
     });
   }
 
+  callbackOrigenPersonalizado(
+      String lugarElegido, LatLng coordenadas, String radio, String origen) {
+    setState(() {
+      dropdownValueOrigen = origen;
+      coordOrigen = coordenadas;
+      origenPersonalizado = lugarElegido;
+      radioOrigen = int.parse(radio);
+    });
+  }
+
+  callbackDestinoPersonalizado(
+      String lugarElegido, LatLng coordenadas, String radio, String destino) {
+    setState(() {
+      dropdownValueDestino = destino;
+      coordDestino = coordenadas;
+      destinoPersonalizado = lugarElegido;
+      radioDestino = int.parse(radio);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget simple = Column(
+      children: [
+        const SizedBox(height: 8),
+        CustomDropdown(
+          titulo: 'Origen:',
+          callback: callbackOrigen,
+          valorDefecto: dropdownValueOrigen,
+        ),
+        CustomDropdown(
+          titulo: 'Destino:',
+          callback: callbackDestino,
+          valorDefecto: dropdownValueDestino,
+        ),
+      ],
+    );
+
+    Widget pers = Column(
+      children: [
+        BotonMaterial(
+          contenido: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Text(
+                'Selecciona un origen personalizado',
+                style: TextStyle(fontSize: 16),
+              ),
+              Icon(
+                Icons.open_in_new,
+                size: 24,
+              ),
+            ],
+          ),
+          funcion: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => MapaScreen(callbackOrigenPersonalizado)),
+            );
+          },
+        ),
+        BotonMaterial(
+          contenido: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Text(
+                'Selecciona un destino personalizado',
+                style: TextStyle(fontSize: 16),
+              ),
+              Icon(
+                Icons.open_in_new,
+                size: 24,
+              ),
+            ],
+          ),
+          funcion: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => MapaScreen(callbackDestinoPersonalizado)),
+            );
+          },
+        ),
+        const SizedBox(height: 8),
+        TextoTitulo(
+          texto: 'Origen seleccionado',
+          padding: const EdgeInsets.only(top: 8, left: 24, right: 24, bottom: 8),
+          sizeTexto: 20,
+          colorTexto: Colors.grey[400],
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 32.0),
+            child: Text(origenPersonalizado != null
+                ? '$origenPersonalizado, Radio: $radioOrigen metros'
+                : 'Ningún origen seleccionado'),
+          ),
+        ),
+        TextoTitulo(
+          texto: 'Destino seleccionado',
+          padding: const EdgeInsets.only(top: 12, left: 24, right: 24, bottom: 4),
+          sizeTexto: 20,
+          colorTexto: Colors.grey[400],
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 32.0),
+            child: Text(destinoPersonalizado != null
+                ? '$destinoPersonalizado, Radio: $radioDestino metros'
+                : 'Ningún destino seleccionado'),
+          ),
+        ),
+      ],
+    );
+
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(widget.oferta.titulo ?? 'Viaje a ${widget.oferta.destino}'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -76,110 +215,187 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
           key: _formKey,
           child: Column(
             children: [
-              CustomDropdown(
-                titulo: 'Origen:',
-                callback: callbackOrigen,
-                valorDefecto: dropdownValueOrigen,
+              const TextoTitulo(texto: 'Selección de posición'),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: ToggleSwitch(
+                  initialLabelIndex: indiceSeleccionado,
+                  totalSwitches: 2,
+                  minWidth: 175,
+                  minHeight: 35,
+                  borderWidth: 2,
+                  labels: const ['Simple', 'Personalizado'],
+                  inactiveBgColor: Colors.white,
+                  borderColor: const [Colors.blue],
+                  customTextStyles: const [TextStyle(fontSize: 18)],
+                  animate: true,
+                  animationDuration: 200,
+                  curve: Curves.linear,
+                  onToggle: (index) {
+                    if (index == 0) {
+                      indiceSeleccionado = 0;
+                      pos = simple;
+                    } else {
+                      indiceSeleccionado = 1;
+                      pos = pers;
+                    }
+                    dropdownValueOrigen = 'Selecciona uno';
+                    dropdownValueDestino = 'Selecciona uno';
+                    origenPersonalizado = null;
+                    destinoPersonalizado = null;
+                    coordOrigen = null;
+                    coordDestino = null;
+                    setState(() {});
+                  },
+                ),
               ),
-              CustomDropdown(
-                titulo: 'Destino:',
-                callback: callbackDestino,
-                valorDefecto: dropdownValueDestino,
+              AnimatedCrossFade(
+                firstChild: simple,
+                secondChild: pers,
+                crossFadeState:
+                    indiceSeleccionado == 0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                duration: const Duration(milliseconds: 200),
+                layoutBuilder: (topChild, topKey, bottomChild, bottomKey) {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Positioned(
+                        key: bottomChild.key,
+                        top: 0,
+                        child: bottomChild,
+                      ),
+                      Positioned(
+                        key: topChild.key,
+                        child: topChild,
+                      ),
+                    ],
+                  );
+                },
               ),
-              //TODO poner seleccion personalizada de posicion
-              Container(
-                width: 300,
-                height: 200,
-                color: Colors.green,
+              const SizedBox(height: 24),
+              const TextoTitulo(
+                texto: 'Selección de hora',
+                padding: EdgeInsets.only(top: 8, left: 16),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0, bottom: 8),
-                    child: SizedBox(
-                      height: 75,
-                      width: 300,
-                      child: DateTimePicker(
-                        controller: horaController,
-                        type: DateTimePickerType.dateTime,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 7)),
-                        dateLabelText: 'Selecciona una fecha y hora',
-                        validator: (value) {
-                          return horaController.text == ''
-                              ? 'Este campo no puede estar vacio'
-                              : null;
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text(
+                          'Estar a',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        value: 0,
+                        groupValue: groupValue,
+                        onChanged: (value) {
+                          setState(() {
+                            groupValue = 0;
+                          });
                         },
                       ),
                     ),
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text(
+                          'Salir a',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        value: 1,
+                        groupValue: groupValue,
+                        onChanged: (value) {
+                          setState(() {
+                            groupValue = 1;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0, bottom: 8),
+                child: SizedBox(
+                  height: 75,
+                  width: 300,
+                  child: DateTimePicker(
+                    controller: horaController,
+                    type: DateTimePickerType.dateTime,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 7)),
+                    dateLabelText: 'Selecciona una fecha y hora',
+                    validator: (value) {
+                      return horaController.text == '' ? 'Este campo no puede estar vacio' : null;
+                    },
                   ),
-                ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              const TextoTitulo(
+                texto: 'Plazas y otros',
+                padding: EdgeInsets.only(top: 8, left: 16),
               ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
                   top: 32,
-                  bottom: 8,
+                  bottom: 12,
                 ),
-                child: TextFormField(
-                  controller: plazasController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: (value) {
+                child: MyTextForm(
+                  controlador: plazasController,
+                  label: 'Plazas disponibles del viaje',
+                  funcionValidacion: (value) {
                     return plazasController.text == '' ? 'Este campo no puede estar vacio' : null;
                   },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    )),
-                    labelText: 'Plazas disponibles del viaje',
-                  ),
+                  tipoInput: [FilteringTextInputFormatter.digitsOnly],
+                  tipoTeclado: TextInputType.number,
+                  maximoCaracteres: 2,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
-                  top: 8,
+                  bottom: 12,
                 ),
-                child: TextFormField(
-                  controller: tituloController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    )),
-                    labelText: 'Añade un titulo (Opcional)',
-                    hintText: 'Escribe algún titulo',
-                  ),
+                child: MyTextForm(
+                  controlador: tituloController,
+                  label: 'Titulo (Opcional)',
+                  hint: 'Escribe un titulo',
+                  funcionValidacion: null,
+                  maximoCaracteres: 50,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
-                  top: 8,
                   bottom: 32,
                 ),
-                child: TextFormField(
-                  controller: descripcionController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      )),
-                      labelText: 'Añade una descripción (Opcional)',
-                      hintText: 'Escribe algo para reconocerte'),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 500,
+                    maxHeight: 135,
+                  ),
+                  child: Scrollbar(
+                    thickness: 0,
+                    child: MyTextForm(
+                      controlador: descripcionController,
+                      label: 'Descripción (Opcional)',
+                      funcionValidacion: null,
+                      hint: 'Escribe algo para reconocerte',
+                      usarMaximo: true,
+                      maximoCaracteres: 500,
+                    ),
+                  ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
                 child: Boton(
-                  paddingLeft: 8,
-                  paddingRight: 8,
                   funcion: () async {
                     if (dropdownValueDestino == dropdownValueOrigen) {
                       showDialog(
@@ -199,20 +415,26 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                           });
                     }
                     if (_formKey.currentState!.validate() &&
-                        (dropdownValueOrigen != 'Selecciona uno' &&
-                            dropdownValueDestino != 'Selecciona uno' &&
+                        (((dropdownValueOrigen != 'Selecciona uno' &&
+                                    dropdownValueDestino != 'Selecciona uno') ||
+                                (origenPersonalizado != null && destinoPersonalizado != null)) &&
                             horaController.text != '' &&
                             dropdownValueDestino != dropdownValueOrigen &&
                             int.parse(plazasController.text) >=
                                 (widget.oferta.plazasTotales - widget.oferta.plazasDisponibles))) {
                       ref.read(ofertasOfrecidasUsuarioProvider.notifier).editarOferta(
-                            widget.oferta.id,
-                            dropdownValueOrigen,
-                            dropdownValueDestino,
-                            plazasController.text,
-                            DateTime.tryParse(horaController.text)!.toIso8601String(),
-                            tituloController.text,
-                            descripcionController.text,
+                            id: widget.oferta.id,
+                            origen: dropdownValueOrigen,
+                            destino: dropdownValueDestino,
+                            plazas: plazasController.text,
+                            hora: DateTime.tryParse(horaController.text)!.toIso8601String(),
+                            titulo: tituloController.text,
+                            descripcion: descripcionController.text,
+                            coordOrigen: coordOrigen,
+                            coordDestino: coordDestino,
+                            radioOrigen: radioOrigen,
+                            radioDestino: radioDestino,
+                            paraEstarA: groupValue == 0,
                           );
 
                       Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));

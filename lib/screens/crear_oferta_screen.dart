@@ -210,6 +210,8 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                     dropdownValueDestino = 'Selecciona uno';
                     origenPersonalizado = null;
                     destinoPersonalizado = null;
+                    coordOrigen = null;
+                    coordDestino = null;
                     setState(() {});
                   },
                 ),
@@ -361,7 +363,6 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
                 child: Boton(
-                  paddingTodo: 12,
                   funcion: () async {
                     if (dropdownValueDestino == dropdownValueOrigen) {
                       showDialog(

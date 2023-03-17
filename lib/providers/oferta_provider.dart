@@ -220,24 +220,40 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
     state = state.whenData((value) => value.where((element) => element.id != id).toList());
   }
 
-  void editarOferta(
-    int id,
-    String origen,
-    String destino,
-    String plazas,
-    String hora,
-    String titulo,
-    String descripcion,
-  ) {
-    ref
-        .read(databaseProvider)
-        .actualizarViaje(id, origen, destino, plazas, hora, titulo, descripcion);
+  void editarOferta({
+    required int id,
+    required String origen,
+    required String destino,
+    required String plazas,
+    required String hora,
+    required String titulo,
+    required String descripcion,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
+    int? radioOrigen,
+    int? radioDestino,
+    required bool paraEstarA,
+  }) {
+    ref.read(databaseProvider).actualizarViaje(
+          idViaje: id,
+          origen: origen,
+          destino: destino,
+          plazasTotales: plazas,
+          hora: hora,
+          titulo: titulo,
+          descripcion: descripcion,
+          coordOrigen: coordOrigen,
+          coordDestino: coordDestino,
+          radioOrigen: radioOrigen,
+          radioDestino: radioDestino,
+          paraEstarA: paraEstarA,
+        );
 
     List<Oferta> ofertas = state.whenData((value) => value).value!;
     int index = ofertas.indexWhere((value) => value.id == id);
     Oferta o = ofertas[index];
     int plazasDisp = o.plazasDisponibles;
-    ofertas[index] = o.copyWith(
+    ofertas[index] = o.copyWithWithoutCoords(
       origen: origen,
       destino: destino,
       hora: hora,
@@ -245,6 +261,11 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
       plazasTotales: int.parse(plazas),
       titulo: titulo,
       descripcion: descripcion,
+      coordOrigen: coordOrigen,
+      coordDestino: coordDestino,
+      radioOrigen: radioOrigen,
+      radioDestino: radioDestino,
+      paraEstarA: paraEstarA,
     );
 
     state = AsyncValue.data(ofertas);

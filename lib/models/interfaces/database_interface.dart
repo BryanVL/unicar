@@ -22,15 +22,20 @@ abstract class Database {
   void eliminarViaje(int id);
   void reservarPlaza(int id, int plazas, String idUSer);
   void cancelarPlaza(int id, int plazas, String idUSer);
-  void actualizarViaje(
-    int idViaje,
-    String origen,
-    String destino,
-    String plazasTotales,
-    String hora,
-    String titulo,
-    String descripcion,
-  );
+  void actualizarViaje({
+    required int idViaje,
+    required String origen,
+    required String destino,
+    required String plazasTotales,
+    required String hora,
+    required String titulo,
+    required String descripcion,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
+    int? radioOrigen,
+    int? radioDestino,
+    required bool paraEstarA,
+  });
   Future<String> nombreUsuario(String idUser);
   Future<AuthResponse> iniciarSesion(String correo, String password);
   void iniciarSesionConProvider(Provider provider);

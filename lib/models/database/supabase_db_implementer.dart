@@ -34,21 +34,20 @@ class SupabaseDB implements Database {
   }
 
   @override
-  void crearViaje({
+  Future<int> crearViaje({
     required String origen,
     required String destino,
     required String hora,
     required String plazas,
     required String descripcion,
     required String titulo,
-    required String usuario,
     LatLng? coordOrigen,
     LatLng? coordDestino,
     int? radioOrigen,
     int? radioDestino,
     required bool paraEstarA,
   }) async {
-    await sp.from('viaje').insert({
+    final int id = await sp.rpc('crear_viaje', params: {
       'origen': origen,
       'destino': destino,
       'hora': hora,
@@ -56,7 +55,6 @@ class SupabaseDB implements Database {
       'plazas_disponibles': plazas,
       'descripcion': descripcion,
       'titulo': titulo,
-      'creado_por': usuario,
       'latitud_origen': coordOrigen != null ? coordOrigen.latitude : null,
       'longitud_origen': coordOrigen != null ? coordOrigen.longitude : null,
       'latitud_destino': coordDestino != null ? coordDestino.latitude : null,
@@ -65,6 +63,7 @@ class SupabaseDB implements Database {
       'radio_destino': radioDestino,
       'para_estar_a': paraEstarA,
     });
+    return id;
   }
 
   @override
@@ -74,19 +73,8 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List> recogerViajeRecienCreado(String idUser) async {
-    return await sp
-        .from('viaje')
-        .select(
-          'id',
-        )
-        .match({'creado_por': idUser})
-        .order('created_at')
-        .limit(1);
-  }
-
-  @override
   Future<List> recogerViajesAjenos(String idUser) async {
+    //TODO Filtrar para que no salgan sin plazas ni viajes que hayan pasado hace más de 15 minutos
     return await sp
         .from(
           'viaje',
@@ -200,17 +188,6 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<int> recogerUltimoIdChatCreado(String idUser) async {
-    List consulta = await sp
-        .from('chat')
-        .select('id')
-        .match({'usuario_creador': idUser})
-        .order('created_at')
-        .limit(1);
-    return int.parse(consulta[0]['id']);
-  }
-
-  @override
   Future<List> usuarioDesdeId(String id) async {
     return await sp.from('usuario').select('id,nombre').match({'id': id});
   }
@@ -250,16 +227,4 @@ class SupabaseDB implements Database {
         .from('mensaje')
         .update({'visto': true}).match({'chat_id': chatId, 'creador': usuarioAjenoId});
   }
-
-  // @override
-  // Future<Mensaje> recogerUltimoMensajeDeChat(int idChat) async {
-  //   final List consulta = await sp
-  //       .from('mensaje')
-  //       .select('id, chat_id, contenido, created_at, creador, visto')
-  //       .eq('chat_id', idChat)
-  //       .order('created_at')
-  //       .limit(1);
-
-  //   return consulta.isEmpty ? Mensaje.vacio() : Mensaje.fromKeyValue(consulta[0]);
-  // }
 }

@@ -6,15 +6,13 @@ abstract class Database {
   Future<List> recogerViajesAjenos(String idUser);
   Future<List> usuarioEsPasajero(String idUser);
   Future<List> viajesDelUsuario(String idUser);
-  Future<List> recogerViajeRecienCreado(String idUser);
-  void crearViaje({
+  Future<int> crearViaje({
     required String origen,
     required String destino,
     required String hora,
     required String plazas,
     required String descripcion,
     required String titulo,
-    required String usuario,
     LatLng? coordOrigen,
     LatLng? coordDestino,
     int? radioOrigen,
@@ -42,7 +40,6 @@ abstract class Database {
   Future<List> recogerIdsChats(String idUser);
   Future<List> recogerUsuariosAjenosChat(int idChat, String idUser);
   Future<int> crearChat(String otroUsuario);
-  Future<int> recogerUltimoIdChatCreado(String idUser);
   Future<List> usuarioDesdeId(String id);
 
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat);

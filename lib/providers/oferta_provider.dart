@@ -178,26 +178,22 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
     bool paraEstarA,
   ) async {
     final user = ref.read(usuarioProvider);
-    ref.read(databaseProvider).crearViaje(
+    final idNuevo = await ref.read(databaseProvider).crearViaje(
           origen: origen,
           destino: destino,
           hora: hora,
           plazas: plazas,
           descripcion: descripcion,
           titulo: titulo,
-          usuario: user!.id,
           paraEstarA: paraEstarA,
           coordOrigen: coordOrigen,
           coordDestino: coordDestino,
           radioOrigen: radioOrigen,
           radioDestino: radioDestino,
         );
-    final consulta = await ref.read(databaseProvider).recogerViajeRecienCreado(
-          user.id,
-        );
 
     final viaje = Oferta(
-      id: consulta[0]['id'],
+      id: idNuevo,
       origen: origen,
       destino: destino,
       hora: hora,
@@ -205,7 +201,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
       plazasDisponibles: int.parse(plazas),
       titulo: titulo,
       descripcion: descripcion,
-      creadoPor: user.id,
+      creadoPor: user!.id,
       nombreCreador: user.nombre!,
       paraEstarA: paraEstarA,
       coordOrigen: coordOrigen,

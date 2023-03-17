@@ -9,6 +9,7 @@ import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/screens/ver_chat_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/widgets/mapa.dart';
+import 'package:unicar/widgets/texto.dart';
 
 import '../models/oferta.dart';
 
@@ -166,74 +167,108 @@ class VerViajeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            Hero(
-              tag: 'viajeOD${oferta.id}',
-              child: Material(
-                type: MaterialType.transparency,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-                  child: Text(
-                    'Origen: ${oferta.origen}',
-                    style: estiloTexto,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const TextoTitulo(texto: 'Viaje'),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32.0, bottom: 8),
+                    child: Hero(
+                      tag: 'viajeOD${oferta.id}',
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(color: Colors.black, fontSize: 20),
+                            children: [
+                              const TextSpan(text: 'Viaje con origen '),
+                              TextSpan(
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                text: oferta.origen,
+                              ),
+                              const TextSpan(text: ' y destino '),
+                              TextSpan(
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                text: oferta.destino,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                bottom: 8,
-                top: 8,
-              ),
-              child: Text(
-                'Destino: ${oferta.destino}',
-                style: estiloTexto,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                bottom: 8,
-                top: 8,
-              ),
-              child: Text(
-                'Plazas disponibles: ${oferta.plazasDisponibles}',
-                style: estiloTexto,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                bottom: 8,
-                top: 8,
-              ),
-              child: Hero(
-                tag: 'hora${oferta.id}',
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: Text(
-                    'Hora salida: ${DateFormat('dd/MM/yyyy  kk:mm').format(DateTime.parse(oferta.hora))}',
-                    style: estiloTexto,
+                  const TextoTitulo(texto: 'Hora'),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 32.0,
+                      bottom: 8,
+                      top: 8,
+                    ),
+                    child: Hero(
+                      tag: 'hora${oferta.id}',
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(color: Colors.black, fontSize: 20),
+                            children: [
+                              TextSpan(
+                                text: oferta.paraEstarA ? 'Para estar el: ' : 'Salida: ',
+                                style: const TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                              TextSpan(
+                                  text: DateFormat('dd/MM/yyyy  kk:mm')
+                                      .format(DateTime.parse(oferta.hora))),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
-              child: Text(
-                'Descripción',
-                style: estiloTexto,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, left: 16),
-              child: Text(
-                oferta.descripcion == '' ? 'Sin descripción' : oferta.descripcion!,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.italic,
-                ),
+                  const TextoTitulo(texto: 'Datos extra'),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 32.0,
+                      bottom: 8,
+                      top: 8,
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        children: [
+                          const TextSpan(
+                            text: 'Plazas libres: ',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          TextSpan(text: '${oferta.plazasDisponibles}'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32.0, bottom: 8, top: 8),
+                    child: Text(
+                      'Descripción',
+                      style: estiloTexto,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0, left: 32),
+                    child: Text(
+                      oferta.descripcion == '' ? 'Sin descripción' : oferta.descripcion!,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Padding(
@@ -259,7 +294,7 @@ class VerViajeScreen extends ConsumerWidget {
                       child: Mapa(oferta.coordOrigen!, oferta.coordDestino!, oferta.radioOrigen!,
                           oferta.radioDestino!))
                   : const SizedBox(
-                      height: 400,
+                      height: 300,
                     ),
             ),
           ],

@@ -202,10 +202,17 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                                         .coordenadasDesdeLugar(buscador.text);
 
                                     if (lugar != null) {
+                                      Map<String, String>? lg = await ref
+                                          .read(geolocationProvider)
+                                          .lugarDesdeCordenadas(lugar);
                                       setState(() {
+                                        lugarElegido =
+                                            lg != null ? '${lg['calle']}, ${lg['localidad']}' : '';
+                                        localidad = lg != null ? lg['localidad']! : '';
                                         _ponerMarcadorEnMapa(lugar);
                                         _ponerCirculoEnMapa(lugar, radio);
                                         _moverMapa(lugar);
+
                                         buscador.text = '';
                                       });
                                     }
@@ -226,8 +233,8 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                                   posicionElegida != null) {
                                 widget.callback(lugarElegido, posicionElegida!,
                                     (radio * 1000).toStringAsFixed(0), localidad);
+                                Navigator.of(context).pop();
                               }
-                              Navigator.of(context).pop();
                             },
                             textoBoton: 'Seleccionar posicion'),
                       )

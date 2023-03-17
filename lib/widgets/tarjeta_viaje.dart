@@ -26,12 +26,6 @@ class TarjetaViajeWidget extends ConsumerWidget {
       ),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          /*border: const Border.fromBorderSide(
-              BorderSide(
-                color: Colors.blue,
-                width: 1,
-              ),
-            ),*/
           boxShadow: [
             BoxShadow(
               color: Colors.grey.shade500,
@@ -89,18 +83,6 @@ class TarjetaViajeWidget extends ConsumerWidget {
                     ),
                   ),
                 ),
-                /*Expanded(
-                    flex: 1,
-                    child: Hero(
-                      tag: 'imagenUsuario${datosTarjeta.id}',
-                      child: const CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        backgroundImage: NetworkImage(
-                            'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg'),
-                        radius: 35,
-                      ),
-                    ),
-                  ),*/
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 0.0),
@@ -189,13 +171,21 @@ class TarjetaViajeWidget extends ConsumerWidget {
                                     Icons.timelapse,
                                     size: 19,
                                   ),
-                                  Text(
-                                    'Salida: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 17,
-                                        color: Color.fromARGB(255, 53, 27, 145)),
-                                  ),
+                                  oferta.paraEstarA
+                                      ? Text(
+                                          'Para estar: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 17,
+                                              color: Color.fromARGB(255, 53, 27, 145)),
+                                        )
+                                      : Text(
+                                          'Salida: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 17,
+                                              color: Color.fromARGB(255, 53, 27, 145)),
+                                        ),
                                 ],
                               ),
                             ),
@@ -210,7 +200,6 @@ class TarjetaViajeWidget extends ConsumerWidget {
           ),
         ),
       ),
-      //),
     );
   }
 }

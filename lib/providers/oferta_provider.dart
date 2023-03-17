@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:latlong2/latlong.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:unicar/models/oferta.dart';
+import 'package:unicar/providers/localizacion_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 
 import 'database_provider.dart';
@@ -13,7 +14,12 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   String filtroOrigen = 'Selecciona uno';
   String filtroDestino = 'Selecciona uno';
   String filtroHora = '';
-  String get getfiltroHora => filtroHora;
+  LatLng? filtroCoordOrigen;
+  LatLng? filtroCoordDestino;
+  int? filtroRadioOrigen;
+  int? filtroRadioDestino;
+  int filtroGroupValue = 2;
+
   @override
   FutureOr<List<Oferta>> build() {
     ref.watch(usuarioProvider);
@@ -65,7 +71,16 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
 //Se puede hacer igual que como esta ahora pero si lo que se recibe no es null se
 //hace una consulta con el origen puesto y si luego se pone un destino se cojen los viajes
 //con ese destino y me quedo con los que coincidan en las dos listas
-  void filtrar(String origen, String destino, String hora) {
+  void filtrar(
+    String origen,
+    String destino,
+    String hora,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
+    int? radioOrigen,
+    int? radioDestino,
+    int groupValue,
+  ) {
     List<Oferta> nuevoEstado = [];
     List<Oferta> aux = [];
 
@@ -77,24 +92,96 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
 
     List<Oferta> ofertas = state.whenData((value) => value).value!;
 
-    if (origen != 'Selecciona uno') {
-      filtroOrigen = origen;
-      nuevoEstado.addAll(ofertas.where((element) => element.origen == origen));
-    }
+    if (coordOrigen == null && coordDestino == null) {
+      if (origen != 'Selecciona uno') {
+        filtroOrigen = origen;
+        nuevoEstado.addAll(ofertas.where((element) => element.origen == origen));
+      }
 
-    if (destino != 'Selecciona uno') {
-      filtroDestino = destino;
-      if (nuevoEstado.isNotEmpty) {
-        aux.addAll(nuevoEstado.where((element) => element.destino == destino));
-        nuevoEstado = [];
-        nuevoEstado.addAll(aux);
-        aux = [];
-      } else {
-        nuevoEstado.addAll(ofertas.where((element) => element.destino == destino));
+      if (destino != 'Selecciona uno') {
+        filtroDestino = destino;
+        if (nuevoEstado.isNotEmpty) {
+          aux.addAll(nuevoEstado.where((element) => element.destino == destino));
+          nuevoEstado = [];
+          nuevoEstado.addAll(aux);
+          aux = [];
+        } else {
+          nuevoEstado.addAll(ofertas.where((element) => element.destino == destino));
+        }
+      }
+    } else {
+      if (coordOrigen != null) {
+        filtroCoordOrigen = coordOrigen;
+        nuevoEstado.addAll(
+          ofertas.where(
+            (element) {
+              return element.coordOrigen != null
+                  ? ref
+                          .read(geolocationProvider)
+                          .distanciaEntreDosPuntos(element.coordOrigen!, coordOrigen) <=
+                      (element.radioOrigen! + radioOrigen!)
+                  : false;
+            },
+          ),
+        );
+      }
+
+      if (coordDestino != null) {
+        filtroCoordDestino = coordDestino;
+        if (nuevoEstado.isNotEmpty) {
+          aux.addAll(
+            nuevoEstado.where(
+              (element) {
+                return element.coordDestino != null
+                    ? ref
+                            .read(geolocationProvider)
+                            .distanciaEntreDosPuntos(element.coordDestino!, coordDestino) <=
+                        (element.radioDestino! + radioDestino!)
+                    : false;
+              },
+            ),
+          );
+          nuevoEstado = [];
+          nuevoEstado.addAll(aux);
+          aux = [];
+        } else {
+          nuevoEstado.addAll(
+            ofertas.where(
+              (element) {
+                return element.coordDestino != null
+                    ? ref
+                            .read(geolocationProvider)
+                            .distanciaEntreDosPuntos(element.coordDestino!, coordDestino) <=
+                        (element.radioDestino! + radioDestino!)
+                    : false;
+              },
+            ),
+          );
+        }
       }
     }
 
     if (hora != '') {
+      if (groupValue == 0) {
+        if (nuevoEstado.isNotEmpty) {
+          aux.addAll(nuevoEstado.where((element) => element.paraEstarA));
+          nuevoEstado = [];
+          nuevoEstado.addAll(aux);
+          aux = [];
+        } else {
+          nuevoEstado.addAll(ofertas.where((element) => element.paraEstarA));
+        }
+      } else if (groupValue == 1) {
+        if (nuevoEstado.isNotEmpty) {
+          aux.addAll(nuevoEstado.where((element) => !element.paraEstarA));
+          nuevoEstado = [];
+          nuevoEstado.addAll(aux);
+          aux = [];
+        } else {
+          nuevoEstado.addAll(ofertas.where((element) => !element.paraEstarA));
+        }
+      }
+      filtroGroupValue = groupValue;
       filtroHora = hora;
       if (nuevoEstado.isNotEmpty) {
         aux.addAll(nuevoEstado.where((element) {
@@ -123,6 +210,11 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     filtroDestino = 'Selecciona uno';
     filtroOrigen = 'Selecciona uno';
     filtroHora = '';
+    filtroCoordOrigen = null;
+    filtroCoordDestino = null;
+    filtroRadioOrigen = null;
+    filtroRadioDestino = null;
+    filtroGroupValue = 2;
     state = AsyncValue.data(estadoAux);
     estadoAux = [];
   }

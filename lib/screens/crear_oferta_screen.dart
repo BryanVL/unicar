@@ -361,7 +361,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 32.0),
+                padding: const EdgeInsets.only(bottom: 64.0),
                 child: Boton(
                   funcion: () async {
                     if (dropdownValueDestino == dropdownValueOrigen) {
@@ -406,6 +406,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                       }
                     }
                   },
+                  textSize: 16,
                   textoBoton: 'Publicar oferta',
                 ),
               )

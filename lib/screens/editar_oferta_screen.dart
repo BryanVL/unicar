@@ -394,7 +394,7 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 32.0),
+                padding: const EdgeInsets.only(bottom: 64.0),
                 child: Boton(
                   funcion: () async {
                     if (dropdownValueDestino == dropdownValueOrigen) {
@@ -440,6 +440,7 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                       Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));
                     }
                   },
+                  textSize: 16,
                   textoBoton: 'Actualizar datos',
                 ),
               )

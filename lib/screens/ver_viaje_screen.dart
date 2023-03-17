@@ -30,6 +30,7 @@ class VerViajeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final botonEliminar = Boton(
       colorBoton: Colors.red,
+      textSize: 16,
       paddingTodo: 16,
       funcion: () {
         showDialog(
@@ -60,6 +61,7 @@ class VerViajeScreen extends ConsumerWidget {
     );
 
     final botonEditar = Boton(
+      textSize: 16,
       paddingTodo: 16,
       funcion: () {
         Navigator.of(context).push(
@@ -70,6 +72,7 @@ class VerViajeScreen extends ConsumerWidget {
     );
 
     final botonAbrirChat = Boton(
+      textSize: 16,
       paddingTodo: 16,
       funcion: () async {
         if (context.mounted) {
@@ -83,6 +86,7 @@ class VerViajeScreen extends ConsumerWidget {
     );
 
     final botonReservar = Boton(
+      textSize: 16,
       paddingTodo: 16,
       funcion: () {
         ref.read(ofertasDisponiblesProvider.notifier).reservarPlaza(oferta);
@@ -92,6 +96,7 @@ class VerViajeScreen extends ConsumerWidget {
     );
 
     final botonCancelarPlaza = Boton(
+      textSize: 16,
       colorBoton: Colors.red,
       paddingTodo: 16,
       funcion: () {

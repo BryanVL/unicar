@@ -34,7 +34,7 @@ class Boton extends StatelessWidget {
           right: paddingRight ?? paddingTodo ?? 12,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(12.0),
         ),
       ),
       onPressed: funcion,

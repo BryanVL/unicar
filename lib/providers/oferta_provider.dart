@@ -83,6 +83,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   ) {
     List<Oferta> nuevoEstado = [];
     List<Oferta> aux = [];
+    bool filtroPosicionAplicado = false;
 
     if (estadoAux.isEmpty) {
       estadoAux = state.value!;
@@ -94,11 +95,13 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
 
     if (coordOrigen == null && coordDestino == null) {
       if (origen != 'Selecciona uno') {
+        filtroPosicionAplicado = true;
         filtroOrigen = origen;
         nuevoEstado.addAll(ofertas.where((element) => element.origen == origen));
       }
 
       if (destino != 'Selecciona uno') {
+        filtroPosicionAplicado = true;
         filtroDestino = destino;
         if (nuevoEstado.isNotEmpty) {
           aux.addAll(nuevoEstado.where((element) => element.destino == destino));
@@ -109,8 +112,9 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
           nuevoEstado.addAll(ofertas.where((element) => element.destino == destino));
         }
       }
-    } else {
+    } else if (coordOrigen != null || coordDestino != null) {
       if (coordOrigen != null) {
+        filtroPosicionAplicado = true;
         filtroCoordOrigen = coordOrigen;
         nuevoEstado.addAll(
           ofertas.where(
@@ -127,6 +131,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
       }
 
       if (coordDestino != null) {
+        filtroPosicionAplicado = true;
         filtroCoordDestino = coordDestino;
         if (nuevoEstado.isNotEmpty) {
           aux.addAll(
@@ -193,7 +198,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
         nuevoEstado = [];
         nuevoEstado.addAll(aux);
         aux = [];
-      } else {
+      } else if (nuevoEstado.isEmpty && !filtroPosicionAplicado) {
         nuevoEstado.addAll(ofertas.where((element) {
           final tElem = DateTime.parse(element.hora);
           final time = DateTime.parse(hora);

@@ -76,6 +76,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
     radioOrigen = ref.read(ofertasDisponiblesProvider.notifier).filtroRadioOrigen;
     radioDestino = ref.read(ofertasDisponiblesProvider.notifier).filtroRadioDestino;
     groupValue = ref.read(ofertasDisponiblesProvider.notifier).filtroGroupValue;
+    indiceSeleccionado = coordOrigen != null || coordDestino != null ? 1 : 0;
   }
 
   @override

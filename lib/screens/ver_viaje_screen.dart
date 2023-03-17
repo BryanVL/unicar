@@ -299,7 +299,7 @@ class VerViajeScreen extends ConsumerWidget {
                       child: Mapa(oferta.coordOrigen!, oferta.coordDestino!, oferta.radioOrigen!,
                           oferta.radioDestino!))
                   : const SizedBox(
-                      height: 300,
+                      height: 1,
                     ),
             ),
           ],

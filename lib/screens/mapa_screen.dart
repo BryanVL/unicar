@@ -239,12 +239,8 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
           );
         },
         error: (error, stackTrace) {
-          return Stack(
-            children: [
-              Mapa(LatLng(36.72016000, -4.42034000)),
-            ],
-          );
-        }, //Text('Error al cargar el mapa, Codigo: $error'),
+          Text('Error al cargar el mapa, Codigo: $error');
+        },
         loading: () {
           return const Center(
             child: CircularProgressIndicator(),

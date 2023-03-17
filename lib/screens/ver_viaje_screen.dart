@@ -8,6 +8,7 @@ import 'package:unicar/screens/editar_oferta_screen.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/screens/ver_chat_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
+import 'package:unicar/widgets/mapa.dart';
 
 import '../models/oferta.dart';
 
@@ -236,16 +237,7 @@ class VerViajeScreen extends ConsumerWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 48.0),
-              child: Container(
-                alignment: Alignment.center,
-                width: 300,
-                height: 200,
-                color: Colors.green,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 32.0, bottom: 64),
+              padding: const EdgeInsets.only(top: 48.0, bottom: 32),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -258,7 +250,18 @@ class VerViajeScreen extends ConsumerWidget {
                       child: tipo == TipoViaje.propio ? botonEliminar : botonAbrirChat),
                 ],
               ),
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 96.0),
+              child: oferta.coordOrigen != null
+                  ? SizedBox(
+                      height: 300,
+                      child: Mapa(oferta.coordOrigen!, oferta.coordDestino!, oferta.radioOrigen!,
+                          oferta.radioDestino!))
+                  : const SizedBox(
+                      height: 400,
+                    ),
+            ),
           ],
         ),
       ),

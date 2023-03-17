@@ -4,30 +4,31 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../providers/localizacion_provider.dart';
+
 class Mapa extends ConsumerStatefulWidget {
-  const Mapa(this.localizacionInicial, {super.key});
-  final LatLng localizacionInicial;
+  const Mapa(this.localizacionOrigen, this.localizacionDestino, this.radioOrigen, this.radioDestino,
+      {super.key});
+  final LatLng localizacionOrigen;
+  final LatLng localizacionDestino;
+  final int radioOrigen;
+  final int radioDestino;
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MapaState();
 }
 
 class _MapaState extends ConsumerState<Mapa> {
-  Marker? posicioninicio;
-  Marker? posicionDestino;
-  List<Marker> posiciones = [];
-
-  void anadirPosicion() {}
-
   @override
   Widget build(BuildContext context) {
+    final posicionActual = ref.watch(localizacionActualUsuarioProvider);
     return FlutterMap(
       options: MapOptions(
-        center: widget.localizacionInicial,
-        zoom: 16,
-        maxZoom: 18,
-        minZoom: 13,
+        center: widget.localizacionOrigen,
+        zoom: 11,
+        maxZoom: 16.5,
+        minZoom: 11,
         onTap: (tapPosition, point) {},
-        //maxBounds: LatLngBounds(LatLng(43.874071, -9.629332), LatLng(35.791012, 3.817933)),
       ),
       nonRotatedChildren: [
         AttributionWidget.defaultWidget(
@@ -43,28 +44,96 @@ class _MapaState extends ConsumerState<Mapa> {
         CircleLayer(
           circles: [
             CircleMarker(
-              point: widget.localizacionInicial,
-              radius: 100,
+              point: widget.localizacionOrigen,
+              radius: widget.radioOrigen.toDouble(),
               color: const Color.fromARGB(78, 56, 88, 231),
               borderColor: Colors.blue,
               borderStrokeWidth: 1,
               useRadiusInMeter: true,
-            )
+            ),
+            CircleMarker(
+              point: widget.localizacionDestino,
+              radius: widget.radioDestino.toDouble(),
+              color: const Color.fromARGB(78, 56, 88, 231),
+              borderColor: Colors.blue,
+              borderStrokeWidth: 1,
+              useRadiusInMeter: true,
+            ),
           ],
         ),
         MarkerLayer(
-            markers:
-                posiciones /*[
-            
+          rotate: true,
+          markers: [
             Marker(
-              point: widget.localizacionInicial,
-              builder: (context) => const Icon(
-                Icons.location_on,
-                color: Color.fromARGB(255, 224, 10, 10),
+              point: widget.localizacionOrigen,
+              builder: (context) => const SizedBox(
+                height: 50,
+                width: 50,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Icon(
+                    Icons.location_on,
+                    color: Color.fromARGB(255, 224, 10, 10),
+                  ),
+                ),
               ),
+            ),
+            Marker(
+              point: widget.localizacionDestino,
+              builder: (context) => const SizedBox(
+                height: 50,
+                width: 50,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Icon(
+                    Icons.location_on,
+                    color: Color.fromARGB(255, 224, 10, 10),
+                  ),
+                ),
+              ),
+            ),
+            posicionActual.when(
+              data: (data) {
+                return Marker(
+                  point: data != null
+                      ? LatLng(data.latitude, data.longitude)
+                      : widget.localizacionOrigen,
+                  builder: (context) => const Icon(
+                    Icons.person,
+                    color: Colors.blue,
+                  ),
+                );
+              },
+              error: (error, stackTrace) {
+                return Marker(
+                  point: widget.localizacionOrigen,
+                  builder: (context) => const Icon(
+                    Icons.person,
+                    color: Colors.blue,
+                  ),
+                );
+              },
+              loading: () {
+                return Marker(
+                  point: widget.localizacionOrigen,
+                  builder: (context) => const SizedBox(
+                    height: 10,
+                    width: 10,
+                  ),
+                );
+              },
             )
-          ],*/
+          ],
+        ),
+        PolylineLayer(
+          polylines: [
+            Polyline(
+              color: Colors.red,
+              strokeWidth: 2,
+              points: [widget.localizacionOrigen, widget.localizacionDestino],
             )
+          ],
+        )
       ],
     );
   }

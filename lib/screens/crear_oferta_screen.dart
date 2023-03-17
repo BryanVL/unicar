@@ -307,7 +307,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                   left: 48.0,
                   right: 48,
                   top: 32,
-                  bottom: 8,
+                  bottom: 12,
                 ),
                 child: MyTextForm(
                   controlador: plazasController,
@@ -317,34 +317,45 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                   },
                   tipoInput: [FilteringTextInputFormatter.digitsOnly],
                   tipoTeclado: TextInputType.number,
+                  maximoCaracteres: 2,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
-                  top: 16,
-                  bottom: 8,
+                  bottom: 12,
                 ),
                 child: MyTextForm(
                   controlador: tituloController,
                   label: 'Titulo (Opcional)',
                   hint: 'Escribe un titulo',
                   funcionValidacion: null,
+                  maximoCaracteres: 50,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
-                  top: 16,
                   bottom: 32,
                 ),
-                child: MyTextForm(
-                  controlador: descripcionController,
-                  label: 'Descripción (Opcional)',
-                  funcionValidacion: null,
-                  hint: 'Escribe algo para reconocerte',
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 500,
+                    maxHeight: 135,
+                  ),
+                  child: Scrollbar(
+                    thickness: 0,
+                    child: MyTextForm(
+                      controlador: descripcionController,
+                      label: 'Descripción (Opcional)',
+                      funcionValidacion: null,
+                      hint: 'Escribe algo para reconocerte',
+                      usarMaximo: true,
+                      maximoCaracteres: 500,
+                    ),
+                  ),
                 ),
               ),
               Padding(

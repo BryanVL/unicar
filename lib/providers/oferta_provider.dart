@@ -207,6 +207,11 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
       descripcion: descripcion,
       creadoPor: user.id,
       nombreCreador: user.nombre!,
+      paraEstarA: paraEstarA,
+      coordOrigen: coordOrigen,
+      radioOrigen: radioOrigen,
+      coordDestino: coordDestino,
+      radioDestino: radioDestino,
     );
 
     state = await r.AsyncValue.guard(() {

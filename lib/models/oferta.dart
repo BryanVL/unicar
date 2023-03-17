@@ -7,7 +7,9 @@ class Oferta {
   final String origen;
   final String destino;
   final LatLng? coordOrigen;
+  final int? radioOrigen;
   final LatLng? coordDestino;
+  final int? radioDestino;
   final String hora;
   final int plazasTotales;
   final int plazasDisponibles;
@@ -15,6 +17,7 @@ class Oferta {
   final String? descripcion;
   final String creadoPor;
   final String nombreCreador;
+  final bool paraEstarA;
 
   Oferta({
     required this.id,
@@ -22,7 +25,9 @@ class Oferta {
     required this.origen,
     required this.destino,
     this.coordOrigen,
+    this.radioOrigen,
     this.coordDestino,
+    this.radioDestino,
     required this.hora,
     required this.plazasTotales,
     required this.plazasDisponibles,
@@ -30,6 +35,7 @@ class Oferta {
     this.descripcion,
     required this.creadoPor,
     required this.nombreCreador,
+    required this.paraEstarA,
   });
 
   Oferta.fromKeyValue(Map<String, dynamic> json)
@@ -43,22 +49,27 @@ class Oferta {
         coordOrigen = json['latitud_origen'] == null
             ? null
             : LatLng(json['latitud_origen'] as double, json['longitud_origen'] as double),
+        radioOrigen = json['radio_origen'] as int,
         coordDestino = json['latitud_destino'] == null
             ? null
             : LatLng(json['latitud_destino'] as double, json['longitud_destino'] as double),
+        radioDestino = json['radio_destino'] as int,
         nombreCreador = json['usuario']['nombre'],
         plazasDisponibles = json['plazas_disponibles'] as int,
         plazasTotales = json['plazas_totales'] as int,
         titulo = (json['titulo'] == null || json['titulo'] == '')
             ? 'Viaje a ${json['destino']}'
-            : json['titulo'];
+            : json['titulo'],
+        paraEstarA = json['para_estar_a'];
 
   Oferta copyWith({
     String? creadoEn,
     String? origen,
     String? destino,
     LatLng? coordOrigen,
+    int? radioOrigen,
     LatLng? coordDestino,
+    int? radioDestino,
     String? hora,
     int? plazasTotales,
     int? plazasDisponibles,
@@ -66,6 +77,7 @@ class Oferta {
     String? descripcion,
     String? creadoPor,
     String? nombreCreador,
+    bool? paraEstarA,
   }) {
     return Oferta(
       id: id,
@@ -75,12 +87,15 @@ class Oferta {
       creadoEn: creadoEn ?? this.creadoEn,
       descripcion: descripcion ?? this.descripcion,
       coordOrigen: coordOrigen ?? this.coordOrigen,
+      radioOrigen: radioOrigen ?? this.radioOrigen,
       coordDestino: coordDestino ?? this.coordDestino,
+      radioDestino: radioDestino ?? this.radioDestino,
       plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
       plazasTotales: plazasTotales ?? this.plazasTotales,
       titulo: titulo ?? this.titulo,
       creadoPor: creadoPor ?? this.creadoPor,
       nombreCreador: nombreCreador ?? this.nombreCreador,
+      paraEstarA: paraEstarA ?? this.paraEstarA,
     );
   }
 

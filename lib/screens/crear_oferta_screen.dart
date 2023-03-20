@@ -2,15 +2,14 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:toggle_switch/toggle_switch.dart';
+import 'package:unicar/models/localizacion.dart';
+import 'package:unicar/providers/dropdown_provider.dart';
+import 'package:unicar/providers/localizacion_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
-import 'package:unicar/screens/mapa_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
+import 'package:unicar/widgets/seleccion_posicion.dart';
 import 'package:unicar/widgets/textform.dart';
 import 'package:unicar/widgets/texto.dart';
-
-import '../widgets/dropdown.dart';
 
 class CrearOferta extends ConsumerStatefulWidget {
   const CrearOferta({super.key});
@@ -22,20 +21,10 @@ class CrearOferta extends ConsumerStatefulWidget {
 }
 
 class _CrearOfertaState extends ConsumerState<CrearOferta> {
-  String dropdownValueOrigen = 'Selecciona uno';
-  String dropdownValueDestino = 'Selecciona uno';
   TextEditingController plazasController = TextEditingController();
   TextEditingController descripcionController = TextEditingController();
   TextEditingController tituloController = TextEditingController();
   TextEditingController horaController = TextEditingController();
-  String? origenPersonalizado;
-  String? destinoPersonalizado;
-  LatLng? coordOrigen;
-  LatLng? coordDestino;
-  int? radioOrigen;
-  int? radioDestino;
-  int indiceSeleccionado = 0;
-  Widget? pos;
   int groupValue = 0;
 
   final _formKey = GlobalKey<FormState>();
@@ -49,127 +38,13 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
     horaController.dispose();
   }
 
-  callbackOrigen(valorElegido) {
-    setState(() {
-      dropdownValueOrigen = valorElegido;
-    });
-  }
-
-  callbackDestino(valorElegido) {
-    setState(() {
-      dropdownValueDestino = valorElegido;
-    });
-  }
-
-  callbackOrigenPersonalizado(
-      String lugarElegido, LatLng coordenadas, String radio, String origen) {
-    setState(() {
-      dropdownValueOrigen = origen;
-      coordOrigen = coordenadas;
-      origenPersonalizado = lugarElegido;
-      radioOrigen = int.parse(radio);
-    });
-  }
-
-  callbackDestinoPersonalizado(
-      String lugarElegido, LatLng coordenadas, String radio, String destino) {
-    setState(() {
-      dropdownValueDestino = destino;
-      coordDestino = coordenadas;
-      destinoPersonalizado = lugarElegido;
-      radioDestino = int.parse(radio);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget simple = Column(
-      children: [
-        const SizedBox(height: 8),
-        CustomDropdown(titulo: 'Origen:', callback: callbackOrigen),
-        CustomDropdown(titulo: 'Destino:', callback: callbackDestino),
-      ],
-    );
-
-    Widget pers = Column(
-      children: [
-        BotonMaterial(
-          contenido: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                'Selecciona un origen personalizado',
-                style: TextStyle(fontSize: 16),
-              ),
-              Icon(
-                Icons.open_in_new,
-                size: 24,
-              ),
-            ],
-          ),
-          funcion: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MapaScreen(callbackOrigenPersonalizado)),
-            );
-          },
-        ),
-        BotonMaterial(
-          contenido: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                'Selecciona un destino personalizado',
-                style: TextStyle(fontSize: 16),
-              ),
-              Icon(
-                Icons.open_in_new,
-                size: 24,
-              ),
-            ],
-          ),
-          funcion: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MapaScreen(callbackDestinoPersonalizado)),
-            );
-          },
-        ),
-        const SizedBox(height: 8),
-        TextoTitulo(
-          texto: 'Origen seleccionado',
-          padding: const EdgeInsets.only(top: 8, left: 24, right: 24, bottom: 8),
-          sizeTexto: 20,
-          colorTexto: Colors.grey[400],
-        ),
-        Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 32.0),
-              child: Text(origenPersonalizado != null
-                  ? '$origenPersonalizado, Radio: $radioOrigen metros'
-                  : 'Ningún origen seleccionado'),
-            )),
-        TextoTitulo(
-          texto: 'Destino seleccionado',
-          padding: const EdgeInsets.only(top: 12, left: 24, right: 24, bottom: 4),
-          sizeTexto: 20,
-          colorTexto: Colors.grey[400],
-        ),
-        Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 32.0),
-              child: Text(destinoPersonalizado != null
-                  ? '$destinoPersonalizado, Radio: $radioDestino metros'
-                  : 'Ningún destino seleccionado'),
-            )),
-      ],
-    );
-
     return Scaffold(
       extendBodyBehindAppBar: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text(''),
+        title: const Text('Nuevo viaje'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -183,62 +58,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
           child: Column(
             children: [
               const TextoTitulo(texto: 'Selección de posición'),
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: ToggleSwitch(
-                  initialLabelIndex: indiceSeleccionado,
-                  totalSwitches: 2,
-                  minWidth: 175,
-                  minHeight: 35,
-                  borderWidth: 2,
-                  labels: const ['Simple', 'Personalizado'],
-                  inactiveBgColor: Colors.white,
-                  borderColor: const [Colors.blue],
-                  customTextStyles: const [TextStyle(fontSize: 18)],
-                  animate: true,
-                  animationDuration: 200,
-                  curve: Curves.linear,
-                  onToggle: (index) {
-                    if (index == 0) {
-                      indiceSeleccionado = 0;
-                      pos = simple;
-                    } else {
-                      indiceSeleccionado = 1;
-                      pos = pers;
-                    }
-                    dropdownValueOrigen = 'Selecciona uno';
-                    dropdownValueDestino = 'Selecciona uno';
-                    origenPersonalizado = null;
-                    destinoPersonalizado = null;
-                    coordOrigen = null;
-                    coordDestino = null;
-                    setState(() {});
-                  },
-                ),
-              ),
-              AnimatedCrossFade(
-                firstChild: simple,
-                secondChild: pers,
-                crossFadeState:
-                    indiceSeleccionado == 0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                duration: const Duration(milliseconds: 200),
-                layoutBuilder: (topChild, topKey, bottomChild, bottomKey) {
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        key: bottomChild.key,
-                        top: 0,
-                        child: bottomChild,
-                      ),
-                      Positioned(
-                        key: topChild.key,
-                        child: topChild,
-                      ),
-                    ],
-                  );
-                },
-              ),
+              const SeleccionPosicion(),
               const SizedBox(height: 24),
               const TextoTitulo(
                 texto: 'Selección de hora',
@@ -364,40 +184,51 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                 padding: const EdgeInsets.only(bottom: 64.0),
                 child: Boton(
                   funcion: () async {
-                    if (dropdownValueDestino == dropdownValueOrigen) {
+                    final dpOrigen = ref.read(dropdownProvider(TipoPosicion.origen));
+                    final dpDestino = ref.read(dropdownProvider(TipoPosicion.destino));
+                    final origen = ref.read(posicionPersonalizadaProvider(TipoPosicion.origen));
+                    final destino = ref.read(posicionPersonalizadaProvider(TipoPosicion.destino));
+
+                    final origenPersonalizado = origen?.nombreCompleto;
+                    final destinoPersonalizado = destino?.nombreCompleto;
+
+                    if (dpOrigen == dpDestino &&
+                        (origenPersonalizado == null || destinoPersonalizado == null)) {
                       showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content: const Text('El origen y el destino no pueden ser iguales'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Aceptar'),
-                                ),
-                              ],
-                            );
-                          });
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: const Text('El origen y el destino no pueden ser iguales'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Aceptar'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     }
+
                     if (_formKey.currentState!.validate() &&
-                        (((dropdownValueOrigen != 'Selecciona uno' &&
-                                    dropdownValueDestino != 'Selecciona uno') ||
+                        (((dpOrigen != 'Selecciona uno' && dpDestino != 'Selecciona uno') ||
                                 (origenPersonalizado != null && destinoPersonalizado != null)) &&
                             horaController.text != '' &&
-                            dropdownValueDestino != dropdownValueOrigen)) {
+                            (dpDestino != dpOrigen ||
+                                origenPersonalizado != destinoPersonalizado))) {
                       ref.read(ofertasOfrecidasUsuarioProvider.notifier).addNewOferta(
-                            dropdownValueOrigen, //indiceSeleccionado == 0 ? dropdownValueOrigen : origenPersonalizado!,
-                            dropdownValueDestino, //indiceSeleccionado == 0 ? dropdownValueDestino : destinoPersonalizado!,
+                            origen?.localidad ?? dpOrigen,
+                            destino?.localidad ?? dpDestino,
                             DateTime.tryParse(horaController.text)!.toIso8601String(),
                             plazasController.text,
                             descripcionController.text,
                             tituloController.text,
-                            coordOrigen,
-                            coordDestino,
-                            radioOrigen,
-                            radioDestino,
+                            origen?.coordenadas,
+                            destino?.coordenadas,
+                            origen?.radio,
+                            destino?.radio,
                             groupValue == 0,
                           );
 

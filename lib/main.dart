@@ -21,17 +21,19 @@ Future<void> main() async {
       anonKey:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5mYmxudmR2ZWdqZ3FreGhyb3dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU2ODIyOTcsImV4cCI6MTk5MTI1ODI5N30.k7g7SCRdraTHjnIx-MsVde4NR2thrZW4OF8XSNNlJj4',
     );
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    runApp(
+      const ProviderScope(
+        child: MyApp(),
+      ),
+    );
   } catch (e) {
+    print(e);
     //TODO handle AuthException when refresh token expires
   }
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
 }
 
 class MyApp extends StatelessWidget {

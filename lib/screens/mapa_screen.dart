@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:unicar/models/localizacion.dart';
 import 'package:unicar/widgets/buttons.dart';
-import 'package:unicar/widgets/mapa.dart';
 
 import '../providers/localizacion_provider.dart';
 
 class MapaScreen extends ConsumerStatefulWidget {
-  const MapaScreen(this.callback, {super.key});
-  final Function(String, LatLng, String, String) callback;
+  const MapaScreen(this.tipo, {super.key});
+  final TipoPosicion tipo;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MapaScreenState();
 }
@@ -231,8 +231,14 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                               if (localidad != '' &&
                                   lugarElegido != '' &&
                                   posicionElegida != null) {
-                                widget.callback(lugarElegido, posicionElegida!,
-                                    (radio * 1000).toStringAsFixed(0), localidad);
+                                ref
+                                    .read(posicionPersonalizadaProvider(widget.tipo).notifier)
+                                    .state = LocalizacionPersonalizada(
+                                  nombreCompleto: lugarElegido,
+                                  coordenadas: posicionElegida!,
+                                  radio: int.parse((radio * 1000).toStringAsFixed(0)),
+                                  localidad: localidad,
+                                );
                                 Navigator.of(context).pop();
                               }
                             },
@@ -246,7 +252,7 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
           );
         },
         error: (error, stackTrace) {
-          Text('Error al cargar el mapa, Codigo: $error');
+          return Text('Error al cargar el mapa, Codigo: $error');
         },
         loading: () {
           return const Center(

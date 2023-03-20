@@ -179,7 +179,7 @@ class VerViajeScreen extends ConsumerWidget {
                 children: [
                   const TextoTitulo(texto: 'Viaje'),
                   Padding(
-                    padding: const EdgeInsets.only(left: 32.0, bottom: 8),
+                    padding: const EdgeInsets.only(left: 16.0, bottom: 8),
                     child: Hero(
                       tag: 'viajeOD${oferta.id}',
                       child: Material(
@@ -211,7 +211,7 @@ class VerViajeScreen extends ConsumerWidget {
                   const TextoTitulo(texto: 'Hora'),
                   Padding(
                     padding: const EdgeInsets.only(
-                      left: 32.0,
+                      left: 16.0,
                       bottom: 8,
                       top: 8,
                     ),
@@ -239,7 +239,7 @@ class VerViajeScreen extends ConsumerWidget {
                   const TextoTitulo(texto: 'Datos extra'),
                   Padding(
                     padding: const EdgeInsets.only(
-                      left: 32.0,
+                      left: 16.0,
                       bottom: 8,
                       top: 8,
                     ),
@@ -257,7 +257,7 @@ class VerViajeScreen extends ConsumerWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 32.0, bottom: 8, top: 8),
+                    padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
                     child: Text(
                       'Descripción',
                       style: estiloTexto,

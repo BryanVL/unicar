@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/widgets/seleccion_posicion.dart';
 
 import '../widgets/buttons.dart';
 import '../widgets/dropdown.dart';
 import '../widgets/texto.dart';
 import 'mapa_screen.dart';
 
+//TODO arreglar
 class FiltrarScreen extends ConsumerStatefulWidget {
   const FiltrarScreen({super.key});
   static const kRouteName = "/Filtrar";
@@ -87,7 +89,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget simple = Column(
+    /*Widget simple = Column(
       children: [
         const SizedBox(height: 8),
         CustomDropdown(
@@ -121,7 +123,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
           ),
           funcion: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MapaScreen(callbackOrigenPersonalizado)),
+              MaterialPageRoute(builder: (context) => MapaScreen('origen')),
             );
           },
         ),
@@ -141,7 +143,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
           ),
           funcion: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MapaScreen(callbackDestinoPersonalizado)),
+              MaterialPageRoute(builder: (context) => MapaScreen('destino')),
             );
           },
         ),
@@ -177,7 +179,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
           ),
         ),
       ],
-    );
+    );*/
 
     return Scaffold(
       appBar: AppBar(
@@ -196,7 +198,8 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
           child: Column(
             children: [
               const TextoTitulo(texto: 'Filtra por posición'),
-              Padding(
+              const SeleccionPosicion(),
+              /*Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: ToggleSwitch(
                   initialLabelIndex: indiceSeleccionado,
@@ -253,7 +256,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                     ],
                   );
                 },
-              ),
+              ),*/
               const SizedBox(height: 24),
               const TextoTitulo(texto: 'Filtra por hora'),
               Padding(

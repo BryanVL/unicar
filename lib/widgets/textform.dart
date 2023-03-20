@@ -11,6 +11,8 @@ class MyTextForm extends StatelessWidget {
     this.tipoTeclado,
     this.hint,
     this.esconder,
+    this.usarMaximo,
+    this.maximoCaracteres,
   });
   final TextEditingController controlador;
   final String label;
@@ -19,10 +21,15 @@ class MyTextForm extends StatelessWidget {
   final List<TextInputFormatter>? tipoInput;
   final TextInputType? tipoTeclado;
   final bool? esconder;
+  final bool? usarMaximo;
+  final int? maximoCaracteres;
 
   @override
   Widget build(BuildContext context) {
+    final max = usarMaximo ?? false;
     return TextFormField(
+      maxLength: maximoCaracteres,
+      maxLines: max ? null : 1,
       controller: controlador,
       keyboardType: tipoTeclado,
       inputFormatters: tipoInput,

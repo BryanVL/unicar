@@ -34,6 +34,11 @@ dependencies:
   date_time_picker: ^2.1.0
   string_validator: ^0.3.0
   intl: 0.17.0
+  geocoding: ^2.1.0
+  geolocator: ^9.0.2
+  flutter_map: ^3.1.0
+  latlong2: ^0.8.1
+  toggle_switch: ^2.0.1
   flutter:
     sdk: flutter
 
@@ -66,6 +71,7 @@ flutter:
   assets:
     - lib/assets/googleIcon.png
     - lib/assets/discordLogo1.png
+    - lib/assets/defaultProfile.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

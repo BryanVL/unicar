@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/ver_viaje_screen.dart';
 
 import '../models/oferta.dart';
 
-class TarjetaViajeWidget extends StatelessWidget {
+class TarjetaViajeWidget extends ConsumerWidget {
   const TarjetaViajeWidget({
     super.key,
     required this.tipo,
@@ -15,21 +17,15 @@ class TarjetaViajeWidget extends StatelessWidget {
   final TipoViaje tipo;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(
-        bottom: 16,
-        right: 8,
-        left: 8,
+        bottom: 20,
+        right: 16,
+        left: 16,
       ),
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          /*border: const Border.fromBorderSide(
-              BorderSide(
-                color: Colors.blue,
-                width: 1,
-              ),
-            ),*/
           boxShadow: [
             BoxShadow(
               color: Colors.grey.shade500,
@@ -76,27 +72,17 @@ class TarjetaViajeWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                        image: NetworkImage(
-                          oferta.urlIcono ??
-                              'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
-                        ),
+                        //TODO imagen del usuario
+                        image: ref.read(imagenDefectoProvider),
+                        //AssetImage('lib/assets/defaultProfile.png'),
+                        /*oferta.urlIcono == null
+                            ? const AssetImage('lib/assets/defaultProfile.png')
+                            : NetworkImage(oferta.urlIcono!) as ImageProvider<Object>,*/
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
-                /*Expanded(
-                    flex: 1,
-                    child: Hero(
-                      tag: 'imagenUsuario${datosTarjeta.id}',
-                      child: const CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        backgroundImage: NetworkImage(
-                            'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg'),
-                        radius: 35,
-                      ),
-                    ),
-                  ),*/
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 0.0),
@@ -118,7 +104,7 @@ class TarjetaViajeWidget extends StatelessWidget {
                                   : oferta.titulo)!,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w800,
-                                fontSize: 22.0,
+                                fontSize: 20.0,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -137,23 +123,33 @@ class TarjetaViajeWidget extends StatelessWidget {
                                 text: TextSpan(
                                   style: const TextStyle(color: Colors.black),
                                   children: [
+                                    const WidgetSpan(
+                                      child: Icon(
+                                        Icons.map_outlined,
+                                        size: 19,
+                                        //color: Colors.blue,
+                                      ),
+                                    ),
                                     TextSpan(
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 16,
+                                        fontSize: 17,
+                                        color: Colors.blue[800],
                                       ),
                                       text: oferta.origen,
                                     ),
-                                    const WidgetSpan(
+                                    WidgetSpan(
                                       child: Icon(
                                         Icons.arrow_right_alt_rounded,
-                                        size: 16,
+                                        size: 17,
+                                        color: Colors.blue[700],
                                       ),
                                     ),
                                     TextSpan(
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 16,
+                                        fontSize: 17,
+                                        color: Colors.blue[800],
                                       ),
                                       text: oferta.destino,
                                     ),
@@ -169,12 +165,28 @@ class TarjetaViajeWidget extends StatelessWidget {
                             type: MaterialType.transparency,
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Text(
-                                'Salida: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.timelapse,
+                                    size: 19,
+                                  ),
+                                  oferta.paraEstarA
+                                      ? Text(
+                                          'Para estar: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 17,
+                                              color: Color.fromARGB(255, 53, 27, 145)),
+                                        )
+                                      : Text(
+                                          'Salida: ${DateFormat('dd/MM kk:mm').format(DateTime.parse(oferta.hora))}',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 17,
+                                              color: Color.fromARGB(255, 53, 27, 145)),
+                                        ),
+                                ],
                               ),
                             ),
                           ),
@@ -188,7 +200,6 @@ class TarjetaViajeWidget extends StatelessWidget {
           ),
         ),
       ),
-      //),
     );
   }
 }

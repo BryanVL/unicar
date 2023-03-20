@@ -28,13 +28,13 @@ class Boton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: colorBoton,
         padding: EdgeInsets.only(
-          top: paddingTop ?? paddingTodo ?? 0,
-          bottom: paddingBottom ?? paddingTodo ?? 0,
-          left: paddingLeft ?? paddingTodo ?? 0,
-          right: paddingRight ?? paddingTodo ?? 0,
+          top: paddingTop ?? paddingTodo ?? 12,
+          bottom: paddingBottom ?? paddingTodo ?? 12,
+          left: paddingLeft ?? paddingTodo ?? 12,
+          right: paddingRight ?? paddingTodo ?? 12,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(12.0),
         ),
       ),
       onPressed: funcion,
@@ -42,6 +42,43 @@ class Boton extends StatelessWidget {
         textoBoton,
         style: TextStyle(
           fontSize: textSize,
+        ),
+      ),
+    );
+  }
+}
+
+class BotonMaterial extends StatelessWidget {
+  const BotonMaterial(
+      {super.key,
+      required this.contenido,
+      required this.funcion,
+      this.colorBorde,
+      this.anchoBorde,
+      this.paddingContenido,
+      this.paddingExterior});
+  final Widget contenido;
+  final VoidCallback funcion;
+  final Color? colorBorde;
+  final double? anchoBorde;
+  final EdgeInsets? paddingContenido;
+  final EdgeInsets? paddingExterior;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: paddingExterior ?? const EdgeInsets.only(top: 24.0, left: 24, right: 24),
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(
+            color: colorBorde ?? Colors.blue,
+            width: anchoBorde ?? 2,
+          ),
+        ),
+        onPressed: funcion,
+        child: Padding(
+          padding: paddingContenido ?? const EdgeInsets.symmetric(vertical: 16.0),
+          child: contenido,
         ),
       ),
     );

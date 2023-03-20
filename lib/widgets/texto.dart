@@ -33,3 +33,31 @@ class TextoSeccion extends StatelessWidget {
     );
   }
 }
+
+class TextoTitulo extends StatelessWidget {
+  const TextoTitulo(
+      {super.key,
+      required this.texto,
+      this.alineamiento,
+      this.padding,
+      this.sizeTexto,
+      this.colorTexto});
+  final String texto;
+  final AlignmentGeometry? alineamiento;
+  final EdgeInsets? padding;
+  final double? sizeTexto;
+  final Color? colorTexto;
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: alineamiento ?? Alignment.centerLeft,
+      child: Padding(
+        padding: padding ?? const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: Text(
+          texto,
+          style: TextStyle(fontSize: sizeTexto ?? 28, color: colorTexto ?? Colors.grey[400]),
+        ),
+      ),
+    );
+  }
+}

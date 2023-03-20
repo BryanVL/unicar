@@ -30,9 +30,21 @@ class MyAppbar extends StatelessWidget {
         enableFeedback: false,
         controller: tabController,
         tabs: const [
-          Tab(child: Text('Ofertas')),
-          Tab(child: Text('Mis viajes')),
-          Tab(child: Text('Chats'))
+          Tab(
+              child: Text(
+            'Ofertas',
+            style: TextStyle(fontSize: 16),
+          )),
+          Tab(
+              child: Text(
+            'Mis viajes',
+            style: TextStyle(fontSize: 16),
+          )),
+          Tab(
+              child: Text(
+            'Chats',
+            style: TextStyle(fontSize: 16),
+          ))
         ],
       ),
     );

@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:unicar/providers/usuario_provider.dart';
-import 'package:unicar/screens/nuevo_usuario_screen.dart';
+import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/screens/register_screen.dart';
-import 'package:unicar/screens/tab_bar_screen.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/widgets/textform.dart';
 import 'package:string_validator/string_validator.dart';
@@ -23,92 +21,36 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
   final correoController = TextEditingController();
   final passController = TextEditingController();
   late final StreamSubscription<AuthState> _authStateSubscription;
-  bool _redirecting = false;
+  final bool _redirecting = false;
 
-  Future<bool> _comprobarPrimerInicio(User user) async {
-    final nombre =
-        await Supabase.instance.client.from('usuario').select('nombre').match({'id': user.id});
-    return nombre[0]['nombre'] == '';
-  }
+  final SnackBar errorSnackBar = SnackBar(
+    backgroundColor: Colors.blue[400],
+    shape: const RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+    content: const Text('Hubo un problema al iniciar sesión, intentalo de nuevo más tarde'),
+  );
 
   void _iniciarSesion(String correo, String password) async {
     try {
-      final AuthResponse res = await Supabase.instance.client.auth.signInWithPassword(
-        email: correo,
-        password: password,
-      );
-
-      final User? user = res.user;
-      if (user != null) {
-        ref.read(usuarioProvider.notifier).state = user.id;
-
-        final esNuevoUsuario = _comprobarPrimerInicio(user);
-        esNuevoUsuario.then((value) {
-          if (value) {
-            if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(NuevoUsuarioScreen.kRouteName);
-            }
-          } else {
-            if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
-            }
-          }
-        });
-      }
+      ref.read(databaseProvider.notifier).iniciarSesion(context, correo, password);
     } catch (e) {
-      final snackBar = SnackBar(
-        backgroundColor: Colors.blue[400],
-        shape: const RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-        content: const Text('Hubo un problema al iniciar sesión, intentalo de nuevo más tarde'),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
     }
   }
 
   void _iniciarSesionProvider(Provider provider) async {
     try {
-      await Supabase.instance.client.auth
-          .signInWithOAuth(provider, redirectTo: 'com.example.unicar://login-callback/');
+      ref.read(databaseProvider.notifier).iniciarSesionConProvider(provider);
     } catch (e) {
-      final snackBar = SnackBar(
-        backgroundColor: Colors.blue[400],
-        shape: const RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-        content: const Text('Hubo un problema al iniciar sesión, intentalo de nuevo más tarde'),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
     }
   }
 
   @override
   initState() {
-    _authStateSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-      if (_redirecting) return;
-      final session = data.session;
-
-      if (session != null) {
-        _redirecting = true;
-        final User user = data.session!.user;
-
-        ref.read(usuarioProvider.notifier).state = user.id;
-
-        final esNuevoUsuario = _comprobarPrimerInicio(user);
-        esNuevoUsuario.then((value) {
-          if (value) {
-            if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(NuevoUsuarioScreen.kRouteName);
-            }
-          } else {
-            if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
-            }
-          }
-        });
-      }
-    });
+    _authStateSubscription =
+        ref.read(databaseProvider.notifier).comprobarEstadoInicioConProvider(context, _redirecting);
 
     super.initState();
   }
@@ -235,7 +177,7 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                         width: 10,
                       ),
                       Text(
-                        'Iniciar sesión con Discord',
+                        'Continuar con Discord',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontSize: 20),
                       )

@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 class Oferta {
   final int id;
   final String? creadoEn;
   final String origen;
   final String destino;
-  final double? latitudOrigen;
-  final double? longitudOrigen;
-  final double? latitudDestino;
-  final double? longitudDestino;
+  final LatLng? coordOrigen;
+  final int? radioOrigen;
+  final LatLng? coordDestino;
+  final int? radioDestino;
   final String hora;
   final int plazasTotales;
   final int plazasDisponibles;
   final String? titulo;
   final String? descripcion;
-  final String? urlIcono;
   final String creadoPor;
   final String nombreCreador;
+  final bool paraEstarA;
 
   Oferta({
     required this.id,
     this.creadoEn,
     required this.origen,
     required this.destino,
-    this.latitudOrigen,
-    this.longitudOrigen,
-    this.latitudDestino,
-    this.longitudDestino,
+    this.coordOrigen,
+    this.radioOrigen,
+    this.coordDestino,
+    this.radioDestino,
     required this.hora,
     required this.plazasTotales,
     required this.plazasDisponibles,
@@ -34,46 +35,49 @@ class Oferta {
     this.descripcion,
     required this.creadoPor,
     required this.nombreCreador,
-    this.urlIcono,
+    required this.paraEstarA,
   });
 
   Oferta.fromKeyValue(Map<String, dynamic> json)
       : id = json['id'] as int,
         origen = json['origen']!,
         destino = json['destino']!,
-        hora = json['hora_inicio']!,
+        hora = json['hora']!,
         creadoEn = json['created_at'],
         creadoPor = json['creado_por'],
         descripcion = json['descripcion'],
-        latitudDestino = json['latitud_destino'] as double?,
-        latitudOrigen = json['latitud_origen'] as double?,
-        longitudDestino = json['longitud_destino'] as double?,
-        longitudOrigen = json['longitud_origen'] as double?,
+        coordOrigen = json['latitud_origen'] == null
+            ? null
+            : LatLng(json['latitud_origen'] as double, json['longitud_origen'] as double),
+        radioOrigen = json['radio_origen'] as int?,
+        coordDestino = json['latitud_destino'] == null
+            ? null
+            : LatLng(json['latitud_destino'] as double, json['longitud_destino'] as double),
+        radioDestino = json['radio_destino'] as int?,
         nombreCreador = json['usuario']['nombre'],
         plazasDisponibles = json['plazas_disponibles'] as int,
         plazasTotales = json['plazas_totales'] as int,
         titulo = (json['titulo'] == null || json['titulo'] == '')
             ? 'Viaje a ${json['destino']}'
             : json['titulo'],
-        urlIcono =
-            'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg';
+        paraEstarA = json['para_estar_a'];
 
   Oferta copyWith({
     String? creadoEn,
     String? origen,
     String? destino,
-    double? latitudOrigen,
-    double? longitudOrigen,
-    double? latitudDestino,
-    double? longitudDestino,
+    LatLng? coordOrigen,
+    int? radioOrigen,
+    LatLng? coordDestino,
+    int? radioDestino,
     String? hora,
     int? plazasTotales,
     int? plazasDisponibles,
     String? titulo,
     String? descripcion,
-    String? urlIcono,
     String? creadoPor,
     String? nombreCreador,
+    bool? paraEstarA,
   }) {
     return Oferta(
       id: id,
@@ -82,16 +86,53 @@ class Oferta {
       hora: hora ?? this.hora,
       creadoEn: creadoEn ?? this.creadoEn,
       descripcion: descripcion ?? this.descripcion,
-      latitudDestino: latitudDestino ?? this.latitudDestino,
-      latitudOrigen: latitudOrigen ?? this.latitudOrigen,
-      longitudDestino: longitudDestino ?? this.longitudDestino,
-      longitudOrigen: longitudOrigen ?? this.longitudOrigen,
+      coordOrigen: coordOrigen ?? this.coordOrigen,
+      radioOrigen: radioOrigen ?? this.radioOrigen,
+      coordDestino: coordDestino ?? this.coordDestino,
+      radioDestino: radioDestino ?? this.radioDestino,
       plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
       plazasTotales: plazasTotales ?? this.plazasTotales,
       titulo: titulo ?? this.titulo,
       creadoPor: creadoPor ?? this.creadoPor,
       nombreCreador: nombreCreador ?? this.nombreCreador,
-      urlIcono: urlIcono ?? this.urlIcono,
+      paraEstarA: paraEstarA ?? this.paraEstarA,
+    );
+  }
+
+  Oferta copyWithWithoutCoords({
+    String? creadoEn,
+    String? origen,
+    String? destino,
+    LatLng? coordOrigen,
+    int? radioOrigen,
+    LatLng? coordDestino,
+    int? radioDestino,
+    String? hora,
+    int? plazasTotales,
+    int? plazasDisponibles,
+    String? titulo,
+    String? descripcion,
+    String? creadoPor,
+    String? nombreCreador,
+    bool? paraEstarA,
+  }) {
+    return Oferta(
+      id: id,
+      origen: origen ?? this.origen,
+      destino: destino ?? this.destino,
+      hora: hora ?? this.hora,
+      creadoEn: creadoEn ?? this.creadoEn,
+      descripcion: descripcion ?? this.descripcion,
+      coordOrigen: coordOrigen,
+      radioOrigen: radioOrigen,
+      coordDestino: coordDestino,
+      radioDestino: radioDestino,
+      plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
+      plazasTotales: plazasTotales ?? this.plazasTotales,
+      titulo: titulo ?? this.titulo,
+      creadoPor: creadoPor ?? this.creadoPor,
+      nombreCreador: nombreCreador ?? this.nombreCreador,
+      paraEstarA: paraEstarA ?? this.paraEstarA,
     );
   }
 

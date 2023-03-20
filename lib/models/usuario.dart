@@ -8,6 +8,7 @@ class Usuario {
   final double? longitudOrigenDefecto;
   final double? latitudDestinoDefecto;
   final double? longitudDestinoDefecto;
+  final String? urlIcono;
 
   Usuario({
     required this.id,
@@ -19,5 +20,6 @@ class Usuario {
     this.longitudOrigenDefecto,
     this.latitudDestinoDefecto,
     this.longitudDestinoDefecto,
+    this.urlIcono,
   });
 }

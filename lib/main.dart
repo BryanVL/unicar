@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unicar/providers/tema_provider.dart';
 import 'package:unicar/screens/chats_screen.dart';
 import 'package:unicar/screens/comprobacion_sesion_screen.dart';
 import 'package:unicar/screens/configuracion_screen.dart';
@@ -36,47 +37,90 @@ Future<void> main() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Unicar',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: Colors.blue,
-        brightness: Brightness.light,
-        scaffoldBackgroundColor: const Color.fromARGB(255, 252, 252,
-            252), //Color.fromARGB(255, 251, 255, 255), //const Color.fromARGB(255, 222, 238, 253),
-        iconTheme: const IconThemeData(
-          color: Colors.black,
-        ),
-        appBarTheme: AppBarTheme(
-          elevation: 0,
-          surfaceTintColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(25),
-            ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tema = ref.watch(temaProvider).when(
+          data: (data) => data == 'claro' ? true : false,
+          error: (error, stackTrace) => true,
+          loading: () => true,
+        );
+
+    final ThemeData temaClaro = ThemeData(
+      primarySwatch: Colors.blue,
+      primaryColor: Colors.blue,
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: const Color.fromARGB(255, 252, 252,
+          252), //Color.fromARGB(255, 251, 255, 255), //const Color.fromARGB(255, 222, 238, 253),
+      iconTheme: const IconThemeData(
+        color: Colors.black,
+      ),
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(25),
           ),
-          foregroundColor: Colors.black,
-          backgroundColor:
-              Colors.blue[600], /*const Color.fromARGB(255, 252, 252,
+        ),
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.blue[600], /*const Color.fromARGB(255, 252, 252,
             252),*/
-        ),
-        tabBarTheme: TabBarTheme(
-          unselectedLabelColor: Colors.black,
-          indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(25.0),
-            color: Colors.lightBlue,
-          ),
-        ),
-        buttonTheme: const ButtonThemeData(
-          textTheme: ButtonTextTheme.primary,
+      ),
+      tabBarTheme: TabBarTheme(
+        unselectedLabelColor: Colors.black,
+        indicator: BoxDecoration(
+          borderRadius: BorderRadius.circular(25.0),
+          color: Colors.lightBlue,
         ),
       ),
+      buttonTheme: const ButtonThemeData(
+        textTheme: ButtonTextTheme.primary,
+      ),
+    );
+
+    final ThemeData temaOscuro = ThemeData(
+      primarySwatch: Colors.blue,
+      primaryColor: Colors.blue,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: Color.fromARGB(255, 41, 39, 39),
+      iconTheme: const IconThemeData(
+        color: Colors.white,
+      ),
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(25),
+          ),
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.blue[600], /*const Color.fromARGB(255, 252, 252,
+            252),*/
+      ),
+      tabBarTheme: TabBarTheme(
+        unselectedLabelColor: Colors.black,
+        indicator: BoxDecoration(
+          borderRadius: BorderRadius.circular(25.0),
+          color: Colors.lightBlue,
+        ),
+      ),
+      buttonTheme: const ButtonThemeData(
+        textTheme: ButtonTextTheme.primary,
+      ),
+      dropdownMenuTheme: const DropdownMenuThemeData(
+        textStyle: TextStyle(color: Colors.white),
+      ),
+    );
+
+    return MaterialApp(
+      title: 'Unicar',
+      theme: tema ? temaClaro : temaOscuro,
       home: const ComprobacionSesionScreen(),
       routes: {
         TabBarScreen.kRouteName: (context) => const TabBarScreen(title: 'Unicar'),

@@ -70,6 +70,7 @@ class OfertasScreen extends ConsumerWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
+        foregroundColor: Colors.white,
         backgroundColor: const Color.fromARGB(255, 60, 119, 245),
         onPressed: () {
           Navigator.of(context).pushNamed(CrearOferta.kRouteName);

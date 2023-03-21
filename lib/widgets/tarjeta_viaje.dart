@@ -5,6 +5,7 @@ import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/ver_viaje_screen.dart';
 
 import '../models/oferta.dart';
+import '../providers/tema_provider.dart';
 
 class TarjetaViajeWidget extends ConsumerWidget {
   const TarjetaViajeWidget({
@@ -18,6 +19,57 @@ class TarjetaViajeWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tema = ref.watch(temaProvider).when(
+          data: (data) => data == 'claro' ? true : false,
+          error: (error, stackTrace) => true,
+          loading: () => true,
+        );
+    BoxDecoration temaClaro = BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade500,
+          offset: const Offset(4.0, 4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+        const BoxShadow(
+          color: Colors.white,
+          offset: Offset(-4.0, -4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+      ],
+      color: /*Color.fromARGB(255, 240, 240, 255),*/
+          Colors.white,
+      /*Colors.blue[400],*/
+      borderRadius: const BorderRadius.all(
+        Radius.circular(20),
+      ),
+    );
+
+    BoxDecoration temaOscuro = BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade800,
+          offset: const Offset(4.0, 4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+        const BoxShadow(
+          color: Colors.black,
+          offset: Offset(-4.0, -4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+      ],
+      color: /*Color.fromARGB(255, 240, 240, 255),*/
+          Color.fromARGB(255, 29, 26, 26),
+      /*Colors.blue[400],*/
+      borderRadius: const BorderRadius.all(
+        Radius.circular(20),
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.only(
         bottom: 20,
@@ -25,28 +77,7 @@ class TarjetaViajeWidget extends ConsumerWidget {
         left: 16,
       ),
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade500,
-              offset: const Offset(4.0, 4.0),
-              blurRadius: 15,
-              spreadRadius: 1,
-            ),
-            const BoxShadow(
-              color: Colors.white,
-              offset: Offset(-4.0, -4.0),
-              blurRadius: 15,
-              spreadRadius: 1,
-            ),
-          ],
-          color: /*Color.fromARGB(255, 240, 240, 255),*/
-              Colors.white,
-          /*Colors.blue[400],*/
-          borderRadius: const BorderRadius.all(
-            Radius.circular(20),
-          ),
-        ),
+        decoration: tema ? temaClaro : temaOscuro,
         child: Material(
           elevation: 0,
           color: Colors.transparent,

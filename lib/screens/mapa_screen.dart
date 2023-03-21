@@ -76,8 +76,12 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Elige una localización y radio'),
+        title: const Text(
+          'Elige una localización y radio',
+          style: TextStyle(color: Colors.black),
+        ),
         leading: IconButton(
+          color: Colors.black,
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop();

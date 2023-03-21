@@ -4,6 +4,7 @@ import 'package:unicar/models/localizacion.dart';
 
 import '../models/oferta.dart';
 import '../providers/dropdown_provider.dart';
+import '../providers/tema_provider.dart';
 
 class CustomDropdown extends ConsumerWidget {
   const CustomDropdown({super.key, required this.titulo, required this.tipo});
@@ -13,6 +14,25 @@ class CustomDropdown extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final valor = ref.watch(dropdownProvider(tipo));
+    final tema = ref.watch(temaProvider).when(
+          data: (data) => data == 'claro' ? true : false,
+          error: (error, stackTrace) => true,
+          loading: () => true,
+        );
+    final listaUbicaciones = Oferta.ubicaciones
+        .map(
+          (ubicacion) => DropdownMenuItem(
+            alignment: Alignment.center,
+            value: ubicacion,
+            child: Text(
+              ubicacion,
+              style: TextStyle(color: tema ? Colors.black : Colors.white),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        )
+        .toList();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -66,14 +86,14 @@ class CustomDropdown extends ConsumerWidget {
                 iconSize: 24,
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
                 autofocus: true,
-                dropdownColor: Colors.white,
+                dropdownColor: tema ? Colors.white : const Color.fromARGB(255, 29, 27, 27),
                 isExpanded: true,
                 alignment: Alignment.center,
                 value: valor,
                 onChanged: (String? value) {
                   ref.read(dropdownProvider(tipo).notifier).state = value!;
                 },
-                items: Oferta.listaUbicaciones,
+                items: listaUbicaciones,
               ),
             ),
           ),

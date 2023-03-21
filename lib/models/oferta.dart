@@ -149,20 +149,6 @@ class Oferta {
     'Benalmadena',
     'Alhaurin de la torre',
   ];
-
-  static final listaUbicaciones = ubicaciones
-      .map(
-        (ubicacion) => DropdownMenuItem(
-          alignment: Alignment.center,
-          value: ubicacion,
-          child: Text(
-            ubicacion,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ),
-      )
-      .toList();
 }
 
 enum TipoViaje { propio, apuntado, oferta }

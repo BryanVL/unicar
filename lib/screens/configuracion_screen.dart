@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unicar/providers/database_provider.dart';
+import 'package:unicar/providers/tema_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
+import 'package:unicar/widgets/texto.dart';
 
 class ConfiguracionScreen extends ConsumerStatefulWidget {
   const ConfiguracionScreen({super.key});
@@ -13,6 +16,7 @@ class ConfiguracionScreen extends ConsumerStatefulWidget {
 class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
   @override
   Widget build(BuildContext context) {
+    final tema = ref.watch(temaProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -27,10 +31,53 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const TextoTitulo(texto: 'Modo oscuro '),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: tema.when(
+                    data: (data) {
+                      bool estado = data == 'claro' ? false : true;
+                      return Switch(
+                        value: estado,
+                        onChanged: (value) {
+                          ref.read(temaProvider.notifier).cambiarTema();
+                        },
+                      );
+                    },
+                    error: (error, stackTrace) => const SizedBox(
+                      height: 10,
+                      width: 10,
+                    ),
+                    loading: () => const CircularProgressIndicator(),
+                  ),
+                ),
+              ],
+            ),
+            const Divider(
+              color: Colors.black54,
+              thickness: 1,
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            /*BotonMaterial(
+              contenido: const Text(
+                'Cerrar sesion',
+                style: TextStyle(fontSize: 18),
+              ),
+              funcion: () {
+                ref.read(databaseProvider.notifier).cerrarSesion(context);
+              },
+            ),*/
             Boton(
               funcion: () {
                 ref.read(databaseProvider.notifier).cerrarSesion(context);
               },
+              textSize: 20,
               textoBoton: 'Cerrar sesión',
               paddingTodo: 12,
             ),
@@ -73,6 +120,7 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
                     },
                   );
                 },
+                textSize: 20,
                 textoBoton: 'Borrar cuenta',
                 paddingTodo: 12,
                 colorBoton: Colors.red,

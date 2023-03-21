@@ -6,6 +6,7 @@ import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/ver_chat_screen.dart';
 
 import '../models/chat.dart';
+import '../providers/tema_provider.dart';
 
 class TarjetaChat extends ConsumerWidget {
   const TarjetaChat({
@@ -25,6 +26,74 @@ class TarjetaChat extends ConsumerWidget {
     ref.listen(mensajesProvider(chat.id), (previous, next) {
       ref.read(chatProvider.notifier).ponerChatAlPrincipio(chat.id);
     });
+    final tema = ref.watch(temaProvider).when(
+          data: (data) => data == 'claro' ? true : false,
+          error: (error, stackTrace) => true,
+          loading: () => true,
+        );
+
+    BoxDecoration temaClaro = BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade500,
+          offset: const Offset(4.0, 4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+        const BoxShadow(
+          color: Colors.white,
+          offset: Offset(-4.0, -4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+      ],
+      color: ultimoMensaje.when(
+        data: (msg) {
+          return msg.isEmpty ||
+                  msg[0]['creador'] == ref.watch(usuarioProvider)!.id ||
+                  msg[0]['visto']
+              ? Colors.white
+              : const Color.fromARGB(255, 220, 220, 255);
+        },
+        error: (error, stackTrace) => Colors.white,
+        loading: () => Colors.white,
+      ),
+      borderRadius: const BorderRadius.all(
+        Radius.circular(20),
+      ),
+    );
+
+    BoxDecoration temaOscuro = BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade800,
+          offset: const Offset(4.0, 4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+        const BoxShadow(
+          color: Colors.black,
+          offset: Offset(-4.0, -4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+      ],
+      color: ultimoMensaje.when(
+        data: (msg) {
+          return msg.isEmpty ||
+                  msg[0]['creador'] == ref.watch(usuarioProvider)!.id ||
+                  msg[0]['visto']
+              ? const Color.fromARGB(255, 29, 26, 26)
+              : const Color.fromARGB(255, 220, 220, 255);
+        },
+        error: (error, stackTrace) => Colors.white,
+        loading: () => Colors.white,
+      ),
+      borderRadius: const BorderRadius.all(
+        Radius.circular(20),
+      ),
+    );
+
     return otroUsuario.when(
       data: (data) {
         return Padding(
@@ -36,30 +105,7 @@ class TarjetaChat extends ConsumerWidget {
             child: ultimoMensaje.when(
               data: (msg) {
                 return DecoratedBox(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade500,
-                        offset: const Offset(4.0, 4.0),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                      ),
-                      const BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(-4.0, -4.0),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                    color: msg.isEmpty ||
-                            msg[0]['creador'] == ref.watch(usuarioProvider)!.id ||
-                            msg[0]['visto']
-                        ? Colors.white
-                        : const Color.fromARGB(255, 220, 220, 255),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(20),
-                    ),
-                  ),
+                  decoration: tema ? temaClaro : temaOscuro,
                   child: Material(
                     elevation: 0,
                     color: Colors.transparent,

@@ -129,7 +129,7 @@ class _SeleccionPosicionState extends ConsumerState<SeleccionPosicion> {
             minHeight: 35,
             borderWidth: 2,
             labels: const ['Simple', 'Personalizado'],
-            inactiveBgColor: Colors.white,
+            inactiveBgColor: Theme.of(context).scaffoldBackgroundColor,
             borderColor: const [Colors.blue],
             customTextStyles: const [TextStyle(fontSize: 18)],
             animate: true,

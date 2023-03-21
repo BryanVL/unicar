@@ -22,9 +22,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 252, 252, 252),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 245, 254, 255),
+        backgroundColor: Colors.transparent,
         title: const Text('Registrate'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

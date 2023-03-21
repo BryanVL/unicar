@@ -12,6 +12,7 @@ import 'package:unicar/widgets/mapa.dart';
 import 'package:unicar/widgets/texto.dart';
 
 import '../models/oferta.dart';
+import '../providers/tema_provider.dart';
 
 class VerViajeScreen extends ConsumerWidget {
   const VerViajeScreen({
@@ -117,6 +118,14 @@ class VerViajeScreen extends ConsumerWidget {
       }
     }
 
+    final tema = ref.watch(temaProvider).when(
+          data: (data) => data == 'claro' ? true : false,
+          error: (error, stackTrace) => true,
+          loading: () => true,
+        );
+
+    Color color = tema ? Colors.black : Colors.white;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -186,7 +195,7 @@ class VerViajeScreen extends ConsumerWidget {
                         type: MaterialType.transparency,
                         child: RichText(
                           text: TextSpan(
-                            style: const TextStyle(color: Colors.black, fontSize: 20),
+                            style: TextStyle(color: color, fontSize: 20),
                             children: [
                               const TextSpan(text: 'Viaje con origen '),
                               TextSpan(
@@ -221,7 +230,7 @@ class VerViajeScreen extends ConsumerWidget {
                         type: MaterialType.transparency,
                         child: RichText(
                           text: TextSpan(
-                            style: const TextStyle(color: Colors.black, fontSize: 20),
+                            style: TextStyle(color: color, fontSize: 20),
                             children: [
                               TextSpan(
                                 text: oferta.paraEstarA ? 'Para estar el: ' : 'Salida: ',
@@ -245,7 +254,7 @@ class VerViajeScreen extends ConsumerWidget {
                     ),
                     child: RichText(
                       text: TextSpan(
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style: TextStyle(color: color, fontSize: 20),
                         children: [
                           const TextSpan(
                             text: 'Plazas libres: ',

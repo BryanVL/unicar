@@ -20,7 +20,7 @@ class VerChatScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final usuario = ref.watch(usuarioAjeno(idUsuarioAjeno));
     final idChat = ref.read(chatProvider.notifier).buscarIdDeChat(idUsuarioAjeno);
-    final mensajes = ref.watch(mensajesProvider(idChat));
+    final mensajes = ref.watch(mensajesProvider(idChat!));
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(

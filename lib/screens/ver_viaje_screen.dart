@@ -285,6 +285,8 @@ class VerViajeScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            //TODO poner aqui listview para poner tarjetas por cada usuario que sea pasajero
+            //con un boton para eliminarlo
             Padding(
               padding: const EdgeInsets.only(top: 48.0, bottom: 32),
               child: Row(

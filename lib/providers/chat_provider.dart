@@ -41,7 +41,7 @@ eso ordenar los chats*/
   }
 
   void crearChat(String idReceptor) async {
-    if (buscarIdDeChat(idReceptor) == -1) {
+    if (buscarIdDeChat(idReceptor) == null) {
       final String idUsuario = ref.read(usuarioProvider)!.id;
       final int idChat = await ref.read(databaseProvider).crearChat(idReceptor);
 
@@ -52,12 +52,12 @@ eso ordenar los chats*/
     }
   }
 
-  int buscarIdDeChat(String idReceptor) {
+  int? buscarIdDeChat(String idReceptor) {
     final Chat? chatBuscado = state.value!.firstWhereOrNull(
       (element) => element.usuarioReceptor == idReceptor,
     );
 
-    return chatBuscado == null ? -1 : chatBuscado.id;
+    return chatBuscado?.id;
   }
 
   void actualizarMensajesVistos(int idChat, String idUsuarioAjeno) {

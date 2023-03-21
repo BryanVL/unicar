@@ -40,7 +40,7 @@ class EnvioMensajeWidget extends ConsumerWidget {
           onPressed: () {
             if (_mensaje.text != '') {
               ref.read(databaseProvider).enviarMensaje(
-                  ref.read(chatProvider.notifier).buscarIdDeChat(idUsuarioAjeno),
+                  ref.read(chatProvider.notifier).buscarIdDeChat(idUsuarioAjeno)!,
                   _mensaje.text,
                   ref.read(usuarioProvider)!.id);
               _mensaje.text = '';

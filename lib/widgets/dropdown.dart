@@ -5,28 +5,14 @@ import 'package:unicar/models/localizacion.dart';
 import '../models/oferta.dart';
 import '../providers/dropdown_provider.dart';
 
-class CustomDropdown extends ConsumerStatefulWidget {
-  const CustomDropdown({super.key, required this.titulo, required this.tipo, this.valorDefecto});
+class CustomDropdown extends ConsumerWidget {
+  const CustomDropdown({super.key, required this.titulo, required this.tipo});
   final String titulo;
   final TipoPosicion tipo;
-  final String? valorDefecto;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CustomDropdownState();
-}
-
-class _CustomDropdownState extends ConsumerState<CustomDropdown> {
-  String dropdownValue = 'Selecciona uno';
-
-  @override
-  void initState() {
-    dropdownValue = widget.valorDefecto ?? 'Selecciona uno';
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final valor = ref.watch(dropdownProvider(widget.tipo));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final valor = ref.watch(dropdownProvider(tipo));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +25,7 @@ class _CustomDropdownState extends ConsumerState<CustomDropdown> {
             width: 80,
             height: 80,
             child: Text(
-              widget.titulo,
+              titulo,
               style: const TextStyle(
                 fontSize: 18,
               ),
@@ -68,7 +54,7 @@ class _CustomDropdownState extends ConsumerState<CustomDropdown> {
                 ],
               ),
               child: DropdownButtonFormField(
-                key: widget.key,
+                key: key,
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 16,
@@ -85,7 +71,7 @@ class _CustomDropdownState extends ConsumerState<CustomDropdown> {
                 alignment: Alignment.center,
                 value: valor,
                 onChanged: (String? value) {
-                  ref.read(dropdownProvider(widget.tipo).notifier).state = value!;
+                  ref.read(dropdownProvider(tipo).notifier).state = value!;
                 },
                 items: Oferta.listaUbicaciones,
               ),

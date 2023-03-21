@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/providers/tema_provider.dart';
 import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/widgets/texto.dart';
 
-class ConfiguracionScreen extends ConsumerStatefulWidget {
+class ConfiguracionScreen extends ConsumerWidget {
   const ConfiguracionScreen({super.key});
   static const kRouteName = "/Configuracion";
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ConfiguracionScreenState();
-}
 
-class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tema = ref.watch(temaProvider);
     return Scaffold(
       appBar: AppBar(
@@ -79,7 +74,6 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
               },
               textSize: 20,
               textoBoton: 'Cerrar sesión',
-              paddingTodo: 12,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 64.0),
@@ -122,7 +116,6 @@ class _ConfiguracionScreenState extends ConsumerState<ConfiguracionScreen> {
                 },
                 textSize: 20,
                 textoBoton: 'Borrar cuenta',
-                paddingTodo: 12,
                 colorBoton: Colors.red,
               ),
             ),

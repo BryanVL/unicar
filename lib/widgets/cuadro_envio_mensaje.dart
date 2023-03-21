@@ -5,18 +5,14 @@ import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/widgets/textform.dart';
 
-class EnvioMensajeWidget extends ConsumerStatefulWidget {
-  const EnvioMensajeWidget(this.idUsuarioAjeno, {super.key});
+class EnvioMensajeWidget extends ConsumerWidget {
+  EnvioMensajeWidget(this.idUsuarioAjeno, {super.key});
   final String idUsuarioAjeno;
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _EnvioMensajeWidgetState();
-}
 
-class _EnvioMensajeWidgetState extends ConsumerState<EnvioMensajeWidget> {
   final TextEditingController _mensaje = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -44,7 +40,7 @@ class _EnvioMensajeWidgetState extends ConsumerState<EnvioMensajeWidget> {
           onPressed: () {
             if (_mensaje.text != '') {
               ref.read(databaseProvider).enviarMensaje(
-                  ref.read(chatProvider.notifier).buscarIdDeChat(widget.idUsuarioAjeno),
+                  ref.read(chatProvider.notifier).buscarIdDeChat(idUsuarioAjeno),
                   _mensaje.text,
                   ref.read(usuarioProvider)!.id);
               _mensaje.text = '';

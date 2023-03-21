@@ -4,7 +4,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 
-import '../providers/tema_provider.dart';
 import '../widgets/buttons.dart';
 import '../widgets/textform.dart';
 
@@ -34,10 +33,6 @@ class _NuevoUsuarioScreen extends ConsumerState<NuevoUsuarioScreen> {
     }
   }
 
-  void innitState() {
-    nombreController.text = '';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +60,7 @@ class _NuevoUsuarioScreen extends ConsumerState<NuevoUsuarioScreen> {
                   padding: const EdgeInsets.only(top: 32, bottom: 32.0, left: 32, right: 32),
                   child: MyTextForm(
                     controlador: nombreController,
-                    tipoTeclado: TextInputType.emailAddress,
+                    tipoTeclado: TextInputType.text,
                     label: 'Nombre de usuario',
                     funcionValidacion: (String? value) {
                       if (nombreController.text == '') {

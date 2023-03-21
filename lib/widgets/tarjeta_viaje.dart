@@ -63,7 +63,7 @@ class TarjetaViajeWidget extends ConsumerWidget {
         ),
       ],
       color: /*Color.fromARGB(255, 240, 240, 255),*/
-          Color.fromARGB(255, 29, 26, 26),
+          const Color.fromARGB(255, 29, 26, 26),
       /*Colors.blue[400],*/
       borderRadius: const BorderRadius.all(
         Radius.circular(20),

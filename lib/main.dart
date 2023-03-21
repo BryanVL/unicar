@@ -32,7 +32,6 @@ Future<void> main() async {
       ),
     );
   } catch (e) {
-    print(e);
     //TODO handle AuthException when refresh token expires
   }
 }
@@ -86,7 +85,7 @@ class MyApp extends ConsumerWidget {
       primarySwatch: Colors.blue,
       primaryColor: Colors.blue,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: Color.fromARGB(255, 41, 39, 39),
+      scaffoldBackgroundColor: const Color.fromARGB(255, 41, 39, 39),
       iconTheme: const IconThemeData(
         color: Colors.white,
       ),

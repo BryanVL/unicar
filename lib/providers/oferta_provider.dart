@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:latlong2/latlong.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:unicar/models/localizacion.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/localizacion_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
@@ -13,11 +14,9 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   List<Oferta> estadoAux = [];
   String filtroOrigen = 'Selecciona uno';
   String filtroDestino = 'Selecciona uno';
+  LocalizacionPersonalizada? filtroOrigenP;
+  LocalizacionPersonalizada? filtroDestinoP;
   String filtroHora = '';
-  LatLng? filtroCoordOrigen;
-  LatLng? filtroCoordDestino;
-  int? filtroRadioOrigen;
-  int? filtroRadioDestino;
   int filtroGroupValue = 2;
 
   @override
@@ -75,10 +74,8 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     String origen,
     String destino,
     String hora,
-    LatLng? coordOrigen,
-    LatLng? coordDestino,
-    int? radioOrigen,
-    int? radioDestino,
+    LocalizacionPersonalizada? origenP,
+    LocalizacionPersonalizada? destinoP,
     int groupValue,
   ) {
     List<Oferta> nuevoEstado = [];
@@ -93,7 +90,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
 
     List<Oferta> ofertas = state.whenData((value) => value).value!;
 
-    if (coordOrigen == null && coordDestino == null) {
+    if (origenP == null && destinoP == null) {
       if (origen != 'Selecciona uno') {
         filtroPosicionAplicado = true;
         filtroOrigen = origen;
@@ -112,27 +109,37 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
           nuevoEstado.addAll(ofertas.where((element) => element.destino == destino));
         }
       }
-    } else if (coordOrigen != null || coordDestino != null) {
-      if (coordOrigen != null) {
+    } else if (origenP != null || destinoP != null) {
+      if (origenP != null) {
         filtroPosicionAplicado = true;
-        filtroCoordOrigen = coordOrigen;
+        filtroOrigenP = LocalizacionPersonalizada(
+          nombreCompleto: origenP.nombreCompleto,
+          localidad: origenP.localidad,
+          coordenadas: origenP.coordenadas,
+          radio: origenP.radio,
+        );
         nuevoEstado.addAll(
           ofertas.where(
             (element) {
               return element.coordOrigen != null
                   ? ref
                           .read(geolocationProvider)
-                          .distanciaEntreDosPuntos(element.coordOrigen!, coordOrigen) <=
-                      (element.radioOrigen! + radioOrigen!)
+                          .distanciaEntreDosPuntos(element.coordOrigen!, origenP.coordenadas) <=
+                      (element.radioOrigen! + origenP.radio)
                   : false;
             },
           ),
         );
       }
 
-      if (coordDestino != null) {
+      if (destinoP != null) {
         filtroPosicionAplicado = true;
-        filtroCoordDestino = coordDestino;
+        filtroDestinoP = LocalizacionPersonalizada(
+          nombreCompleto: destinoP.nombreCompleto,
+          localidad: destinoP.localidad,
+          coordenadas: destinoP.coordenadas,
+          radio: destinoP.radio,
+        );
         if (nuevoEstado.isNotEmpty) {
           aux.addAll(
             nuevoEstado.where(
@@ -140,8 +147,8 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
                 return element.coordDestino != null
                     ? ref
                             .read(geolocationProvider)
-                            .distanciaEntreDosPuntos(element.coordDestino!, coordDestino) <=
-                        (element.radioDestino! + radioDestino!)
+                            .distanciaEntreDosPuntos(element.coordDestino!, destinoP.coordenadas) <=
+                        (element.radioDestino! + destinoP.radio)
                     : false;
               },
             ),
@@ -156,8 +163,8 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
                 return element.coordDestino != null
                     ? ref
                             .read(geolocationProvider)
-                            .distanciaEntreDosPuntos(element.coordDestino!, coordDestino) <=
-                        (element.radioDestino! + radioDestino!)
+                            .distanciaEntreDosPuntos(element.coordDestino!, destinoP.coordenadas) <=
+                        (element.radioDestino! + destinoP.radio)
                     : false;
               },
             ),
@@ -215,10 +222,8 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     filtroDestino = 'Selecciona uno';
     filtroOrigen = 'Selecciona uno';
     filtroHora = '';
-    filtroCoordOrigen = null;
-    filtroCoordDestino = null;
-    filtroRadioOrigen = null;
-    filtroRadioDestino = null;
+    filtroOrigenP = null;
+    filtroDestinoP = null;
     filtroGroupValue = 2;
     state = AsyncValue.data(estadoAux);
     estadoAux = [];

@@ -11,9 +11,10 @@ import 'buttons.dart';
 import 'dropdown.dart';
 
 class SeleccionPosicion extends ConsumerStatefulWidget {
-  const SeleccionPosicion({this.indice, super.key});
+  const SeleccionPosicion({this.indice, this.filtro, super.key});
 
   final int? indice;
+  final bool? filtro;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _SeleccionPosicionState();
 }
@@ -142,10 +143,14 @@ class _SeleccionPosicionState extends ConsumerState<SeleccionPosicion> {
                 indiceSeleccionado = 1;
                 pos = pers;
               }
-              ref.read(dropdownProvider(TipoPosicion.origen).notifier).state = 'Selecciona uno';
-              ref.read(dropdownProvider(TipoPosicion.destino).notifier).state = 'Selecciona uno';
-              ref.read(posicionPersonalizadaProvider(TipoPosicion.origen).notifier).state = null;
-              ref.read(posicionPersonalizadaProvider(TipoPosicion.destino).notifier).state = null;
+
+              if (widget.filtro != null ? !widget.filtro! : true) {
+                ref.read(dropdownProvider(TipoPosicion.origen).notifier).state = 'Selecciona uno';
+                ref.read(dropdownProvider(TipoPosicion.destino).notifier).state = 'Selecciona uno';
+                ref.read(posicionPersonalizadaProvider(TipoPosicion.origen).notifier).state = null;
+                ref.read(posicionPersonalizadaProvider(TipoPosicion.destino).notifier).state = null;
+              }
+
               setState(() {});
             },
           ),

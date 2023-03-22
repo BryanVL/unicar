@@ -250,9 +250,4 @@ class SupabaseDB implements Database {
         .map((e) => Usuario(id: e['id_usuario'], nombre: e['usuario']['nombre']))
         .toList();
   }
-
-  @override
-  void eliminarPasajero(int idViaje, String idUsuario) async {
-    await sp.from('es_pasajero').delete().match({'id_viaje': idViaje, 'id_usuario': idUsuario});
-  }
 }

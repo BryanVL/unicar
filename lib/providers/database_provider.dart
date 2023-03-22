@@ -107,8 +107,8 @@ class DatabaseController extends r.Notifier<Database> {
     return state.recogerParticipantesViaje(idViaje);
   }
 
-  void eliminarPasajero(int idViaje, String idUsuario) {
-    state.eliminarPasajero(idViaje, idUsuario);
+  void eliminarPasajero(int idViaje, String idUsuario, int plazas) {
+    state.cancelarPlaza(idViaje, plazas, idUsuario);
   }
 
   void comprobarSesion(BuildContext context) async {

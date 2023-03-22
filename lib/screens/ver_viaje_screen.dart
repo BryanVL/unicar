@@ -324,6 +324,7 @@ class VerViajeScreen extends ConsumerWidget {
                                                               .eliminarPasajero(
                                                                 oferta.id,
                                                                 element.id,
+                                                                oferta.plazasDisponibles,
                                                               );
                                                           ref
                                                               .read(

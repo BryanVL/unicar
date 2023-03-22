@@ -135,7 +135,11 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                   controlador: plazasController,
                   label: 'Plazas disponibles del viaje',
                   funcionValidacion: (value) {
-                    return plazasController.text == '' ? 'Este campo no puede estar vacio' : null;
+                    if (plazasController.text == '') {
+                      return 'Este campo no puede estar vacio';
+                    } else if (int.parse(plazasController.text) <= 0) {
+                      return 'Debe haber al menos una plaza';
+                    }
                   },
                   tipoInput: [FilteringTextInputFormatter.digitsOnly],
                   tipoTeclado: TextInputType.number,
@@ -217,7 +221,8 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                                 (origenPersonalizado != null && destinoPersonalizado != null)) &&
                             horaController.text != '' &&
                             (dpDestino != dpOrigen ||
-                                origenPersonalizado != destinoPersonalizado))) {
+                                origenPersonalizado != destinoPersonalizado) &&
+                            int.parse(plazasController.text) > 0)) {
                       ref.read(ofertasOfrecidasUsuarioProvider.notifier).addNewOferta(
                             origen?.localidad ?? dpOrigen,
                             destino?.localidad ?? dpDestino,

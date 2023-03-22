@@ -54,16 +54,19 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     state = state.whenData((value) => value.where((element) => element.id != id).toList());
   }
 
-  void reservarPlaza(Oferta oferta) {
-    ref.read(databaseProvider).reservarPlaza(
-          oferta.id,
-          oferta.plazasDisponibles,
-          ref.read(usuarioProvider)!.id,
-        );
-    ref
-        .read(ofertasUsuarioApuntadoProvider.notifier)
-        .addOferta(oferta.copyWith(plazasDisponibles: oferta.plazasDisponibles - 1));
-    eliminarOferta(oferta.id);
+  void reservarPlaza(Oferta oferta) async {
+    final pl = ref.read(plazasProvider(oferta.id));
+    pl.whenData((value) {
+      ref.read(databaseProvider).reservarPlaza(
+            oferta.id,
+            value,
+            ref.read(usuarioProvider)!.id,
+          );
+      ref
+          .read(ofertasUsuarioApuntadoProvider.notifier)
+          .addOferta(oferta.copyWith(plazasDisponibles: value - 1));
+      eliminarOferta(oferta.id);
+    });
   }
 
 //TODO filtros con consultas a la base de datos en vez de local
@@ -422,14 +425,17 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   void cancelarReserva(Oferta oferta) {
-    ref.read(databaseProvider).cancelarPlaza(
-          oferta.id,
-          oferta.plazasDisponibles,
-          ref.read(usuarioProvider)!.id,
-        );
+    final pl = ref.read(plazasProvider(oferta.id));
+    pl.whenData((value) {
+      ref.read(databaseProvider).cancelarPlaza(
+            oferta.id,
+            value,
+            ref.read(usuarioProvider)!.id,
+          );
 
-    ref.invalidate(ofertasDisponiblesProvider);
-    eliminarOferta(oferta.id);
+      ref.invalidate(ofertasDisponiblesProvider);
+      eliminarOferta(oferta.id);
+    });
   }
 
   void addOferta(Oferta oferta) async {
@@ -450,3 +456,7 @@ final ofertasUsuarioApuntadoProvider =
     return OfertasUsuarioApuntadoController();
   },
 );
+
+final plazasProvider = r.FutureProvider.family.autoDispose<int, int>((ref, id) {
+  return ref.watch(databaseProvider).recogerPlazasViaje(id);
+});

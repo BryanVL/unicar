@@ -96,6 +96,7 @@ class SupabaseDB implements Database {
           'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, usuario!viaje_creado_por_fkey(nombre)',
         )
         .neq('creado_por', idUser)
+        .gt('plazas_disponibles', 0)
         .order('created_at');
   }
 
@@ -249,5 +250,11 @@ class SupabaseDB implements Database {
     return consulta
         .map((e) => Usuario(id: e['id_usuario'], nombre: e['usuario']['nombre']))
         .toList();
+  }
+
+  @override
+  Future<int> recogerPlazasViaje(int idViaje) async {
+    final List consulta = await sp.from('viaje').select('plazas_disponibles').eq('id', idViaje);
+    return consulta[0]['plazas_disponibles'];
   }
 }

@@ -111,6 +111,10 @@ class DatabaseController extends r.Notifier<Database> {
     state.cancelarPlaza(idViaje, plazas, idUsuario);
   }
 
+  Future<int> recogerPlazasDisponibles(int idViaje) {
+    return state.recogerPlazasViaje(idViaje);
+  }
+
   void comprobarSesion(BuildContext context) async {
     try {
       final initialSession = await state.comprobarSesion();

@@ -37,6 +37,7 @@ abstract class Database {
     int? radioDestino,
     required bool paraEstarA,
   });
+  Future<int> recogerPlazasViaje(int idViaje);
   Future<List<Usuario>> recogerParticipantesViaje(int idViaje);
   Future<String> nombreUsuario(String idUser);
   Future<AuthResponse> iniciarSesion(String correo, String password);

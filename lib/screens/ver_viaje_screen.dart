@@ -31,6 +31,8 @@ class VerViajeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pasajeros = ref.watch(pasajerosViajeProvider(oferta.id));
+    final plazasD = ref.watch(plazasProvider(oferta.id));
+
     final botonEliminar = Boton(
       colorBoton: Colors.red,
       textSize: 16,
@@ -262,7 +264,12 @@ class VerViajeScreen extends ConsumerWidget {
                             text: 'Plazas libres: ',
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
-                          TextSpan(text: '${oferta.plazasDisponibles}'),
+                          TextSpan(
+                              text: '${plazasD.when(
+                            data: (data) => data,
+                            error: (error, stackTrace) => 'No se puedieron cargar las plazas',
+                            loading: () => '',
+                          )}'),
                         ],
                       ),
                     ),

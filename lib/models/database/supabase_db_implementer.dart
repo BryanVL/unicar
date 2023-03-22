@@ -87,7 +87,6 @@ class SupabaseDB implements Database {
 
   @override
   Future<List> recogerViajesAjenos(String idUser) async {
-    //TODO Filtrar para que no salgan sin plazas ni viajes que hayan pasado hace más de 15 minutos
     return await sp
         .from(
           'viaje',
@@ -97,6 +96,7 @@ class SupabaseDB implements Database {
         )
         .neq('creado_por', idUser)
         .gt('plazas_disponibles', 0)
+        .gte('hora', DateTime.now().subtract(const Duration(minutes: 15)))
         .order('created_at');
   }
 
@@ -135,6 +135,21 @@ class SupabaseDB implements Database {
           'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, usuario!viaje_creado_por_fkey(nombre)',
         )
         .eq('creado_por', idUser)
+        .gte('hora', DateTime.now().subtract(const Duration(hours: 3)))
+        .order('created_at');
+  }
+
+  @override
+  Future<List> recogerViajesApuntado(String idUser) async {
+    return await sp
+        .from(
+          'viaje',
+        )
+        .select(
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, usuario!viaje_creado_por_fkey(nombre)',
+        )
+        .neq('creado_por', idUser)
+        .gte('hora', DateTime.now().subtract(const Duration(hours: 3)))
         .order('created_at');
   }
 

@@ -408,7 +408,7 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await ref.read(databaseProvider).recogerViajesAjenos(
+    final List consultaViajes = await ref.read(databaseProvider).recogerViajesApuntado(
           ref.read(usuarioProvider)!.id,
         );
 

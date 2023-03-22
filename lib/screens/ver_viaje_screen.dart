@@ -25,7 +25,7 @@ class VerViajeScreen extends ConsumerWidget {
   final Oferta oferta;
   final estiloTexto = const TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
   );
 
   @override
@@ -274,6 +274,31 @@ class VerViajeScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  tipo == TipoViaje.propio
+                      ? Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 16.0,
+                                bottom: 8,
+                                top: 8,
+                              ),
+                              child: RichText(
+                                text: TextSpan(
+                                  style: TextStyle(color: color, fontSize: 20),
+                                  children: [
+                                    const TextSpan(
+                                      text: 'Viaje recurrente: ',
+                                      style: TextStyle(fontWeight: FontWeight.w600),
+                                    ),
+                                    TextSpan(text: oferta.esPeriodico ? 'Sí' : 'No'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
                     child: Text(
@@ -391,7 +416,7 @@ class VerViajeScreen extends ConsumerWidget {
                             ),
                           ],
                         )
-                      : Column(),
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),

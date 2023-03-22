@@ -264,6 +264,7 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                             radioOrigen: origen?.radio,
                             radioDestino: destino?.radio,
                             paraEstarA: groupValue == 0,
+                            esPeriodico: widget.oferta.esPeriodico,
                           );
 
                       Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));

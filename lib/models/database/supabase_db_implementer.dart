@@ -22,6 +22,7 @@ class SupabaseDB implements Database {
     int? radioOrigen,
     int? radioDestino,
     required bool paraEstarA,
+    required bool esPeriodico,
   }) async {
     await sp.from('viaje').update({
       'origen': origen,
@@ -37,6 +38,7 @@ class SupabaseDB implements Database {
       'radio_origen': radioOrigen,
       'radio_destino': radioDestino,
       'para_estar_a': paraEstarA,
+      'es_periodico': esPeriodico,
     }).match({'id': idViaje});
   }
 
@@ -59,6 +61,7 @@ class SupabaseDB implements Database {
     int? radioOrigen,
     int? radioDestino,
     required bool paraEstarA,
+    required bool esPeriodico,
   }) async {
     final int id = await sp.rpc('crear_viaje', params: {
       'origen': origen,
@@ -75,6 +78,7 @@ class SupabaseDB implements Database {
       'radio_origen': radioOrigen,
       'radio_destino': radioDestino,
       'para_estar_a': paraEstarA,
+      'es_periodico': esPeriodico,
     });
     return id;
   }
@@ -92,7 +96,7 @@ class SupabaseDB implements Database {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, usuario!viaje_creado_por_fkey(nombre)',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre)',
         )
         .neq('creado_por', idUser)
         .gt('plazas_disponibles', 0)
@@ -132,7 +136,7 @@ class SupabaseDB implements Database {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, usuario!viaje_creado_por_fkey(nombre)',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre)',
         )
         .eq('creado_por', idUser)
         .gte('hora', DateTime.now().subtract(const Duration(hours: 3)))
@@ -146,7 +150,7 @@ class SupabaseDB implements Database {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, usuario!viaje_creado_por_fkey(nombre)',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre)',
         )
         .neq('creado_por', idUser)
         .gte('hora', DateTime.now().subtract(const Duration(hours: 3)))

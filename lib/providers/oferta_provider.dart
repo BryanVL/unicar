@@ -283,6 +283,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
     int? radioOrigen,
     int? radioDestino,
     bool paraEstarA,
+    bool esPeriodico,
   ) async {
     final user = ref.read(usuarioProvider);
     final idNuevo = await ref.read(databaseProvider).crearViaje(
@@ -297,6 +298,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
           coordDestino: coordDestino,
           radioOrigen: radioOrigen,
           radioDestino: radioDestino,
+          esPeriodico: esPeriodico,
         );
 
     final viaje = Oferta(
@@ -315,6 +317,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
       radioOrigen: radioOrigen,
       coordDestino: coordDestino,
       radioDestino: radioDestino,
+      esPeriodico: esPeriodico,
     );
 
     state = await r.AsyncValue.guard(() {
@@ -340,6 +343,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
     int? radioOrigen,
     int? radioDestino,
     required bool paraEstarA,
+    required bool esPeriodico,
   }) {
     ref.read(databaseProvider).actualizarViaje(
           idViaje: id,
@@ -354,6 +358,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
           radioOrigen: radioOrigen,
           radioDestino: radioDestino,
           paraEstarA: paraEstarA,
+          esPeriodico: esPeriodico,
         );
 
     List<Oferta> ofertas = state.whenData((value) => value).value!;
@@ -373,6 +378,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
       radioOrigen: radioOrigen,
       radioDestino: radioDestino,
       paraEstarA: paraEstarA,
+      esPeriodico: esPeriodico,
     );
 
     state = AsyncValue.data(ofertas);

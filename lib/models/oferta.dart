@@ -17,6 +17,7 @@ class Oferta {
   final String creadoPor;
   final String nombreCreador;
   final bool paraEstarA;
+  final bool esPeriodico;
 
   Oferta({
     required this.id,
@@ -35,6 +36,7 @@ class Oferta {
     required this.creadoPor,
     required this.nombreCreador,
     required this.paraEstarA,
+    required this.esPeriodico,
   });
 
   Oferta.fromKeyValue(Map<String, dynamic> json)
@@ -59,7 +61,8 @@ class Oferta {
         titulo = (json['titulo'] == null || json['titulo'] == '')
             ? 'Viaje a ${json['destino']}'
             : json['titulo'],
-        paraEstarA = json['para_estar_a'];
+        paraEstarA = json['para_estar_a'],
+        esPeriodico = json['es_periodico'];
 
   Oferta copyWith({
     String? creadoEn,
@@ -77,6 +80,7 @@ class Oferta {
     String? creadoPor,
     String? nombreCreador,
     bool? paraEstarA,
+    bool? esPeriodico,
   }) {
     return Oferta(
       id: id,
@@ -95,6 +99,7 @@ class Oferta {
       creadoPor: creadoPor ?? this.creadoPor,
       nombreCreador: nombreCreador ?? this.nombreCreador,
       paraEstarA: paraEstarA ?? this.paraEstarA,
+      esPeriodico: esPeriodico ?? this.esPeriodico,
     );
   }
 
@@ -114,6 +119,7 @@ class Oferta {
     String? creadoPor,
     String? nombreCreador,
     bool? paraEstarA,
+    bool? esPeriodico,
   }) {
     return Oferta(
       id: id,
@@ -132,6 +138,7 @@ class Oferta {
       creadoPor: creadoPor ?? this.creadoPor,
       nombreCreador: nombreCreador ?? this.nombreCreador,
       paraEstarA: paraEstarA ?? this.paraEstarA,
+      esPeriodico: esPeriodico ?? this.esPeriodico,
     );
   }
 

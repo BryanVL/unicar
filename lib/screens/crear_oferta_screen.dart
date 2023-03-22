@@ -26,6 +26,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
   TextEditingController tituloController = TextEditingController();
   TextEditingController horaController = TextEditingController();
   int groupValue = 0;
+  bool periodico = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -164,7 +165,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                 padding: const EdgeInsets.only(
                   left: 48.0,
                   right: 48,
-                  bottom: 32,
+                  bottom: 12,
                 ),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
@@ -182,6 +183,22 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                       maximoCaracteres: 500,
                     ),
                   ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 32.0,
+                  left: 32,
+                  right: 32,
+                ),
+                child: CheckboxListTile(
+                  title: const Text('Repetir este viaje cada semana'),
+                  value: periodico,
+                  onChanged: (value) {
+                    setState(() {
+                      periodico = !periodico;
+                    });
+                  },
                 ),
               ),
               Padding(
@@ -235,6 +252,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                             origen?.radio,
                             destino?.radio,
                             groupValue == 0,
+                            periodico,
                           );
 
                       if (context.mounted) {

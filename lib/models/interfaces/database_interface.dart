@@ -20,6 +20,7 @@ abstract class Database {
     int? radioOrigen,
     int? radioDestino,
     required bool paraEstarA,
+    required bool esPeriodico,
   });
   void eliminarViaje(int id);
   void reservarPlaza(int id, int plazas, String idUSer);
@@ -37,6 +38,7 @@ abstract class Database {
     int? radioOrigen,
     int? radioDestino,
     required bool paraEstarA,
+    required bool esPeriodico,
   });
   Future<int> recogerPlazasViaje(int idViaje);
   Future<List<Usuario>> recogerParticipantesViaje(int idViaje);

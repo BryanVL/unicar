@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/interfaces/database_interface.dart';
+import 'package:unicar/models/usuario.dart';
 
 class SupabaseDB implements Database {
   final sp = Supabase.instance.client;
@@ -238,5 +239,20 @@ class SupabaseDB implements Database {
     await sp
         .from('mensaje')
         .update({'visto': true}).match({'chat_id': chatId, 'creador': usuarioAjenoId});
+  }
+
+  @override
+  Future<List<Usuario>> recogerParticipantesViaje(int idViaje) async {
+    final List<dynamic> consulta =
+        await sp.from('es_pasajero').select('id_usuario, usuario(nombre)').eq('id_viaje', idViaje);
+
+    return consulta
+        .map((e) => Usuario(id: e['id_usuario'], nombre: e['usuario']['nombre']))
+        .toList();
+  }
+
+  @override
+  void eliminarPasajero(int idViaje, String idUsuario) async {
+    await sp.from('es_pasajero').delete().match({'id_viaje': idViaje, 'id_usuario': idUsuario});
   }
 }

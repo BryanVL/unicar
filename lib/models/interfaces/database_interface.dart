@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unicar/models/usuario.dart';
 
 abstract class Database {
   Future<List> recogerViajesAjenos(String idUser);
@@ -36,6 +37,8 @@ abstract class Database {
     int? radioDestino,
     required bool paraEstarA,
   });
+  void eliminarPasajero(int idViaje, String idUsuario);
+  Future<List<Usuario>> recogerParticipantesViaje(int idViaje);
   Future<String> nombreUsuario(String idUser);
   Future<AuthResponse> iniciarSesion(String correo, String password);
   void iniciarSesionConProvider(Provider provider);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:unicar/providers/chat_provider.dart';
+import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
@@ -29,6 +30,7 @@ class VerViajeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pasajeros = ref.watch(pasajerosViajeProvider(oferta.id));
     final botonEliminar = Boton(
       colorBoton: Colors.red,
       textSize: 16,
@@ -282,9 +284,110 @@ class VerViajeScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  tipo == TipoViaje.propio
+                      ? Column(
+                          children: [
+                            const TextoTitulo(texto: 'Pasajeros apuntados'),
+                            Column(
+                              children: pasajeros.when(
+                                data: (data) {
+                                  List<Widget> res = [];
+                                  for (var element in data) {
+                                    res.add(
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 16.0, right: 16, top: 16),
+                                        child: ListTile(
+                                          leading: CircleAvatar(
+                                            backgroundColor: Colors.grey,
+                                            backgroundImage: ref.read(imagenDefectoProvider),
+                                            radius: 20,
+                                          ),
+                                          title: Text(element.nombre!),
+                                          shape: RoundedRectangleBorder(
+                                              side: const BorderSide(width: 1, color: Colors.blue),
+                                              borderRadius: BorderRadius.circular(15)),
+                                          trailing: IconButton(
+                                            icon: const Icon(Icons.delete_outlined),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    content: Text(
+                                                        '¿Estas seguro de que quieres cancelar la reserva del usuario ${element.nombre}?'),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          ref
+                                                              .read(databaseProvider.notifier)
+                                                              .eliminarPasajero(
+                                                                oferta.id,
+                                                                element.id,
+                                                              );
+                                                          ref
+                                                              .read(
+                                                                  pasajerosViajeProvider(oferta.id)
+                                                                      .notifier)
+                                                              .update((state) {
+                                                            state.value!.removeWhere(
+                                                                (user) => user.id == element.id);
+                                                            final res = state.value!;
+                                                            return AsyncData(res);
+                                                          });
+
+                                                          if (context.mounted) {
+                                                            Navigator.of(context).pop();
+                                                          }
+                                                        },
+                                                        child: const Text('Aceptar'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                        child: const Text('Cancelar'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                          onTap: () {},
+                                          onLongPress: () {},
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  if (res.isEmpty) {
+                                    res.add(
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 16.0),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'No hay pasajeros apuntados',
+                                            style: TextStyle(fontStyle: FontStyle.italic),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return res;
+                                },
+                                error: (error, stackTrace) =>
+                                    [const Text('No se pudieron cargar los pasajeros')],
+                                loading: () => [const Center(child: CircularProgressIndicator())],
+                              ),
+                            ),
+                          ],
+                        )
+                      : Column(),
                 ],
               ),
             ),
+
             //TODO poner aqui listview para poner tarjetas por cada usuario que sea pasajero
             //con un boton para eliminarlo
             Padding(

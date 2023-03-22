@@ -103,6 +103,14 @@ class DatabaseController extends r.Notifier<Database> {
     }
   }
 
+  Future<List<Usuario>> recogerPasajeros(int idViaje) {
+    return state.recogerParticipantesViaje(idViaje);
+  }
+
+  void eliminarPasajero(int idViaje, String idUsuario) {
+    state.eliminarPasajero(idViaje, idUsuario);
+  }
+
   void comprobarSesion(BuildContext context) async {
     try {
       final initialSession = await state.comprobarSesion();
@@ -129,4 +137,15 @@ class DatabaseController extends r.Notifier<Database> {
 
 final databaseProvider = r.NotifierProvider<DatabaseController, Database>(() {
   return DatabaseController();
+});
+
+final pasajerosViajeInicialProvider =
+    r.FutureProvider.family.autoDispose<List<Usuario>, int>((ref, id) {
+  return ref.watch(databaseProvider).recogerParticipantesViaje(id);
+});
+
+final pasajerosViajeProvider =
+    r.StateProvider.family.autoDispose<r.AsyncValue<List<Usuario>>, int>((ref, id) {
+  final res = ref.watch(pasajerosViajeInicialProvider(id));
+  return res;
 });

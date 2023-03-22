@@ -57,15 +57,17 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   void reservarPlaza(Oferta oferta) async {
     final pl = ref.read(plazasProvider(oferta.id));
     pl.whenData((value) {
-      ref.read(databaseProvider).reservarPlaza(
-            oferta.id,
-            value,
-            ref.read(usuarioProvider)!.id,
-          );
-      ref
-          .read(ofertasUsuarioApuntadoProvider.notifier)
-          .addOferta(oferta.copyWith(plazasDisponibles: value - 1));
-      eliminarOferta(oferta.id);
+      if (value > 0) {
+        ref.read(databaseProvider).reservarPlaza(
+              oferta.id,
+              value,
+              ref.read(usuarioProvider)!.id,
+            );
+        ref
+            .read(ofertasUsuarioApuntadoProvider.notifier)
+            .addOferta(oferta.copyWith(plazasDisponibles: value - 1));
+        eliminarOferta(oferta.id);
+      }
     });
   }
 

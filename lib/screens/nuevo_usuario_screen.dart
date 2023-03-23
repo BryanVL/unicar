@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
 
@@ -19,15 +19,7 @@ class _NuevoUsuarioScreen extends ConsumerState<NuevoUsuarioScreen> {
   final nombreController = TextEditingController();
 
   void _actualizarDatos(String nombre) async {
-    await Supabase.instance.client.from('usuario').update(
-      {
-        'nombre': nombre,
-      },
-    ).match(
-      {
-        'id': ref.read(usuarioProvider),
-      },
-    );
+    ref.read(databaseProvider).actualizarDatosUsuario(ref.read(usuarioProvider)!.id, nombre, null);
     if (context.mounted) {
       Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
     }

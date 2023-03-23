@@ -158,14 +158,32 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<String> nombreUsuario(String idUser) async {
+  Future<Usuario> datosUsuario(String idUser) async {
     final List consulta = await sp
         .from(
           'usuario',
         )
-        .select('nombre')
+        .select(
+            'id, nombre, url_icono, titulo_defecto, descripcion_defecto, origen_defecto, destino_defecto, latitud_origen_defecto, latitud_destino_defecto, longitud_origen_defecto, longitud_destino_defecto, radio_origen_defecto, radio_destino_defecto')
         .match({'id': idUser});
-    return Future.value(consulta[0]['nombre']);
+
+    return Future.value(Usuario.fromKeyValue(consulta[0]));
+  }
+
+  @override
+  Future<Usuario> datosUsuarioAjeno(String idUser) async {
+    final List consulta = await sp
+        .from(
+          'usuario',
+        )
+        .select('nombre, url_icono')
+        .match({'id': idUser});
+
+    return Future.value(Usuario(
+      id: idUser,
+      nombre: consulta[0]['nombre'],
+      urlIcono: consulta[0]['url_icono'],
+    ));
   }
 
   @override
@@ -221,11 +239,6 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List> usuarioDesdeId(String id) async {
-    return await sp.from('usuario').select('id,nombre').match({'id': id});
-  }
-
-  @override
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat) {
     return sp.from('mensaje').stream(primaryKey: ['id']).eq('chat_id', idChat).order('created_at');
   }
@@ -263,11 +276,16 @@ class SupabaseDB implements Database {
 
   @override
   Future<List<Usuario>> recogerParticipantesViaje(int idViaje) async {
-    final List<dynamic> consulta =
-        await sp.from('es_pasajero').select('id_usuario, usuario(nombre)').eq('id_viaje', idViaje);
+    final List<dynamic> consulta = await sp
+        .from('es_pasajero')
+        .select('id_usuario, usuario(nombre, url_icono)')
+        .eq('id_viaje', idViaje);
 
     return consulta
-        .map((e) => Usuario(id: e['id_usuario'], nombre: e['usuario']['nombre']))
+        .map((e) => Usuario(
+            id: e['id_usuario'],
+            nombre: e['usuario']['nombre'],
+            urlIcono: e['usuario']['url_icono']))
         .toList();
   }
 
@@ -275,5 +293,19 @@ class SupabaseDB implements Database {
   Future<int> recogerPlazasViaje(int idViaje) async {
     final List consulta = await sp.from('viaje').select('plazas_disponibles').eq('id', idViaje);
     return consulta[0]['plazas_disponibles'];
+  }
+
+  @override
+  void actualizarDatosUsuario(String id, String? nombre, String? urlIcono) async {
+    await Supabase.instance.client.from('usuario').update(
+      {
+        'nombre': nombre,
+        'url_icono': urlIcono,
+      },
+    ).match(
+      {
+        'id': id,
+      },
+    );
   }
 }

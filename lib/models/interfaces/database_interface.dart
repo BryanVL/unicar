@@ -42,16 +42,21 @@ abstract class Database {
   });
   Future<int> recogerPlazasViaje(int idViaje);
   Future<List<Usuario>> recogerParticipantesViaje(int idViaje);
-  Future<String> nombreUsuario(String idUser);
+  Future<Usuario> datosUsuario(String idUser);
+  Future<Usuario> datosUsuarioAjeno(String idUser);
   Future<AuthResponse> iniciarSesion(String correo, String password);
   void iniciarSesionConProvider(Provider provider);
+  void actualizarDatosUsuario(
+    String id,
+    String? nombre,
+    String? urlIcono,
+  );
   void cerrarSesion();
   void borrarCuenta(String idUser);
   Future<Session?> comprobarSesion();
   Future<List> recogerIdsChats(String idUser);
   Future<List> recogerUsuariosAjenosChat(int idChat, String idUser);
   Future<int> crearChat(String otroUsuario);
-  Future<List> usuarioDesdeId(String id);
 
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat);
   void enviarMensaje(int chatId, String text, String creadorId);

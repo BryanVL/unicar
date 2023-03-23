@@ -10,6 +10,7 @@ import '../models/database/supabase_db_implementer.dart';
 import '../screens/login_screen.dart';
 import '../screens/nuevo_usuario_screen.dart';
 import '../screens/tab_bar_screen.dart';
+import 'login_provider.dart';
 
 class DatabaseController extends r.Notifier<Database> {
   @override
@@ -18,34 +19,35 @@ class DatabaseController extends r.Notifier<Database> {
   }
 
   Future<bool> _comprobarPrimerInicio(User user) async {
-    final nombre = await state.nombreUsuario(user.id);
-    return nombre == '';
+    final usuario = await state.datosUsuario(user.id);
+    return usuario.nombre == '';
   }
 
-  StreamSubscription<AuthState> comprobarEstadoInicioConProvider(
-    BuildContext context,
-    bool redirecting,
-  ) {
+  StreamSubscription<AuthState> comprobarEstadoInicioConProvider(BuildContext context) {
     return Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
-      if (redirecting) return;
+      if (ref.read(loginProviderProvider)) return;
       final session = data.session;
 
       if (session != null) {
-        redirecting = true;
+        ref.read(loginProviderProvider.notifier).state = true;
         final User user = data.session!.user;
-        final nombreUsuario = await state.nombreUsuario(user.id);
-        ref.read(usuarioProvider.notifier).state = Usuario(id: user.id, nombre: nombreUsuario);
-
         final esNuevoUsuario = _comprobarPrimerInicio(user);
-        esNuevoUsuario.then((value) {
+        esNuevoUsuario.then((value) async {
           if (value) {
-            if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(NuevoUsuarioScreen.kRouteName);
-            }
+            final nombreUsuario = user.userMetadata?['full_name'];
+            final urlAvatar = user.userMetadata?['avatar_url'];
+            state.actualizarDatosUsuario(user.id, nombreUsuario, urlAvatar);
+
+            ref.read(usuarioProvider.notifier).state = Usuario(
+              id: user.id,
+              nombre: nombreUsuario,
+              urlIcono: urlAvatar,
+            );
           } else {
-            if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
-            }
+            ref.read(usuarioProvider.notifier).state = await state.datosUsuario(user.id);
+          }
+          if (context.mounted) {
+            Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
           }
         });
       }
@@ -60,8 +62,7 @@ class DatabaseController extends r.Notifier<Database> {
     final AuthResponse res = await state.iniciarSesion(correo, password);
     final user = res.user;
     if (user != null) {
-      final nombre = await state.nombreUsuario(user.id);
-      ref.read(usuarioProvider.notifier).state = Usuario(id: user.id, nombre: nombre);
+      ref.read(usuarioProvider.notifier).state = await state.datosUsuario(user.id);
 
       final esNuevoUsuario = _comprobarPrimerInicio(user);
       esNuevoUsuario.then((value) {
@@ -119,9 +120,7 @@ class DatabaseController extends r.Notifier<Database> {
     try {
       final initialSession = await state.comprobarSesion();
       if (initialSession != null) {
-        final nombre = await state.nombreUsuario(initialSession.user.id);
-        ref.read(usuarioProvider.notifier).state =
-            Usuario(id: initialSession.user.id, nombre: nombre);
+        ref.read(usuarioProvider.notifier).state = await state.datosUsuario(initialSession.user.id);
 
         if (context.mounted) {
           Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);

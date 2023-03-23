@@ -9,6 +9,7 @@ import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/widgets/textform.dart';
 import 'package:string_validator/string_validator.dart';
 
+import '../providers/login_provider.dart';
 import '../providers/tema_provider.dart';
 
 class LoginScreen extends r.ConsumerStatefulWidget {
@@ -23,7 +24,6 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
   final correoController = TextEditingController();
   final passController = TextEditingController();
   late final StreamSubscription<AuthState> _authStateSubscription;
-  final bool _redirecting = false;
 
   final SnackBar errorSnackBar = SnackBar(
     backgroundColor: Colors.blue[400],
@@ -52,7 +52,7 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
   @override
   initState() {
     _authStateSubscription =
-        ref.read(databaseProvider.notifier).comprobarEstadoInicioConProvider(context, _redirecting);
+        ref.read(databaseProvider.notifier).comprobarEstadoInicioConProvider(context);
 
     super.initState();
   }
@@ -171,6 +171,7 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                     ),
                   ),
                   onPressed: () {
+                    ref.read(loginProviderProvider.notifier).state = false;
                     _iniciarSesionProvider(Provider.discord);
                   },
                   child: Row(

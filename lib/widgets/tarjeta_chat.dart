@@ -23,8 +23,15 @@ class TarjetaChat extends ConsumerWidget {
     final otroUsuario = ref.watch(usuarioAjeno(idBuscar));
     final ultimoMensaje = ref.watch(mensajesProvider(chat.id));
     //Este listen hace que el chat se ponga el primero si alguien manda un mensaje
-    ref.listen(mensajesProvider(chat.id), (previous, next) {
-      ref.read(chatProvider.notifier).ponerChatAlPrincipio(chat.id);
+    ref.listen(mensajesProvider(chat.id), (AsyncValue<List<Map<String, dynamic>>>? previous,
+        AsyncValue<List<Map<String, dynamic>>>? next) {
+      if (previous != null &&
+          previous.hasValue &&
+          next != null &&
+          next.hasValue &&
+          previous.value!.length != next.value!.length) {
+        ref.read(chatProvider.notifier).ponerChatAlPrincipio(chat.id);
+      }
     });
     final tema = ref.watch(temaProvider).when(
           data: (data) => data == 'claro' ? true : false,
@@ -114,7 +121,16 @@ class TarjetaChat extends ConsumerWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(20),
                       onTap: () {
-                        ref.read(chatProvider.notifier).actualizarMensajesVistos(chat.id, data.id);
+                        ultimoMensaje.whenData((msg) {
+                          if (msg.isNotEmpty &&
+                              msg[0]['creador'] != ref.watch(usuarioProvider)!.id &&
+                              !msg[0]['visto']) {
+                            ref
+                                .read(chatProvider.notifier)
+                                .actualizarMensajesVistos(chat.id, data.id);
+                          }
+                        });
+
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => VerChatScreen(data.id, chat.id),
                         ));

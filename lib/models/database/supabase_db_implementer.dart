@@ -222,9 +222,20 @@ class SupabaseDB implements Database {
           'participantes_chat',
         )
         .select(
-          'chat_id',
+          'chat_id, chat(ultimo_mensaje_mandado)',
         )
-        .match({'usuario_id': idUser});
+        .match({'usuario_id': idUser}).order(
+      'ultimo_mensaje_mandado',
+      foreignTable: 'chat',
+      ascending: false,
+    );
+
+    consulta.sort(
+      (a, b) {
+        return DateTime.parse(b['chat']['ultimo_mensaje_mandado'] as String)
+            .compareTo(DateTime.parse(a['chat']['ultimo_mensaje_mandado']));
+      },
+    );
 
     final List idsChat = consulta.map((e) {
       return e['chat_id'];
@@ -262,9 +273,9 @@ class SupabaseDB implements Database {
       'contenido': text,
       'creador': creadorId,
     });
-    await sp
+    /*await sp
         .from('chat')
-        .update({'ultimo_mensaje_mandado': DateTime.now().toIso8601String()}).match({'id': chatId});
+        .update({'ultimo_mensaje_mandado': DateTime.now().toIso8601String()}).match({'id': chatId});*/
   }
 
   @override

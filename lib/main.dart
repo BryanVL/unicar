@@ -99,14 +99,14 @@ class MyApp extends ConsumerWidget {
           ),
         ),
         foregroundColor: Colors.white,
-        backgroundColor: Colors.blue[600], /*const Color.fromARGB(255, 252, 252,
+        backgroundColor: Colors.blue[800], /*const Color.fromARGB(255, 252, 252,
             252),*/
       ),
       tabBarTheme: TabBarTheme(
         unselectedLabelColor: Colors.black,
         indicator: BoxDecoration(
           borderRadius: BorderRadius.circular(25.0),
-          color: Colors.lightBlue,
+          color: Colors.blue,
         ),
       ),
       buttonTheme: const ButtonThemeData(

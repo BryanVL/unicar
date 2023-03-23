@@ -141,6 +141,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                     } else if (int.parse(plazasController.text) <= 0) {
                       return 'Debe haber al menos una plaza';
                     }
+                    return null;
                   },
                   tipoInput: [FilteringTextInputFormatter.digitsOnly],
                   tipoTeclado: TextInputType.number,

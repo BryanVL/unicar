@@ -116,7 +116,7 @@ class TarjetaChat extends ConsumerWidget {
                       onTap: () {
                         ref.read(chatProvider.notifier).actualizarMensajesVistos(chat.id, data.id);
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => VerChatScreen(data.id),
+                          builder: (context) => VerChatScreen(data.id, chat.id),
                         ));
                       },
                       splashColor: Colors.blue[300],
@@ -130,12 +130,9 @@ class TarjetaChat extends ConsumerWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               image: DecorationImage(
-                                image: ref.read(
-                                    imagenDefectoProvider), //AssetImage('lib/assets/defaultProfile.png'),
-                                /*NetworkImage(
-                                  //TODO icono
-                                  'https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg',
-                                ),*/
+                                image: data.urlIcono != null
+                                    ? NetworkImage(data.urlIcono!)
+                                    : ref.read(imagenDefectoProvider),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -152,7 +149,7 @@ class TarjetaChat extends ConsumerWidget {
                                   type: MaterialType.transparency,
                                   child: Text(
                                     maxLines: 1,
-                                    data.nombre!,
+                                    data.nombre,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w800,
                                       fontSize: 22.0,

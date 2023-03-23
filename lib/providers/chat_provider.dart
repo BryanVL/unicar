@@ -40,16 +40,18 @@ eso ordenar los chats*/
     return Future.value(res);
   }
 
-  void crearChat(String idReceptor) async {
-    if (buscarIdDeChat(idReceptor) == null) {
+  Future<int> crearChat(String idReceptor) async {
+    int? idChat = buscarIdDeChat(idReceptor);
+    if (idChat == null) {
       final String idUsuario = ref.read(usuarioProvider)!.id;
-      final int idChat = await ref.read(databaseProvider).crearChat(idReceptor);
+      idChat = await ref.read(databaseProvider).crearChat(idReceptor);
 
       final nuevoChat = Chat(idChat, idUsuario, idReceptor);
       state = await AsyncValue.guard(() {
         return Future(() => [nuevoChat, ...(state.value!)]);
       });
     }
+    return idChat;
   }
 
   int? buscarIdDeChat(String idReceptor) {

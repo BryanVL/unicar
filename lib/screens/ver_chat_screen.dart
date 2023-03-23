@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/mensaje.dart';
-import 'package:unicar/providers/chat_provider.dart';
 import 'package:unicar/providers/mensajes_provider.dart';
 import 'package:unicar/widgets/mensaje.dart';
 
@@ -10,17 +9,18 @@ import '../widgets/cuadro_envio_mensaje.dart';
 
 class VerChatScreen extends ConsumerWidget {
   const VerChatScreen(
-    this.idUsuarioAjeno, {
+    this.idUsuarioAjeno,
+    this.chatId, {
     super.key,
   });
 
   final String idUsuarioAjeno;
+  final int chatId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final usuario = ref.watch(usuarioAjeno(idUsuarioAjeno));
-    final idChat = ref.read(chatProvider.notifier).buscarIdDeChat(idUsuarioAjeno);
-    final mensajes = ref.watch(mensajesProvider(idChat!));
+    final mensajes = ref.watch(mensajesProvider(chatId));
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -28,7 +28,7 @@ class VerChatScreen extends ConsumerWidget {
         title: usuario.when(
           data: (data) {
             return Text(
-              data.nombre!,
+              data.nombre,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w500,
@@ -76,7 +76,7 @@ class VerChatScreen extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: EnvioMensajeWidget(idUsuarioAjeno),
+            child: EnvioMensajeWidget(idUsuarioAjeno, chatId),
           ),
         ],
       ),

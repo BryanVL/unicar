@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:unicar/providers/chat_provider.dart';
 import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/widgets/textform.dart';
 
 class EnvioMensajeWidget extends ConsumerWidget {
-  EnvioMensajeWidget(this.idUsuarioAjeno, {super.key});
+  EnvioMensajeWidget(this.idUsuarioAjeno, this.chatId, {super.key});
   final String idUsuarioAjeno;
+  final int chatId;
 
   final TextEditingController _mensaje = TextEditingController();
 
@@ -39,10 +39,9 @@ class EnvioMensajeWidget extends ConsumerWidget {
           iconSize: 42,
           onPressed: () {
             if (_mensaje.text != '') {
-              ref.read(databaseProvider).enviarMensaje(
-                  ref.read(chatProvider.notifier).buscarIdDeChat(idUsuarioAjeno)!,
-                  _mensaje.text,
-                  ref.read(usuarioProvider)!.id);
+              ref
+                  .read(databaseProvider)
+                  .enviarMensaje(chatId, _mensaje.text, ref.read(usuarioProvider)!.id);
               _mensaje.text = '';
             }
           },

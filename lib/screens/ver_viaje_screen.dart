@@ -32,6 +32,14 @@ class VerViajeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pasajeros = ref.watch(pasajerosViajeProvider(oferta.id));
     final plazasD = ref.watch(plazasProvider(oferta.id));
+    String? imagenUsuario;
+
+    if (TipoViaje.propio != tipo) {
+      final usr = ref.watch(usuarioAjeno(oferta.creadoPor));
+      usr.whenData((value) => imagenUsuario = value.urlIcono);
+    } else {
+      imagenUsuario = ref.watch(usuarioProvider)!.urlIcono;
+    }
 
     final botonEliminar = Boton(
       colorBoton: Colors.red,
@@ -80,10 +88,11 @@ class VerViajeScreen extends ConsumerWidget {
       textSize: 16,
       paddingTodo: 16,
       funcion: () async {
+        final chatId = await ref.read(chatProvider.notifier).crearChat(oferta.creadoPor);
+
         if (context.mounted) {
-          ref.read(chatProvider.notifier).crearChat(oferta.creadoPor);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => VerChatScreen(oferta.creadoPor),
+            builder: (context) => VerChatScreen(oferta.creadoPor, chatId),
           ));
         }
       },
@@ -166,9 +175,9 @@ class VerViajeScreen extends ConsumerWidget {
                     tag: 'imagenUsuario${oferta.id}',
                     child: CircleAvatar(
                       backgroundColor: Colors.grey,
-                      backgroundImage: ref.read(imagenDefectoProvider),
-                      /*AssetImage(
-                          'lib/assets/defaultProfile.png'),*/ //NetworkImage(oferta.urlIcono!), //TODO cosa de imagen
+                      backgroundImage: imagenUsuario != null
+                          ? NetworkImage(imagenUsuario!)
+                          : ref.read(imagenDefectoProvider),
                       radius: 35,
                     ),
                   ),
@@ -332,10 +341,12 @@ class VerViajeScreen extends ConsumerWidget {
                                         child: ListTile(
                                           leading: CircleAvatar(
                                             backgroundColor: Colors.grey,
-                                            backgroundImage: ref.read(imagenDefectoProvider),
+                                            backgroundImage: element.urlIcono != null
+                                                ? NetworkImage(element.urlIcono!)
+                                                : ref.read(imagenDefectoProvider),
                                             radius: 20,
                                           ),
-                                          title: Text(element.nombre!),
+                                          title: Text(element.nombre),
                                           shape: RoundedRectangleBorder(
                                               side: const BorderSide(width: 1, color: Colors.blue),
                                               borderRadius: BorderRadius.circular(15)),
@@ -420,9 +431,6 @@ class VerViajeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-
-            //TODO poner aqui listview para poner tarjetas por cada usuario que sea pasajero
-            //con un boton para eliminarlo
             Padding(
               padding: const EdgeInsets.only(top: 48.0, bottom: 32),
               child: Row(

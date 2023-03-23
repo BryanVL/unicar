@@ -311,7 +311,7 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
       titulo: titulo,
       descripcion: descripcion,
       creadoPor: user!.id,
-      nombreCreador: user.nombre!,
+      nombreCreador: user.nombre,
       paraEstarA: paraEstarA,
       coordOrigen: coordOrigen,
       radioOrigen: radioOrigen,

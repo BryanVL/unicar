@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/providers/tema_provider.dart';
+import 'package:unicar/screens/cambiar_nombre_screen.dart';
 import 'package:unicar/screens/chats_screen.dart';
 import 'package:unicar/screens/comprobacion_sesion_screen.dart';
 import 'package:unicar/screens/configuracion_screen.dart';
 import 'package:unicar/screens/crear_oferta_screen.dart';
+import 'package:unicar/screens/datos_extra_defecto_screen.dart';
 import 'package:unicar/screens/filtrar_screen.dart';
 import 'package:unicar/screens/login_screen.dart';
 import 'package:unicar/screens/mis_viajes_screen.dart';
@@ -132,6 +134,8 @@ class MyApp extends ConsumerWidget {
         ConfiguracionScreen.kRouteName: (context) => const ConfiguracionScreen(),
         RegisterScreen.kRouteName: (context) => const RegisterScreen(),
         NuevoUsuarioScreen.kRouteName: (context) => const NuevoUsuarioScreen(),
+        DatosExtraDefectoScreen.kRouteName: (context) => const DatosExtraDefectoScreen(),
+        CambiarNombreScreen.kRouteName: (context) => const CambiarNombreScreen(),
       },
     );
   }

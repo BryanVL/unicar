@@ -11,6 +11,8 @@ import 'package:unicar/widgets/seleccion_posicion.dart';
 import 'package:unicar/widgets/textform.dart';
 import 'package:unicar/widgets/texto.dart';
 
+import '../providers/usuario_provider.dart';
+
 class CrearOferta extends ConsumerStatefulWidget {
   const CrearOferta({super.key});
 
@@ -29,6 +31,13 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
   bool periodico = false;
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    descripcionController.text = ref.read(usuarioProvider)!.descripcionDefecto ?? '';
+    tituloController.text = ref.read(usuarioProvider)!.tituloDefecto ?? '';
+  }
 
   @override
   void dispose() {

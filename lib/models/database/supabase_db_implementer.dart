@@ -319,4 +319,10 @@ class SupabaseDB implements Database {
       },
     );
   }
+
+  @override
+  void actualizarDatosExtraUsuario(String userId, String titulo, String descripcion) async {
+    await sp.from('usuario').update(
+        {'titulo_defecto': titulo, 'descripcion_defecto': descripcion}).match({'id': userId});
+  }
 }

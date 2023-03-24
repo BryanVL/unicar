@@ -45,4 +45,31 @@ class Usuario {
         radioOrigenDefecto = json['radio_origen_defecto'],
         radioDestinoDefecto = json['radio_destino_defecto'],
         urlIcono = json['url_icono'];
+
+  copyWith({
+    String? nombre,
+    String? tituloDefecto,
+    String? descripcionDefecto,
+    String? origenDefecto,
+    String? destinoDefecto,
+    LatLng? coordOrigenDefecto,
+    int? radioOrigenDefecto,
+    LatLng? coordDestinoDefecto,
+    int? radioDestinoDefecto,
+    String? urlIcono,
+  }) {
+    return Usuario(
+      id: id,
+      nombre: nombre ?? this.nombre,
+      tituloDefecto: tituloDefecto ?? this.tituloDefecto,
+      descripcionDefecto: descripcionDefecto ?? this.descripcionDefecto,
+      origenDefecto: origenDefecto ?? this.origenDefecto,
+      destinoDefecto: destinoDefecto ?? this.destinoDefecto,
+      coordOrigenDefecto: coordOrigenDefecto ?? this.coordOrigenDefecto,
+      coordDestinoDefecto: coordDestinoDefecto ?? this.coordDestinoDefecto,
+      radioOrigenDefecto: radioOrigenDefecto ?? this.radioOrigenDefecto,
+      radioDestinoDefecto: radioDestinoDefecto ?? this.radioDestinoDefecto,
+      urlIcono: urlIcono ?? this.urlIcono,
+    );
+  }
 }

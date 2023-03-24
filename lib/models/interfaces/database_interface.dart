@@ -53,6 +53,7 @@ abstract class Database {
   );
   void cerrarSesion();
   void borrarCuenta(String idUser);
+  void actualizarDatosExtraUsuario(String userId, String titulo, String descripcion);
   Future<Session?> comprobarSesion();
   Future<List> recogerIdsChats(String idUser);
   Future<List> recogerUsuariosAjenosChat(int idChat, String idUser);

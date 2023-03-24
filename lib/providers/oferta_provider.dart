@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:latlong2/latlong.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/localizacion.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/localizacion_provider.dart';
@@ -71,6 +72,10 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     });
   }
 
+  bool _puntosIntersecan(LatLng p1, LatLng p2, int radioP1, int radioP2) {
+    return ref.read(geolocationProvider).distanciaEntreDosPuntos(p1, p2) <= (radioP1 + radioP2);
+  }
+
 //TODO filtros con consultas a la base de datos en vez de local
 //Se puede hacer igual que como esta ahora pero si lo que se recibe no es null se
 //hace una consulta con el origen puesto y si luego se pone un destino se cojen los viajes
@@ -82,7 +87,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     LocalizacionPersonalizada? origenP,
     LocalizacionPersonalizada? destinoP,
     int groupValue,
-  ) {
+  ) async {
     List<Oferta> nuevoEstado = [];
     List<Oferta> aux = [];
     bool filtroPosicionAplicado = false;
@@ -94,6 +99,45 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     }
 
     List<Oferta> ofertas = state.whenData((value) => value).value!;
+
+    /*if (origen != 'Selecciona uno') {
+      filtroOrigen = origen;
+      final consultaO = await Supabase.instance.client
+          .from('viaje')
+          .select('*, usuario!viaje_creado_por_fkey(nombre)')
+          .match({'origen': origen});
+
+      nuevoEstado.addAll(Oferta.fromList(consultaO));
+    }
+
+    if (destino != 'Selecciona uno') {
+      filtroDestino = destino;
+      final consultaD = await Supabase.instance.client
+          .from('viaje')
+          .select('*, usuario!viaje_creado_por_fkey(nombre)')
+          .match({'destino': destino});
+      final c = Oferta.fromList(consultaD);
+      if (nuevoEstado.isNotEmpty) {
+        nuevoEstado = nuevoEstado
+            .where((element) => c.indexWhere((element2) => element.id == element2.id) != -1)
+            .toList();
+      } else {
+        nuevoEstado.addAll(c);
+      }
+    }
+
+    //TODO tendria que recoger todos los viajes disponibles y filtrar en local con las posiciones personalizadas
+    //TODO filtrar primero por hora que es más restrictivo y si en algun momento
+    //la lista esta vacia no hacer nada más
+    if (origenP != null) {
+      filtroOrigenP = origenP;
+      final consultaO = await Supabase.instance.client
+          .from('viaje')
+          .select('*, usuario!viaje_creado_por_fkey(nombre)')
+          .match({'latitud': origen});
+
+      nuevoEstado.addAll(Oferta.fromList(consultaO));
+    }*/
 
     if (origenP == null && destinoP == null) {
       if (origen != 'Selecciona uno') {
@@ -127,10 +171,8 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
           ofertas.where(
             (element) {
               return element.coordOrigen != null
-                  ? ref
-                          .read(geolocationProvider)
-                          .distanciaEntreDosPuntos(element.coordOrigen!, origenP.coordenadas) <=
-                      (element.radioOrigen! + origenP.radio)
+                  ? _puntosIntersecan(element.coordOrigen!, origenP.coordenadas,
+                      element.radioOrigen!, origenP.radio)
                   : false;
             },
           ),
@@ -150,10 +192,8 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
             nuevoEstado.where(
               (element) {
                 return element.coordDestino != null
-                    ? ref
-                            .read(geolocationProvider)
-                            .distanciaEntreDosPuntos(element.coordDestino!, destinoP.coordenadas) <=
-                        (element.radioDestino! + destinoP.radio)
+                    ? _puntosIntersecan(element.coordDestino!, destinoP.coordenadas,
+                        element.radioDestino!, destinoP.radio)
                     : false;
               },
             ),
@@ -166,10 +206,8 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
             ofertas.where(
               (element) {
                 return element.coordDestino != null
-                    ? ref
-                            .read(geolocationProvider)
-                            .distanciaEntreDosPuntos(element.coordDestino!, destinoP.coordenadas) <=
-                        (element.radioDestino! + destinoP.radio)
+                    ? _puntosIntersecan(element.coordDestino!, destinoP.coordenadas,
+                        element.radioDestino!, destinoP.radio)
                     : false;
               },
             ),

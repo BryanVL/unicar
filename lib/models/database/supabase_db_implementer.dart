@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/interfaces/database_interface.dart';
+import 'package:unicar/models/mensaje.dart';
 import 'package:unicar/models/usuario.dart';
+import 'package:unicar/providers/mensajes_provider.dart';
 
 class SupabaseDB implements Database {
   final sp = Supabase.instance.client;
@@ -324,5 +326,30 @@ class SupabaseDB implements Database {
   void actualizarDatosExtraUsuario(String userId, String titulo, String descripcion) async {
     await sp.from('usuario').update(
         {'titulo_defecto': titulo, 'descripcion_defecto': descripcion}).match({'id': userId});
+  }
+
+  @override
+  Future<List<Mensaje>> recogerMensajesChat(int idChat) async {
+    final List consulta = await sp.from('mensaje').select('*').match({'chat_id': idChat});
+    return Mensaje.fromList(consulta);
+  }
+
+  @override
+  RealtimeChannel escucharMensajes(int idChat) {
+    print('hola');
+    return sp.channel('chat$idChat');
+    /*canal.on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(
+        event: 'INSERT',
+        schema: 'public',
+        table: 'mensaje',
+        filter: 'chat_id=$idChat',
+      ),
+      (payload, [ref]) {
+        print('Change received: ${payload.toString()}');
+        ref.read(nuevoMensajesProvider(idChat).);
+      },
+    ).subscribe();*/
   }
 }

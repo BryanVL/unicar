@@ -3,6 +3,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/usuario.dart';
 
+import '../mensaje.dart';
+
 abstract class Database {
   Future<List> recogerViajesAjenos(String idUser);
   Future<List> usuarioEsPasajero(String idUser);
@@ -62,4 +64,6 @@ abstract class Database {
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat);
   void enviarMensaje(int chatId, String text, String creadorId);
   void actualizarEstadoMensajes(int chatId, String usuarioAjenoId);
+  Future<List<Mensaje>> recogerMensajesChat(int idChat);
+  RealtimeChannel escucharMensajes(int idChat);
 }

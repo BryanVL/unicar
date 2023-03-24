@@ -23,6 +23,10 @@ class Mensaje {
         visto = json['visto'];
   //creadoEn = json['created_at'];
 
+  static List<Mensaje> fromList(List datos) {
+    return datos.map((e) => Mensaje.fromKeyValue(e)).toList();
+  }
+
   Mensaje.vacio()
       : id = 0,
         idUsuarioCreador = '',

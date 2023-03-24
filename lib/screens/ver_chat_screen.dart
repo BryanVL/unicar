@@ -20,7 +20,7 @@ class VerChatScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final usuario = ref.watch(usuarioAjeno(idUsuarioAjeno));
-    final mensajes = ref.watch(mensajesProvider(chatId));
+    final mensajes = ref.watch(nuevoMensajesProvider(chatId));
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -62,7 +62,7 @@ class VerChatScreen extends ConsumerWidget {
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     //print(data);
-                    return MensajeWidget(msg: Mensaje.fromKeyValue(data[index]));
+                    return MensajeWidget(msg: data[index] /*Mensaje.fromKeyValue(data[index])*/);
                   },
                 );
               },

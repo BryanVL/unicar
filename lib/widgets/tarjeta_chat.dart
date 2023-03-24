@@ -21,7 +21,7 @@ class TarjetaChat extends ConsumerWidget {
         ? chat.usuarioReceptor
         : chat.usuarioCreador;
     final otroUsuario = ref.watch(usuarioAjeno(idBuscar));
-    final ultimoMensaje = ref.watch(mensajesProvider(chat.id));
+    final ultimoMensaje = ref.watch(nuevoMensajesProvider(chat.id));
     //Este listen hace que el chat se ponga el primero si alguien manda un mensaje
     ref.listen(mensajesProvider(chat.id), (AsyncValue<List<Map<String, dynamic>>>? previous,
         AsyncValue<List<Map<String, dynamic>>>? next) {
@@ -57,8 +57,8 @@ class TarjetaChat extends ConsumerWidget {
       color: ultimoMensaje.when(
         data: (msg) {
           return msg.isEmpty ||
-                  msg[0]['creador'] == ref.watch(usuarioProvider)!.id ||
-                  msg[0]['visto']
+                  msg[0].idUsuarioCreador == ref.watch(usuarioProvider)!.id ||
+                  msg[0].visto
               ? Colors.white
               : const Color.fromARGB(255, 220, 220, 255);
         },
@@ -88,8 +88,8 @@ class TarjetaChat extends ConsumerWidget {
       color: ultimoMensaje.when(
         data: (msg) {
           return msg.isEmpty ||
-                  msg[0]['creador'] == ref.watch(usuarioProvider)!.id ||
-                  msg[0]['visto']
+                  msg[0].idUsuarioCreador == ref.watch(usuarioProvider)!.id ||
+                  msg[0].visto
               ? const Color.fromARGB(255, 29, 26, 26)
               : const Color.fromARGB(255, 220, 220, 255);
         },
@@ -123,8 +123,8 @@ class TarjetaChat extends ConsumerWidget {
                       onTap: () {
                         ultimoMensaje.whenData((msg) {
                           if (msg.isNotEmpty &&
-                              msg[0]['creador'] != ref.watch(usuarioProvider)!.id &&
-                              !msg[0]['visto']) {
+                              msg[0].idUsuarioCreador != ref.watch(usuarioProvider)!.id &&
+                              !msg[0].visto) {
                             ref
                                 .read(chatProvider.notifier)
                                 .actualizarMensajesVistos(chat.id, data.id);
@@ -179,7 +179,7 @@ class TarjetaChat extends ConsumerWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 4.0),
                                   child: Text(
-                                    msg.isEmpty ? '' : msg[0]['contenido'],
+                                    msg.isEmpty ? '' : msg[0].contenido,
                                     maxLines: 1,
                                     style: const TextStyle(
                                       fontSize: 18.0,

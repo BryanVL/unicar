@@ -26,22 +26,13 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await ref.read(databaseProvider).recogerViajesAjenos(
-          ref.read(usuarioProvider)!.id,
-        );
-
-    final List consultaPasajero = await ref.read(databaseProvider).usuarioEsPasajero(
-          ref.read(usuarioProvider)!.id,
-        );
-
-    final listaViajes = Oferta.fromList(consultaViajes);
-    final List<int> idsQuitar = consultaPasajero.map((e) => e['id_viaje'] as int).toList();
-
-    final List<Oferta> res = listaViajes.where((e) {
-      return !idsQuitar.contains(e.id);
-    }).toList();
-
-    return Future.value(res);
+    return Future.value(
+      Oferta.fromList(
+        await ref.read(databaseProvider).recogerViajesAjenos(
+              ref.read(usuarioProvider)!.id,
+            ),
+      ),
+    );
   }
 
   void addOferta(Oferta oferta) async {
@@ -264,11 +255,13 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await ref.read(databaseProvider).viajesDelUsuario(
-          ref.read(usuarioProvider)!.id,
-        );
-
-    return Future.value(Oferta.fromList(consultaViajes));
+    return Future.value(
+      Oferta.fromList(
+        await ref.read(databaseProvider).viajesDelUsuario(
+              ref.read(usuarioProvider)!.id,
+            ),
+      ),
+    );
   }
 
   void addNewOferta(
@@ -413,22 +406,13 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await ref.read(databaseProvider).recogerViajesApuntado(
-          ref.read(usuarioProvider)!.id,
-        );
-
-    final List consultaPasajero = await ref.read(databaseProvider).usuarioEsPasajero(
-          ref.read(usuarioProvider)!.id,
-        );
-
-    final listaViajes = Oferta.fromList(consultaViajes);
-    final List<int> idsQuitar = consultaPasajero.map((e) => e['id_viaje'] as int).toList();
-
-    final List<Oferta> res = listaViajes.where((e) {
-      return idsQuitar.contains(e.id);
-    }).toList();
-
-    return Future.value(res);
+    return Future.value(
+      Oferta.fromList(
+        await ref.read(databaseProvider).recogerViajesApuntado(
+              ref.read(usuarioProvider)!.id,
+            ),
+      ),
+    );
   }
 
   void cancelarReserva(Oferta oferta) {

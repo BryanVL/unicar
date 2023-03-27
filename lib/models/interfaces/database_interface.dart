@@ -5,7 +5,6 @@ import 'package:unicar/models/usuario.dart';
 
 abstract class Database {
   Future<List> recogerViajesAjenos(String idUser);
-  Future<List> usuarioEsPasajero(String idUser);
   Future<List> recogerViajesApuntado(String idUser);
   Future<List> viajesDelUsuario(String idUser);
   Future<int> crearViaje({

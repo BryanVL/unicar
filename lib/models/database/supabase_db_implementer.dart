@@ -96,9 +96,10 @@ class SupabaseDB implements Database {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono)',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono), es_pasajero!inner(id_usuario)',
         )
         .neq('creado_por', idUser)
+        .neq('es_pasajero.id_usuario', idUser)
         .gt('plazas_disponibles', 0)
         .gte('hora', DateTime.now().subtract(const Duration(minutes: 15)))
         .order('created_at');
@@ -115,18 +116,6 @@ class SupabaseDB implements Database {
         },
       );
     }
-  }
-
-  @override
-  Future<List> usuarioEsPasajero(String idUser) async {
-    return await sp
-        .from(
-          'es_pasajero',
-        )
-        .select(
-          'id_viaje',
-        )
-        .eq('id_usuario', idUser);
   }
 
   @override
@@ -150,9 +139,10 @@ class SupabaseDB implements Database {
           'viaje',
         )
         .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono)',
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono), es_pasajero!inner(id_usuario)',
         )
         .neq('creado_por', idUser)
+        .eq('es_pasajero.id_usuario', idUser)
         .gte('hora', DateTime.now().subtract(const Duration(hours: 3)))
         .order('created_at');
   }

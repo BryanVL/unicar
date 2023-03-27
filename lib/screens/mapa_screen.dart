@@ -94,6 +94,17 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
               ? LatLng(data.latitude, data.longitude)
               : LatLng(36.72016000, -4.42034000);
 
+          final marcadorUsuario = Marker(
+            point: LatLng(data!.latitude, data.longitude),
+            rotate: true,
+            width: 60,
+            builder: (context) => const Icon(
+              size: 40,
+              Icons.person,
+              color: Colors.blue,
+            ),
+          );
+
           return Stack(
             children: [
               FlutterMap(
@@ -126,7 +137,7 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                     userAgentPackageName: 'com.example.unicar',
                   ),
                   CircleLayer(circles: posCirculos),
-                  MarkerLayer(markers: posicionesMarcadores),
+                  MarkerLayer(markers: [marcadorUsuario, ...posicionesMarcadores]),
                 ],
               ),
               Column(

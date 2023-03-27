@@ -1,4 +1,5 @@
 import 'package:latlong2/latlong.dart';
+import 'package:unicar/models/usuario.dart';
 
 class Oferta {
   final int id;
@@ -14,8 +15,7 @@ class Oferta {
   final int plazasDisponibles;
   final String? titulo;
   final String? descripcion;
-  final String creadoPor;
-  final String nombreCreador;
+  final Usuario creador;
   final bool paraEstarA;
   final bool esPeriodico;
 
@@ -33,8 +33,7 @@ class Oferta {
     required this.plazasDisponibles,
     this.titulo,
     this.descripcion,
-    required this.creadoPor,
-    required this.nombreCreador,
+    required this.creador,
     required this.paraEstarA,
     required this.esPeriodico,
   });
@@ -45,7 +44,11 @@ class Oferta {
         destino = json['destino']!,
         hora = json['hora']!,
         creadoEn = json['created_at'],
-        creadoPor = json['creado_por'],
+        creador = Usuario(
+          id: json['creado_por'],
+          nombre: json['usuario']['nombre'],
+          urlIcono: json['usuario']['url_icono'],
+        ),
         descripcion = json['descripcion'],
         coordOrigen = json['latitud_origen'] == null
             ? null
@@ -55,7 +58,6 @@ class Oferta {
             ? null
             : LatLng(json['latitud_destino'] as double, json['longitud_destino'] as double),
         radioDestino = json['radio_destino'] as int?,
-        nombreCreador = json['usuario']['nombre'],
         plazasDisponibles = json['plazas_disponibles'] as int,
         plazasTotales = json['plazas_totales'] as int,
         titulo = (json['titulo'] == null || json['titulo'] == '')
@@ -77,8 +79,7 @@ class Oferta {
     int? plazasDisponibles,
     String? titulo,
     String? descripcion,
-    String? creadoPor,
-    String? nombreCreador,
+    Usuario? creador,
     bool? paraEstarA,
     bool? esPeriodico,
   }) {
@@ -96,8 +97,7 @@ class Oferta {
       plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
       plazasTotales: plazasTotales ?? this.plazasTotales,
       titulo: titulo ?? this.titulo,
-      creadoPor: creadoPor ?? this.creadoPor,
-      nombreCreador: nombreCreador ?? this.nombreCreador,
+      creador: creador ?? this.creador,
       paraEstarA: paraEstarA ?? this.paraEstarA,
       esPeriodico: esPeriodico ?? this.esPeriodico,
     );
@@ -116,8 +116,7 @@ class Oferta {
     int? plazasDisponibles,
     String? titulo,
     String? descripcion,
-    String? creadoPor,
-    String? nombreCreador,
+    Usuario? creador,
     bool? paraEstarA,
     bool? esPeriodico,
   }) {
@@ -135,8 +134,7 @@ class Oferta {
       plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
       plazasTotales: plazasTotales ?? this.plazasTotales,
       titulo: titulo ?? this.titulo,
-      creadoPor: creadoPor ?? this.creadoPor,
-      nombreCreador: nombreCreador ?? this.nombreCreador,
+      creador: creador ?? this.creador,
       paraEstarA: paraEstarA ?? this.paraEstarA,
       esPeriodico: esPeriodico ?? this.esPeriodico,
     );

@@ -19,15 +19,6 @@ class TarjetaViajeWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String? imagenUsuario;
-
-    if (TipoViaje.propio != tipo) {
-      final usr = ref.watch(usuarioAjeno(oferta.creadoPor));
-      usr.whenData((value) => imagenUsuario = value.urlIcono);
-    } else {
-      imagenUsuario = ref.watch(usuarioProvider)!.urlIcono;
-    }
-
     final tema = ref.watch(temaProvider).when(
           data: (data) => data == 'claro' ? true : false,
           error: (error, stackTrace) => true,
@@ -113,8 +104,8 @@ class TarjetaViajeWidget extends ConsumerWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                        image: imagenUsuario != null
-                            ? NetworkImage(imagenUsuario!)
+                        image: oferta.creador.urlIcono != null
+                            ? NetworkImage(oferta.creador.urlIcono!)
                             : ref.read(imagenDefectoProvider),
                         fit: BoxFit.cover,
                       ),

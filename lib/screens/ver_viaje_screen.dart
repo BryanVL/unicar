@@ -32,14 +32,6 @@ class VerViajeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pasajeros = ref.watch(pasajerosViajeProvider(oferta.id));
     final plazasD = ref.watch(plazasProvider(oferta.id));
-    String? imagenUsuario;
-
-    if (TipoViaje.propio != tipo) {
-      final usr = ref.watch(usuarioAjeno(oferta.creadoPor));
-      usr.whenData((value) => imagenUsuario = value.urlIcono);
-    } else {
-      imagenUsuario = ref.watch(usuarioProvider)!.urlIcono;
-    }
 
     final botonEliminar = Boton(
       colorBoton: Colors.red,
@@ -88,11 +80,11 @@ class VerViajeScreen extends ConsumerWidget {
       textSize: 16,
       paddingTodo: 16,
       funcion: () async {
-        final chatId = await ref.read(chatProvider.notifier).crearChat(oferta.creadoPor);
+        final chatId = await ref.read(chatProvider.notifier).crearChat(oferta.creador.id);
 
         if (context.mounted) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => VerChatScreen(oferta.creadoPor, chatId),
+            builder: (context) => VerChatScreen(oferta.creador.id, chatId),
           ));
         }
       },
@@ -175,8 +167,8 @@ class VerViajeScreen extends ConsumerWidget {
                     tag: 'imagenUsuario${oferta.id}',
                     child: CircleAvatar(
                       backgroundColor: Colors.grey,
-                      backgroundImage: imagenUsuario != null
-                          ? NetworkImage(imagenUsuario!)
+                      backgroundImage: oferta.creador.urlIcono != null
+                          ? NetworkImage(oferta.creador.urlIcono!)
                           : ref.read(imagenDefectoProvider),
                       radius: 35,
                     ),
@@ -184,7 +176,7 @@ class VerViajeScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: Text(
-                      oferta.nombreCreador,
+                      oferta.creador.nombre,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,

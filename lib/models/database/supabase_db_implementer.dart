@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unicar/models/interfaces/database_interface.dart';
+import 'package:unicar/models/oferta.dart';
 import 'package:unicar/models/usuario.dart';
 
 class SupabaseDB implements Database {
@@ -90,19 +91,21 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List> recogerViajesAjenos(String idUser) async {
-    return await sp
-        .from(
-          'viaje',
-        )
-        .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono), es_pasajero!inner(id_usuario)',
-        )
-        .neq('creado_por', idUser)
-        .neq('es_pasajero.id_usuario', idUser)
-        .gt('plazas_disponibles', 0)
-        .gte('hora', DateTime.now().subtract(const Duration(minutes: 15)))
-        .order('created_at');
+  Future<List<Oferta>> recogerViajesAjenos(String idUser) async {
+    return Oferta.fromList(
+      await sp
+          .from(
+            'viaje',
+          )
+          .select(
+            'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono), es_pasajero!inner(id_usuario)',
+          )
+          .neq('creado_por', idUser)
+          .neq('es_pasajero.id_usuario', idUser)
+          .gt('plazas_disponibles', 0)
+          .gte('hora', DateTime.now().subtract(const Duration(minutes: 15)))
+          .order('created_at'),
+    );
   }
 
   @override
@@ -119,32 +122,36 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List> viajesDelUsuario(String idUser) async {
-    return await sp
-        .from(
-          'viaje',
-        )
-        .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono)',
-        )
-        .eq('creado_por', idUser)
-        .gte('hora', DateTime.now().subtract(const Duration(hours: 3)))
-        .order('created_at');
+  Future<List<Oferta>> viajesDelUsuario(String idUser) async {
+    return Oferta.fromList(
+      await sp
+          .from(
+            'viaje',
+          )
+          .select(
+            'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono)',
+          )
+          .eq('creado_por', idUser)
+          .gte('hora', DateTime.now().subtract(const Duration(hours: 3)))
+          .order('created_at'),
+    );
   }
 
   @override
-  Future<List> recogerViajesApuntado(String idUser) async {
-    return await sp
-        .from(
-          'viaje',
-        )
-        .select(
-          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono), es_pasajero!inner(id_usuario)',
-        )
-        .neq('creado_por', idUser)
-        .eq('es_pasajero.id_usuario', idUser)
-        .gte('hora', DateTime.now().subtract(const Duration(hours: 3)))
-        .order('created_at');
+  Future<List<Oferta>> recogerViajesApuntado(String idUser) async {
+    return Oferta.fromList(
+      await sp
+          .from(
+            'viaje',
+          )
+          .select(
+            'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono), es_pasajero!inner(id_usuario)',
+          )
+          .neq('creado_por', idUser)
+          .eq('es_pasajero.id_usuario', idUser)
+          .gte('hora', DateTime.now().subtract(const Duration(hours: 3)))
+          .order('created_at'),
+    );
   }
 
   @override
@@ -206,7 +213,7 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List> recogerIdsChats(String idUser) async {
+  Future<List<int>> recogerIdsChats(String idUser) async {
     final List consulta = await sp
         .from(
           'participantes_chat',
@@ -227,8 +234,8 @@ class SupabaseDB implements Database {
       },
     );
 
-    final List idsChat = consulta.map((e) {
-      return e['chat_id'];
+    final List<int> idsChat = consulta.map((e) {
+      return e['chat_id'] as int;
     }).toList();
 
     return idsChat;
@@ -245,14 +252,14 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List> recogerUsuariosAjenosChat(int idChat, String idUser) async {
+  Future<List<String>> recogerUsuariosAjenosChat(int idChat, String idUser) async {
     final List consulta = await sp
         .from('participantes_chat')
         .select('usuario_id')
         .eq('chat_id', idChat)
         .neq('usuario_id', idUser);
     return consulta.map((e) {
-      return e['usuario_id'];
+      return e['usuario_id'] as String;
     }).toList();
   }
 

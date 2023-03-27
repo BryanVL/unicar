@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unicar/models/oferta.dart';
 import 'package:unicar/models/usuario.dart';
 
 abstract class Database {
-  Future<List> recogerViajesAjenos(String idUser);
-  Future<List> recogerViajesApuntado(String idUser);
-  Future<List> viajesDelUsuario(String idUser);
+  Future<List<Oferta>> recogerViajesAjenos(String idUser);
+  Future<List<Oferta>> recogerViajesApuntado(String idUser);
+  Future<List<Oferta>> viajesDelUsuario(String idUser);
   Future<int> crearViaje({
     required String origen,
     required String destino,
@@ -54,8 +55,8 @@ abstract class Database {
   void borrarCuenta(String idUser);
   void actualizarDatosExtraUsuario(String userId, String titulo, String descripcion);
   Future<Session?> comprobarSesion();
-  Future<List> recogerIdsChats(String idUser);
-  Future<List> recogerUsuariosAjenosChat(int idChat, String idUser);
+  Future<List<int>> recogerIdsChats(String idUser);
+  Future<List<String>> recogerUsuariosAjenosChat(int idChat, String idUser);
   Future<int> crearChat(String otroUsuario);
 
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat);

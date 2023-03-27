@@ -27,11 +27,9 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
 
   Future<List<Oferta>> _inicializarLista() async {
     return Future.value(
-      Oferta.fromList(
-        await ref.read(databaseProvider).recogerViajesAjenos(
-              ref.read(usuarioProvider)!.id,
-            ),
-      ),
+      await ref.read(databaseProvider).recogerViajesAjenos(
+            ref.read(usuarioProvider)!.id,
+          ),
     );
   }
 
@@ -256,11 +254,9 @@ class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
 
   Future<List<Oferta>> _inicializarLista() async {
     return Future.value(
-      Oferta.fromList(
-        await ref.read(databaseProvider).viajesDelUsuario(
-              ref.read(usuarioProvider)!.id,
-            ),
-      ),
+      await ref.read(databaseProvider).viajesDelUsuario(
+            ref.read(usuarioProvider)!.id,
+          ),
     );
   }
 
@@ -407,11 +403,9 @@ class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
 
   Future<List<Oferta>> _inicializarLista() async {
     return Future.value(
-      Oferta.fromList(
-        await ref.read(databaseProvider).recogerViajesApuntado(
-              ref.read(usuarioProvider)!.id,
-            ),
-      ),
+      await ref.read(databaseProvider).recogerViajesApuntado(
+            ref.read(usuarioProvider)!.id,
+          ),
     );
   }
 

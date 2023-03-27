@@ -15,58 +15,47 @@ class OfertasScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viajes = ref.watch(ofertasDisponiblesProvider);
-
+    final viajes = ref.watch(ofertasProvider);
+    print('Remontado');
     return Scaffold(
-      body: viajes.when(
-        data: (data) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 32,
-                ),
-                child: Boton(
-                  paddingTop: 12,
-                  paddingBottom: 12,
-                  paddingLeft: 48,
-                  paddingRight: 48,
-                  textoBoton: 'Filtrar',
-                  textSize: 20,
-                  funcion: () {
-                    Navigator.of(context).pushNamed(FiltrarScreen.kRouteName);
-                  },
-                ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 32,
+            ),
+            child: Boton(
+              paddingTop: 12,
+              paddingBottom: 12,
+              paddingLeft: 48,
+              paddingRight: 48,
+              textoBoton: 'Filtrar',
+              textSize: 20,
+              funcion: () {
+                Navigator.of(context).pushNamed(FiltrarScreen.kRouteName);
+              },
+            ),
+          ),
+          Expanded(
+            child: NotificationListener<OverscrollIndicatorNotification>(
+              onNotification: (OverscrollIndicatorNotification overscroll) {
+                overscroll.disallowIndicator();
+                return true;
+              },
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: viajes.length,
+                itemBuilder: (context, index) {
+                  return TarjetaViajeWidget(
+                    tipo: TipoViaje.oferta,
+                    oferta: viajes[index],
+                  );
+                },
               ),
-              Expanded(
-                child: NotificationListener<OverscrollIndicatorNotification>(
-                  onNotification: (OverscrollIndicatorNotification overscroll) {
-                    overscroll.disallowIndicator();
-                    return true;
-                  },
-                  child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      return TarjetaViajeWidget(
-                        tipo: TipoViaje.oferta,
-                        oferta: data[index],
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-        loading: () {
-          return const Center(child: CircularProgressIndicator());
-        },
-        error: (error, stackTrace) {
-          return Text(
-              'Hubo un error al cargar los viajes, intentalo de nuevo. Codigo error: $error');
-        },
+            ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(

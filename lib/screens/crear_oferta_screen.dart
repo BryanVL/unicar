@@ -250,7 +250,7 @@ class _CrearOfertaState extends ConsumerState<CrearOferta> {
                             (dpDestino != dpOrigen ||
                                 origenPersonalizado != destinoPersonalizado) &&
                             int.parse(plazasController.text) > 0)) {
-                      ref.read(ofertasOfrecidasUsuarioProvider.notifier).addNewOferta(
+                      ref.read(viajesProvider.notifier).addNewOferta(
                             origen?.localidad ?? dpOrigen,
                             destino?.localidad ?? dpDestino,
                             DateTime.tryParse(horaController.text)!.toIso8601String(),

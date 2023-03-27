@@ -14,8 +14,8 @@ class MisViajesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viajesDelUsuario = ref.watch(ofertasOfrecidasUsuarioProvider);
-    final viajesApuntado = ref.watch(ofertasUsuarioApuntadoProvider);
+    final viajesDelUsuario = ref.watch(propiosProvider);
+    final viajesApuntado = ref.watch(apuntadoProvider);
     //El tener esto aqui es para inicializar el estado de chats sin que el usuario
     //Entre en la pantalla de chats, hasta que encuentre una mejor manera de hacerlo
     //esto debe estar aqui para evitar errores

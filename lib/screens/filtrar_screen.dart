@@ -26,8 +26,8 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
   @override
   initState() {
     super.initState();
-    horaController.text = ref.read(ofertasDisponiblesProvider.notifier).filtroHora;
-    groupValue = ref.read(ofertasDisponiblesProvider.notifier).filtroGroupValue;
+    horaController.text = ref.read(viajesProvider.notifier).filtroHora;
+    groupValue = ref.read(viajesProvider.notifier).filtroGroupValue;
   }
 
   @override
@@ -39,8 +39,8 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
   @override
   Widget build(BuildContext context) {
     Future(() {
-      final origen = ref.read(ofertasDisponiblesProvider.notifier).filtroOrigenP;
-      final destino = ref.read(ofertasDisponiblesProvider.notifier).filtroDestinoP;
+      final origen = ref.read(viajesProvider.notifier).filtroOrigenP;
+      final destino = ref.read(viajesProvider.notifier).filtroDestinoP;
       if (origen != null) {
         ref.read(posicionPersonalizadaProvider(TipoPosicion.origen).notifier).state = origen;
       }
@@ -51,9 +51,9 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
 
       if (origen == null && destino == null) {
         ref.read(dropdownProvider(TipoPosicion.origen).notifier).state =
-            ref.read(ofertasDisponiblesProvider.notifier).filtroOrigen;
+            ref.read(viajesProvider.notifier).filtroOrigen;
         ref.read(dropdownProvider(TipoPosicion.destino).notifier).state =
-            ref.read(ofertasDisponiblesProvider.notifier).filtroDestino;
+            ref.read(viajesProvider.notifier).filtroDestino;
       }
     });
 
@@ -158,7 +158,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                         colorBoton: Colors.red,
                         funcion: () async {
                           ref
-                              .read(ofertasDisponiblesProvider.notifier)
+                              .read(viajesProvider.notifier)
                               .eliminarFiltros()
                               .then((value) => Navigator.of(context).pop());
                         },
@@ -177,7 +177,7 @@ class _FiltrarScreenState extends ConsumerState<FiltrarScreen> {
                               ref.read(posicionPersonalizadaProvider(TipoPosicion.origen));
                           final destino =
                               ref.read(posicionPersonalizadaProvider(TipoPosicion.destino));
-                          ref.read(ofertasDisponiblesProvider.notifier).filtrar(
+                          ref.read(viajesProvider.notifier).filtrar(
                                 dpOrigen,
                                 dpDestino,
                                 horaController.text,

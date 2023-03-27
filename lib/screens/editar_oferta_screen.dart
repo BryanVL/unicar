@@ -251,7 +251,7 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                                 origenPersonalizado != destinoPersonalizado) &&
                             int.parse(plazasController.text) >=
                                 (widget.oferta.plazasTotales - widget.oferta.plazasDisponibles))) {
-                      ref.read(ofertasOfrecidasUsuarioProvider.notifier).editarOferta(
+                      ref.read(viajesProvider.notifier).editarOferta(
                             id: widget.oferta.id,
                             origen: origen?.localidad ?? dpOrigen,
                             destino: destino?.localidad ?? dpDestino,

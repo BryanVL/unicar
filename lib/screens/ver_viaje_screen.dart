@@ -46,7 +46,7 @@ class VerViajeScreen extends ConsumerWidget {
               actions: [
                 TextButton(
                   onPressed: () {
-                    ref.read(ofertasOfrecidasUsuarioProvider.notifier).eliminarOferta(oferta.id);
+                    ref.read(viajesProvider.notifier).eliminarOferta(oferta.id);
                     Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));
                   },
                   child: const Text('Borrar'),
@@ -95,7 +95,7 @@ class VerViajeScreen extends ConsumerWidget {
       textSize: 16,
       paddingTodo: 16,
       funcion: () {
-        ref.read(ofertasDisponiblesProvider.notifier).reservarPlaza(oferta);
+        ref.read(viajesProvider.notifier).reservarPlaza(oferta);
         Navigator.of(context).pop();
       },
       textoBoton: 'Reservar plaza',
@@ -106,7 +106,7 @@ class VerViajeScreen extends ConsumerWidget {
       colorBoton: Colors.red,
       paddingTodo: 16,
       funcion: () {
-        ref.read(ofertasUsuarioApuntadoProvider.notifier).cancelarReserva(oferta);
+        ref.read(viajesProvider.notifier).cancelarReserva(oferta);
 
         Navigator.of(context).pop();
       },

@@ -7,24 +7,29 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:unicar/main.dart';
+import 'package:unicar/models/oferta.dart';
+import 'package:unicar/models/usuario.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  Oferta oferta;
+  setUpAll(() async {
+    oferta = Oferta(
+      id: 1,
+      origen: 'Torremolinos',
+      destino: 'Teatinos',
+      hora: DateTime.now().add(const Duration(days: 2)).toIso8601String(),
+      plazasTotales: 4,
+      plazasDisponibles: 4,
+      creador: Usuario(id: 'abcde', nombre: 'nombreTest'),
+      paraEstarA: true,
+      esPeriodico: false,
+    );
   });
+
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {});
+
+  test('description', () => null);
 }

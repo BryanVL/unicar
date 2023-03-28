@@ -6,15 +6,18 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:unicar/main.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/models/usuario.dart';
+import 'package:unicar/providers/oferta_provider.dart';
+import 'package:unicar/screens/ver_viaje_screen.dart';
 
 void main() {
-  Oferta oferta;
+  Oferta? oferta;
   setUpAll(() async {
     oferta = Oferta(
       id: 1,
@@ -29,7 +32,14 @@ void main() {
     );
   });
 
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {});
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    final widgetProbar = ProviderScope(
+      child: VerViajeScreen(oferta: oferta!, tipo: TipoViaje.propio),
+      overrides: [
+        ofertasOfrecidasUsuarioProvider.overrideWith(() => OfertasOfrecidasUsuarioController())
+      ],
+    );
+  });
 
   test('description', () => null);
 }

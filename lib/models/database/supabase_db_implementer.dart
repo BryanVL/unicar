@@ -92,20 +92,19 @@ class SupabaseDB implements Database {
 
   @override
   Future<List<Oferta>> recogerViajesAjenos(String idUser) async {
-    return Oferta.fromList(
-      await sp
-          .from(
-            'viaje',
-          )
-          .select(
-            'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono), es_pasajero!inner(id_usuario)',
-          )
-          .neq('creado_por', idUser)
-          .neq('es_pasajero.id_usuario', idUser)
-          .gt('plazas_disponibles', 0)
-          .gte('hora', DateTime.now().subtract(const Duration(minutes: 15)))
-          .order('created_at'),
-    );
+    final List consulta = await sp
+        .from(
+          'viaje',
+        )
+        .select(
+          'id,created_at,origen,destino,latitud_origen,longitud_origen,latitud_destino,longitud_destino,hora,plazas_totales,plazas_disponibles,descripcion, creado_por, titulo, radio_origen, radio_destino, para_estar_a, es_periodico, usuario!viaje_creado_por_fkey(nombre, url_icono)',
+        )
+        .neq('creado_por', idUser)
+        .gt('plazas_disponibles', 0)
+        .gte('hora', DateTime.now().subtract(const Duration(minutes: 15)))
+        .order('created_at');
+
+    return Oferta.fromList(consulta);
   }
 
   @override

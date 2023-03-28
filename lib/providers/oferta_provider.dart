@@ -26,11 +26,17 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   Future<List<Oferta>> _inicializarLista() async {
-    return Future.value(
-      await ref.read(databaseProvider).recogerViajesAjenos(
-            ref.read(usuarioProvider)!.id,
-          ),
-    );
+    final List<Oferta> listaOfertas =
+        await ref.read(databaseProvider).recogerViajesAjenos(ref.read(usuarioProvider)!.id);
+    List<Oferta>? ofertasApuntado = ref.read(ofertasUsuarioApuntadoProvider).valueOrNull;
+
+    if (ofertasApuntado != null) {
+      for (var ap in ofertasApuntado) {
+        listaOfertas.removeWhere((element) => element.id == ap.id);
+      }
+    }
+
+    return Future.value(listaOfertas);
   }
 
   void addOferta(Oferta oferta) async {

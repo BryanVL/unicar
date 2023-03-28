@@ -6,7 +6,13 @@ import 'package:geocoding/geocoding.dart';
 class GeolocationNative implements Geolocation {
   @override
   Future<LatLng?> coordenadasDesdeLugar(String lugar) async {
-    List<Location> locations = await locationFromAddress(lugar);
+    List<Location> locations = [];
+    try {
+      locations = await locationFromAddress(lugar);
+    } catch (e) {
+      locations = [];
+    }
+
     LatLng? res;
     if (locations.isNotEmpty) {
       res = LatLng(locations[0].latitude, locations[0].longitude);

@@ -32,13 +32,19 @@ void main() {
     );
   });
 
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Comprobar que se renderiza pagina de viaje', (WidgetTester tester) async {
     final widgetProbar = ProviderScope(
-      child: VerViajeScreen(oferta: oferta!, tipo: TipoViaje.propio),
       overrides: [
-        ofertasOfrecidasUsuarioProvider.overrideWith(() => OfertasOfrecidasUsuarioController())
+        ofertasOfrecidasUsuarioProvider
+            //TODO poner un valor por defecto a todos los controladores (Pensar como puedo usar esto para refactor tambien)
+            //TODO Crear o un segundo proyecto unicar o hacer una implementación falsa de Database
+            .overrideWith(() => OfertasOfrecidasUsuarioController(valorDefecto: [oferta!]))
       ],
+      child: VerViajeScreen(oferta: oferta!, tipo: TipoViaje.propio),
     );
+    await tester.pumpWidget(widgetProbar);
+
+    expect(find.text('Viaje'), findsWidgets);
   });
 
   test('description', () => null);

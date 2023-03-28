@@ -18,11 +18,14 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   LocalizacionPersonalizada? filtroDestinoP;
   String filtroHora = '';
   int filtroGroupValue = 2;
+  final List<Oferta>? valorDefecto;
+
+  OfertasDisponiblesController({this.valorDefecto});
 
   @override
   FutureOr<List<Oferta>> build() {
     ref.watch(usuarioProvider);
-    return _inicializarLista();
+    return valorDefecto != null ? Future.value(valorDefecto) : _inicializarLista();
   }
 
   Future<List<Oferta>> _inicializarLista() async {
@@ -252,10 +255,15 @@ final ofertasDisponiblesProvider =
 
 //Ofertas que el usuario OFRECE
 class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
+  final List<Oferta>? valorDefecto;
+
+  OfertasOfrecidasUsuarioController({this.valorDefecto});
+
   @override
   FutureOr<List<Oferta>> build() {
     ref.watch(usuarioProvider);
-    return _inicializarLista();
+
+    return valorDefecto != null ? Future.value(valorDefecto) : _inicializarLista();
   }
 
   Future<List<Oferta>> _inicializarLista() async {
@@ -401,10 +409,13 @@ final ofertasOfrecidasUsuarioProvider =
 
 //Ofertas a las que el usuario esta APUNTADO
 class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
+  final List<Oferta>? valorDefecto;
+
+  OfertasUsuarioApuntadoController({this.valorDefecto});
   @override
   FutureOr<List<Oferta>> build() {
     ref.watch(usuarioProvider);
-    return _inicializarLista();
+    return valorDefecto != null ? Future.value(valorDefecto) : _inicializarLista();
   }
 
   Future<List<Oferta>> _inicializarLista() async {

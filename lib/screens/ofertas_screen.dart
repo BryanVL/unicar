@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/oferta_provider.dart';
-import 'package:unicar/screens/crear_oferta_screen.dart';
 import 'package:unicar/screens/filtrar_screen.dart';
-import 'package:unicar/widgets/buttons.dart';
 
 import '../widgets/tarjeta_viaje.dart';
 

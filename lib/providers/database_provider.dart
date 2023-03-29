@@ -13,9 +13,13 @@ import '../screens/tab_bar_screen.dart';
 import 'login_provider.dart';
 
 class DatabaseController extends r.Notifier<Database> {
+  final Database? valorDefecto;
+
+  DatabaseController({this.valorDefecto});
+
   @override
   Database build() {
-    return SupabaseDB();
+    return valorDefecto ?? SupabaseDB();
   }
 
   Future<bool> _comprobarPrimerInicio(User user) async {

@@ -9,10 +9,13 @@ import 'package:collection/collection.dart';
 import 'database_provider.dart';
 
 class ChatController extends AsyncNotifier<List<Chat>> {
+  final List<Chat>? valorDefecto;
+
+  ChatController({this.valorDefecto});
   @override
   FutureOr<List<Chat>> build() {
     ref.watch(usuarioProvider);
-    return _inicializarLista();
+    return valorDefecto != null ? Future.value(valorDefecto) : _inicializarLista();
   }
 
   Future<List<Chat>> _inicializarLista() async {

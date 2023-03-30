@@ -24,6 +24,13 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
   List<CircleMarker> posCirculos = [];
   MapController controladorMapa = MapController();
 
+  @override
+  dispose() {
+    controladorMapa.dispose();
+    buscador.dispose();
+    super.dispose();
+  }
+
   void _ponerMarcadorEnMapa(LatLng posicionPulsada) {
     if (posicionesMarcadores.isNotEmpty) {
       posicionesMarcadores = [];
@@ -172,11 +179,6 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                           Expanded(
                             child: Slider(
                               value: radio,
-                              /*onChangeEnd: (value) {
-                                setState(() {
-                                  radio = value;
-                                });
-                              },*/
                               onChanged: posicionElegida != null
                                   ? (value) {
                                       setState(() {

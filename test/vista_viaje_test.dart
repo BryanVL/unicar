@@ -6,32 +6,20 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
-import 'package:unicar/models/chat.dart';
-import 'package:unicar/models/localizacion.dart';
 
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/models/usuario.dart';
-import 'package:unicar/providers/chat_provider.dart';
 import 'package:unicar/providers/database_provider.dart';
-import 'package:unicar/providers/localizacion_provider.dart';
 import 'package:unicar/providers/mensajes_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/providers/tema_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
-import 'package:unicar/screens/mapa_screen.dart';
-import 'package:unicar/screens/tab_bar_screen.dart';
-import 'package:unicar/screens/ver_chat_screen.dart';
 import 'package:unicar/screens/ver_viaje_screen.dart';
-import 'package:unicar/widgets/tarjeta_chat.dart';
-import 'package:unicar/widgets/tarjeta_viaje.dart';
-import 'package:unicar/widgets/textform.dart';
 
 import 'fake_database.dart';
-import 'fake_geolocation.dart';
 
 void main() {
   Oferta? oferta;
@@ -384,10 +372,4 @@ void main() {
       expect(find.textContaining('Pasajeros'), findsNothing);
     });
   });
-
-//TODO test de filtrar
-//TODO test de login
-//TODO test de registro
-
-//TODO test de funciones de controladores
 }

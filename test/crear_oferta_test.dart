@@ -71,14 +71,28 @@ void main() {
         overrides: [
           geolocationProvider.overrideWith((ref) => GeolocationFake()),
           chatProvider.overrideWith(
-              () => ChatController(valorDefecto: [Chat(1, 'usuario', 'idOtroUsuario')])),
+            () => ChatController(
+              valorDefecto: [
+                Chat(
+                    1,
+                    Usuario(
+                      id: 'usuario',
+                      nombre: 'UsuarioActivo',
+                      tituloDefecto: 'Titulo por defecto',
+                      descripcionDefecto: 'Descripción por defecto',
+                    ),
+                    Usuario(id: 'idOtroUsuario', nombre: 'UsuarioTest'))
+              ],
+            ),
+          ),
           databaseProvider.overrideWith(() => DatabaseController(valorDefecto: FakeSupabase())),
           usuarioProvider.overrideWith(
             (ref) => Usuario(
-                id: 'usuario',
-                nombre: 'UsuarioActivo',
-                tituloDefecto: 'Titulo por defecto',
-                descripcionDefecto: 'Descripción por defecto'),
+              id: 'usuario',
+              nombre: 'UsuarioActivo',
+              tituloDefecto: 'Titulo por defecto',
+              descripcionDefecto: 'Descripción por defecto',
+            ),
           ),
           usuarioAjeno
               .overrideWith((ref, arg) => Usuario(id: 'idOtroUsuario', nombre: 'UsuarioTest')),

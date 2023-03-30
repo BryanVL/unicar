@@ -1,6 +1,9 @@
 import 'package:latlong2/latlong.dart';
+// ignore: depend_on_referenced_packages
 import 'package:gotrue/src/types/session.dart';
+// ignore: depend_on_referenced_packages
 import 'package:gotrue/src/types/provider.dart';
+// ignore: depend_on_referenced_packages
 import 'package:gotrue/src/types/auth_response.dart';
 import 'package:unicar/models/interfaces/database_interface.dart';
 import 'package:unicar/models/usuario.dart';
@@ -141,7 +144,7 @@ class FakeSupabase implements Database {
   }
 
   @override
-  Future<List<String>> recogerUsuariosAjenosChat(int idChat, String idUser) {
+  Future<List<Usuario>> recogerUsuariosAjenosChat(int idChat, String idUser) {
     // TODO: implement recogerUsuariosAjenosChat
     throw UnimplementedError();
   }

@@ -385,7 +385,6 @@ void main() {
     });
   });
 
-//TODO test de editar oferta
 //TODO test de filtrar
 //TODO test de login
 //TODO test de registro

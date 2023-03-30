@@ -1,7 +1,7 @@
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:unicar/models/chat.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/models/usuario.dart';
@@ -12,10 +12,9 @@ import 'package:unicar/providers/mensajes_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/providers/tema_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
-import 'package:unicar/screens/crear_oferta_screen.dart';
-import 'package:unicar/widgets/buttons.dart';
-import 'package:unicar/widgets/dropdown.dart';
+import 'package:unicar/screens/editar_oferta_screen.dart';
 import 'package:unicar/widgets/seleccion_posicion.dart';
+import 'package:unicar/widgets/textform.dart';
 
 import 'fake_database.dart';
 import 'fake_geolocation.dart';
@@ -95,66 +94,26 @@ void main() {
           ofertasUsuarioApuntadoProvider
               .overrideWith(() => OfertasUsuarioApuntadoController(valorDefecto: [ofertaApunt!])),
         ],
-        child: const CrearOferta(),
+        child: EditarOfertaScreen(oferta!),
       ),
     );
   });
 
   tearDownAll(() {});
 
-  testWidgets('Se muestra selección de posición', (WidgetTester tester) async {
+  testWidgets('Los valores de oferta se ven en los dropdowns', (WidgetTester tester) async {
     await tester.pumpWidget(widgetProbar!);
     await tester.pumpAndSettle();
 
     expect(find.byType(SeleccionPosicion), findsOneWidget);
     expect(find.textContaining('Simple'), findsOneWidget);
     expect(find.textContaining('Personalizado'), findsOneWidget);
+    expect(find.textContaining('Torremolinos'), findsNWidgets(2));
+    expect(find.textContaining('Teatinos'), findsNWidgets(6));
+    expect(find.textContaining('Teatinos'), findsNWidgets(6));
   });
 
-  testWidgets('Selección simple muestra origen y destino', (WidgetTester tester) async {
-    await tester.pumpWidget(widgetProbar!);
-    await tester.pumpAndSettle();
-
-    expect(
-      find.descendant(
-        of: find.byType(CustomDropdown),
-        matching: find.textContaining('Origen'),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.descendant(
-        of: find.byType(CustomDropdown),
-        matching: find.textContaining('Destino'),
-      ),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('Selección personalizada muestra origen y destino', (WidgetTester tester) async {
-    await tester.pumpWidget(widgetProbar!);
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.textContaining('Personalizado'));
-
-    expect(
-      find.descendant(
-        of: find.byType(BotonMaterial),
-        matching: find.textContaining('Selecciona un origen personalizado'),
-      ),
-      findsOneWidget,
-    );
-
-    expect(
-      find.descendant(
-        of: find.byType(BotonMaterial),
-        matching: find.textContaining('Selecciona un destino personalizado'),
-      ),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('Selección de hora se muestra', (WidgetTester tester) async {
+  testWidgets('El valor de hora de la oferta se ve', (WidgetTester tester) async {
     await tester.pumpWidget(widgetProbar!);
     await tester.pumpAndSettle();
 
@@ -167,23 +126,57 @@ void main() {
     expect(find.textContaining('Estar a'), findsOneWidget);
     expect(find.textContaining('Salir a'), findsOneWidget);
 
-    expect(find.byType(DateTimePicker), findsOneWidget);
+    expect(
+      find.textContaining(
+        DateFormat('MMM d, yyyy').format(
+          DateTime.parse(oferta!.hora),
+        ),
+        findRichText: true,
+      ),
+      findsOneWidget,
+    );
+
+    expect(
+      find.descendant(
+        of: find.byType(MyTextForm),
+        matching: find.textContaining('${oferta!.plazasDisponibles}'),
+      ),
+      findsOneWidget,
+    );
+
+    expect(
+      find.descendant(
+        of: find.byType(MyTextForm),
+        matching: find.textContaining('Viaje a Teatinos'),
+      ),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('Plazas y otros se muestra', (WidgetTester tester) async {
+  testWidgets('El valor de datos extra se ven', (WidgetTester tester) async {
     await tester.pumpWidget(widgetProbar!);
     await tester.pumpAndSettle();
 
     await tester.dragUntilVisible(
-      find.textContaining('Publicar oferta'),
+      find.textContaining('Plazas y otros'),
       find.byType(SingleChildScrollView),
       const Offset(0, 100),
     );
 
-    expect(find.textContaining('Plazas disponibles'), findsOneWidget);
-    expect(find.textContaining('Titulo por defecto'), findsOneWidget);
-    expect(find.textContaining('Descripción por defecto'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(MyTextForm),
+        matching: find.textContaining('${oferta!.plazasDisponibles}'),
+      ),
+      findsOneWidget,
+    );
 
-    expect(find.byType(DateTimePicker), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(MyTextForm),
+        matching: find.textContaining('Viaje a Teatinos'),
+      ),
+      findsOneWidget,
+    );
   });
 }

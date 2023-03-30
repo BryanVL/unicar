@@ -385,11 +385,10 @@ void main() {
     });
   });
 
-//TODO test crear oferta
 //TODO test de editar oferta
-//TODO test de pagina de chats
 //TODO test de filtrar
 //TODO test de login
 //TODO test de registro
+
 //TODO test de funciones de controladores
 }

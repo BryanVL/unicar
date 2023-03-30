@@ -251,14 +251,15 @@ class SupabaseDB implements Database {
   }
 
   @override
-  Future<List<String>> recogerUsuariosAjenosChat(int idChat, String idUser) async {
+  Future<List<Usuario>> recogerUsuariosAjenosChat(int idChat, String idUser) async {
     final List consulta = await sp
         .from('participantes_chat')
-        .select('usuario_id')
+        .select('usuario_id, usuario(nombre, url_icono)')
         .eq('chat_id', idChat)
         .neq('usuario_id', idUser);
     return consulta.map((e) {
-      return e['usuario_id'] as String;
+      return Usuario(
+          id: e['usuario_id'], nombre: e['usuario']['nombre'], urlIcono: e['usuario']['url_icono']);
     }).toList();
   }
 

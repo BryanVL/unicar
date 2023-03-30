@@ -17,10 +17,6 @@ class TarjetaChat extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String idBuscar = ref.watch(usuarioProvider)!.id == chat.usuarioCreador
-        ? chat.usuarioReceptor
-        : chat.usuarioCreador;
-    final otroUsuario = ref.watch(usuarioAjeno(idBuscar));
     final ultimoMensaje = ref.watch(mensajesProvider(chat.id));
     //Este listen hace que el chat se ponga el primero si alguien manda un mensaje
     ref.listen(mensajesProvider(chat.id), (AsyncValue<List<Map<String, dynamic>>>? previous,
@@ -101,122 +97,105 @@ class TarjetaChat extends ConsumerWidget {
       ),
     );
 
-    return otroUsuario.when(
-      data: (data) {
-        return Padding(
-            padding: const EdgeInsets.only(
-              bottom: 24,
-              right: 16,
-              left: 16,
-            ),
-            child: ultimoMensaje.when(
-              data: (msg) {
-                return DecoratedBox(
-                  decoration: tema ? temaClaro : temaOscuro,
-                  child: Material(
-                    elevation: 0,
-                    color: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    surfaceTintColor: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap: () {
-                        ultimoMensaje.whenData((msg) {
-                          if (msg.isNotEmpty &&
-                              msg[0]['creador'] != ref.watch(usuarioProvider)!.id &&
-                              !msg[0]['visto']) {
-                            ref
-                                .read(chatProvider.notifier)
-                                .actualizarMensajesVistos(chat.id, data.id);
-                          }
-                        });
+    return Padding(
+        padding: const EdgeInsets.only(
+          bottom: 24,
+          right: 16,
+          left: 16,
+        ),
+        child: ultimoMensaje.when(
+          data: (msg) {
+            return DecoratedBox(
+              decoration: tema ? temaClaro : temaOscuro,
+              child: Material(
+                elevation: 0,
+                color: Colors.transparent,
+                shadowColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: () {
+                    ultimoMensaje.whenData((msg) {
+                      if (msg.isNotEmpty &&
+                          msg[0]['creador'] != ref.watch(usuarioProvider)!.id &&
+                          !msg[0]['visto']) {
+                        ref
+                            .read(chatProvider.notifier)
+                            .actualizarMensajesVistos(chat.id, chat.usuarioReceptor.id);
+                      }
+                    });
 
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => VerChatScreen(data.id, chat.id),
-                        ));
-                      },
-                      splashColor: Colors.blue[300],
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            height: 60,
-                            width: 60,
-                            margin: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                image: data.urlIcono != null
-                                    ? NetworkImage(data.urlIcono!)
-                                    : ref.read(imagenDefectoProvider),
-                                fit: BoxFit.cover,
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => VerChatScreen(chat),
+                    ));
+                  },
+                  splashColor: Colors.blue[300],
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        height: 60,
+                        width: 60,
+                        margin: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: chat.usuarioReceptor.urlIcono != null
+                                ? NetworkImage(chat.usuarioReceptor.urlIcono!)
+                                : ref.read(imagenDefectoProvider),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Material(
+                              type: MaterialType.transparency,
+                              child: Text(
+                                maxLines: 1,
+                                chat.usuarioReceptor.nombre,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 22.0,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Material(
-                                  type: MaterialType.transparency,
-                                  child: Text(
-                                    maxLines: 1,
-                                    data.nombre,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 22.0,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 4.0),
-                                  child: Text(
-                                    msg.isEmpty ? '' : msg[0]['contenido'],
-                                    maxLines: 1,
-                                    style: const TextStyle(
-                                      fontSize: 18.0,
-                                      overflow: TextOverflow.ellipsis,
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            const SizedBox(
+                              height: 5,
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.only(right: 4.0),
+                              child: Text(
+                                msg.isEmpty ? '' : msg[0]['contenido'],
+                                maxLines: 1,
+                                style: const TextStyle(
+                                  fontSize: 18.0,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                );
-              },
-              error: (error, stackTrace) => const Text('Error'),
-              loading: () => const Center(
-                  child: CircularProgressIndicator(
-                strokeWidth: 0,
-              )),
-            ));
-      },
-      error: (Object error, StackTrace stackTrace) {
-        return Text('Error al cargar los chats, Codigo: $error');
-      },
-      loading: () {
-        return const Center(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
-          ),
-        );
-      },
-    );
+                ),
+              ),
+            );
+          },
+          error: (error, stackTrace) => const Text('Error'),
+          loading: () => const Center(
+              child: CircularProgressIndicator(
+            strokeWidth: 0,
+          )),
+        ));
   }
 }

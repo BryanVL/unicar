@@ -80,11 +80,11 @@ class VerViajeScreen extends ConsumerWidget {
       textSize: 16,
       paddingTodo: 16,
       funcion: () async {
-        final chatId = await ref.read(chatProvider.notifier).crearChat(oferta.creador.id);
+        final chat = await ref.read(chatProvider.notifier).crearChat(oferta.creador);
 
         if (context.mounted) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => VerChatScreen(oferta.creador.id, chatId),
+            builder: (context) => VerChatScreen(chat),
           ));
         }
       },

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/models/chat.dart';
 import 'package:unicar/models/mensaje.dart';
+import 'package:unicar/models/usuario.dart';
 import 'package:unicar/providers/mensajes_provider.dart';
 import 'package:unicar/widgets/mensaje.dart';
 
@@ -9,41 +11,27 @@ import '../widgets/cuadro_envio_mensaje.dart';
 
 class VerChatScreen extends ConsumerWidget {
   const VerChatScreen(
-    this.idUsuarioAjeno,
-    this.chatId, {
+    this.chat, {
     super.key,
   });
 
-  final String idUsuarioAjeno;
-  final int chatId;
+  final Chat chat;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final usuario = ref.watch(usuarioAjeno(idUsuarioAjeno));
-    final mensajes = ref.watch(mensajesProvider(chatId));
+    final mensajes = ref.watch(mensajesProvider(chat.id));
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.blue, //Color.fromARGB(198, 35, 86, 255),
-        title: usuario.when(
-          data: (data) {
-            return Text(
-              data.nombre,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ),
-            );
-          },
-          error: (error, stackTrace) {
-            return const Text('Hubo un problema al cargar el nombre del usuario');
-          },
-          loading: () {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+        title: Text(
+          chat.usuarioReceptor.nombre,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w500,
+          ),
         ),
+
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -76,7 +64,7 @@ class VerChatScreen extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: EnvioMensajeWidget(idUsuarioAjeno, chatId),
+            child: EnvioMensajeWidget(chat.usuarioReceptor.id, chat.id),
           ),
         ],
       ),

@@ -56,7 +56,7 @@ abstract class Database {
   void actualizarDatosExtraUsuario(String userId, String titulo, String descripcion);
   Future<Session?> comprobarSesion();
   Future<List<int>> recogerIdsChats(String idUser);
-  Future<List<String>> recogerUsuariosAjenosChat(int idChat, String idUser);
+  Future<List<Usuario>> recogerUsuariosAjenosChat(int idChat, String idUser);
   Future<int> crearChat(String otroUsuario);
 
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat);

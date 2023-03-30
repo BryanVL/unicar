@@ -1,7 +1,11 @@
+import 'package:unicar/models/usuario.dart';
+
 class Chat {
   final int id;
-  final String usuarioCreador;
-  final String usuarioReceptor;
+  final Usuario usuarioCreador;
+  final Usuario usuarioReceptor;
+  //final String usuarioCreador;
+  //final String usuarioReceptor;
 
   Chat(
     this.id,

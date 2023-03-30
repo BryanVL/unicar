@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/chat.dart';
+import 'package:unicar/models/usuario.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
@@ -30,34 +31,34 @@ class ChatController extends AsyncNotifier<List<Chat>> {
             ref.read(usuarioProvider)!.id,
           );
 
-      for (String element2 in listausuarios) {
-        res.add(Chat(element, ref.read(usuarioProvider)!.id, element2));
+      for (Usuario element2 in listausuarios) {
+        res.add(Chat(element, ref.read(usuarioProvider)!, element2));
       }
     }
 
     return Future.value(res);
   }
 
-  Future<int> crearChat(String idReceptor) async {
-    int? idChat = buscarIdDeChat(idReceptor);
-    if (idChat == null) {
-      final String idUsuario = ref.read(usuarioProvider)!.id;
-      idChat = await ref.read(databaseProvider).crearChat(idReceptor);
+  Future<Chat> crearChat(Usuario receptor) async {
+    Chat? nuevoChat = buscarChat(receptor.id);
 
-      final nuevoChat = Chat(idChat, idUsuario, idReceptor);
+    if (nuevoChat == null) {
+      final idChat = await ref.read(databaseProvider).crearChat(receptor.id);
+
+      nuevoChat = Chat(idChat, ref.read(usuarioProvider)!, receptor);
       state = await AsyncValue.guard(() {
-        return Future(() => [nuevoChat, ...(state.value!)]);
+        return Future(() => [nuevoChat!, ...(state.value!)]);
       });
     }
-    return idChat;
+    return nuevoChat;
   }
 
-  int? buscarIdDeChat(String idReceptor) {
+  Chat? buscarChat(String idReceptor) {
     final Chat? chatBuscado = state.value!.firstWhereOrNull(
-      (element) => element.usuarioReceptor == idReceptor,
+      (element) => element.usuarioReceptor.id == idReceptor,
     );
 
-    return chatBuscado?.id;
+    return chatBuscado;
   }
 
   void actualizarMensajesVistos(int idChat, String idUsuarioAjeno) {

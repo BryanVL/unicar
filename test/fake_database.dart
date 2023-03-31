@@ -81,8 +81,7 @@ class FakeSupabase implements Database {
       int? radioDestino,
       required bool paraEstarA,
       required bool esPeriodico}) {
-    // TODO: implement crearViaje
-    throw UnimplementedError();
+    return Future.value(112);
   }
 
   @override

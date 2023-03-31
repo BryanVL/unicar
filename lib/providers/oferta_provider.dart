@@ -146,7 +146,7 @@ class OfertasController extends r.AsyncNotifier<List<Oferta>> {
         origen: origen,
         destino: destino,
         hora: hora,
-        plazasDisponibles: plazasDisp + (int.parse(plazas) - plazasDisp).abs(),
+        plazasDisponibles: plazasDisp + (int.parse(plazas) - o.plazasTotales),
         plazasTotales: int.parse(plazas),
         titulo: titulo,
         descripcion: descripcion,
@@ -228,6 +228,11 @@ class OfertasController extends r.AsyncNotifier<List<Oferta>> {
   ) {
     if (tipo == TipoViaje.propio) return;
     if (tipo == TipoViaje.apuntado) return;
+    if (origen == 'Selecciona uno' &&
+        destino == 'Selecciona uno' &&
+        hora == '' &&
+        origenP == null &&
+        destinoP == null) return;
     List<Oferta> nuevoEstado = [];
     List<Oferta> aux = [];
     bool filtroPosicionAplicado = false;
@@ -259,7 +264,7 @@ class OfertasController extends r.AsyncNotifier<List<Oferta>> {
           nuevoEstado.addAll(ofertas.where((element) => element.destino == destino));
         }
       }
-    } else if (origenP != null || destinoP != null) {
+    } else {
       if (origenP != null) {
         filtroPosicionAplicado = true;
         filtroOrigenP = LocalizacionPersonalizada(
@@ -359,8 +364,12 @@ class OfertasController extends r.AsyncNotifier<List<Oferta>> {
         nuevoEstado.addAll(ofertas.where((element) {
           final tElem = DateTime.parse(element.hora);
           final time = DateTime.parse(hora);
+          final int valorGrupo = element.paraEstarA ? 0 : 1;
 
-          return tElem.day == time.day && tElem.hour == time.hour && tElem.minute == time.minute;
+          return tElem.day == time.day &&
+              tElem.hour == time.hour &&
+              tElem.minute == time.minute &&
+              (valorGrupo == groupValue || groupValue == 2);
         }));
       }
     }
@@ -375,7 +384,9 @@ class OfertasController extends r.AsyncNotifier<List<Oferta>> {
     filtroOrigenP = null;
     filtroDestinoP = null;
     filtroGroupValue = 2;
-    state = AsyncValue.data(estadoAux);
+    if (estadoAux.isNotEmpty) {
+      state = AsyncValue.data(estadoAux);
+    }
     estadoAux = [];
   }
 }

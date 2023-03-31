@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/chat.dart';
 import 'package:unicar/models/mensaje.dart';
-import 'package:unicar/models/usuario.dart';
 import 'package:unicar/providers/mensajes_provider.dart';
 import 'package:unicar/widgets/mensaje.dart';
 
-import '../providers/usuario_provider.dart';
 import '../widgets/cuadro_envio_mensaje.dart';
 
 class VerChatScreen extends ConsumerWidget {

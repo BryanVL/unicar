@@ -171,7 +171,7 @@ class TarjetaViajeWidget extends ConsumerWidget {
                                       child: Icon(
                                         Icons.arrow_right_alt_rounded,
                                         size: 17,
-                                        color: Colors.blue[700],
+                                        color: Colors.blue[800],
                                       ),
                                     ),
                                     TextSpan(

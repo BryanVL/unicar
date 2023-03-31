@@ -101,11 +101,11 @@ void main() {
           plazasProvider.overrideWith((ref, arg) => oferta1!.plazasDisponibles),
           temaProvider.overrideWith(() => TemaController(valorDefecto: 'claro')),
           ofertasOfrecidasUsuarioProvider
-              .overrideWith(() => OfertasOfrecidasUsuarioController(valorDefecto: [])),
-          ofertasDisponiblesProvider.overrideWith(
-              () => OfertasDisponiblesController(valorDefecto: [oferta1!, oferta2!, oferta3!])),
+              .overrideWith(() => OfertasController(tipo: TipoViaje.propio, valorDefecto: [])),
+          ofertasDisponiblesProvider.overrideWith(() => OfertasController(
+              tipo: TipoViaje.oferta, valorDefecto: [oferta1!, oferta2!, oferta3!])),
           ofertasUsuarioApuntadoProvider
-              .overrideWith(() => OfertasUsuarioApuntadoController(valorDefecto: [])),
+              .overrideWith(() => OfertasController(tipo: TipoViaje.apuntado, valorDefecto: [])),
         ],
         child: const FiltrarScreen(),
       ),

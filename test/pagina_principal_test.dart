@@ -100,12 +100,12 @@ void main() {
             pasajerosViajeProvider.overrideWith((ref, arg) => const AsyncValue.data([])),
             plazasProvider.overrideWith((ref, arg) => oferta!.plazasDisponibles),
             temaProvider.overrideWith(() => TemaController(valorDefecto: 'claro')),
-            ofertasOfrecidasUsuarioProvider
-                .overrideWith(() => OfertasOfrecidasUsuarioController(valorDefecto: [oferta!])),
-            ofertasDisponiblesProvider
-                .overrideWith(() => OfertasDisponiblesController(valorDefecto: [ofertaDisp!])),
-            ofertasUsuarioApuntadoProvider
-                .overrideWith(() => OfertasUsuarioApuntadoController(valorDefecto: [ofertaApunt!])),
+            ofertasOfrecidasUsuarioProvider.overrideWith(
+                () => OfertasController(tipo: TipoViaje.propio, valorDefecto: [oferta!])),
+            ofertasDisponiblesProvider.overrideWith(
+                () => OfertasController(tipo: TipoViaje.oferta, valorDefecto: [ofertaDisp!])),
+            ofertasUsuarioApuntadoProvider.overrideWith(
+                () => OfertasController(tipo: TipoViaje.apuntado, valorDefecto: [ofertaApunt!])),
           ],
           child: const TabBarScreen(title: 'Unicar'),
         ),
@@ -292,11 +292,11 @@ void main() {
               plazasProvider.overrideWith((ref, arg) => oferta!.plazasDisponibles),
               temaProvider.overrideWith(() => TemaController(valorDefecto: 'claro')),
               ofertasOfrecidasUsuarioProvider
-                  .overrideWith(() => OfertasOfrecidasUsuarioController(valorDefecto: [])),
+                  .overrideWith(() => OfertasController(tipo: TipoViaje.propio, valorDefecto: [])),
               ofertasDisponiblesProvider
-                  .overrideWith(() => OfertasDisponiblesController(valorDefecto: [])),
-              ofertasUsuarioApuntadoProvider
-                  .overrideWith(() => OfertasUsuarioApuntadoController(valorDefecto: [])),
+                  .overrideWith(() => OfertasController(tipo: TipoViaje.oferta, valorDefecto: [])),
+              ofertasUsuarioApuntadoProvider.overrideWith(
+                  () => OfertasController(tipo: TipoViaje.apuntado, valorDefecto: [])),
             ],
             child: const TabBarScreen(title: 'Unicar'),
           ),

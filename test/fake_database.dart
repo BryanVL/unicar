@@ -21,9 +21,7 @@ class FakeSupabase implements Database {
   }
 
   @override
-  void actualizarEstadoMensajes(int chatId, String usuarioAjenoId) {
-    // TODO: implement actualizarEstadoMensajes
-  }
+  void actualizarEstadoMensajes(int chatId, String usuarioAjenoId) {}
 
   @override
   void actualizarViaje(
@@ -66,8 +64,7 @@ class FakeSupabase implements Database {
 
   @override
   Future<int> crearChat(String otroUsuario) {
-    // TODO: implement crearChat
-    throw UnimplementedError();
+    return Future.value(111);
   }
 
   @override

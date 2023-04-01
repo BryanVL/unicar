@@ -20,6 +20,10 @@ class Mensaje {
         contenido = json['contenido'],
         visto = json['visto'];
 
+  static List<Mensaje> fromList(List datos) {
+    return datos.map((e) => Mensaje.fromKeyValue(e)).toList();
+  }
+
   Mensaje.vacio()
       : id = 0,
         idChat = 0,

@@ -32,7 +32,7 @@ class ChatController extends AsyncNotifier<List<Chat>> {
           );
 
       for (Usuario element2 in listausuarios) {
-        res.add(Chat(element, ref.read(usuarioProvider)!, element2));
+        res.add(Chat(element, ref.read(usuarioProvider)!, element2, []));
       }
     }
 
@@ -45,7 +45,7 @@ class ChatController extends AsyncNotifier<List<Chat>> {
     if (nuevoChat == null) {
       final idChat = await ref.read(databaseProvider).crearChat(receptor.id);
 
-      nuevoChat = Chat(idChat, ref.read(usuarioProvider)!, receptor);
+      nuevoChat = Chat(idChat, ref.read(usuarioProvider)!, receptor, []);
       state = await AsyncValue.guard(() {
         return Future(() => [nuevoChat!, ...(state.value!)]);
       });
@@ -63,6 +63,13 @@ class ChatController extends AsyncNotifier<List<Chat>> {
 
   void actualizarMensajesVistos(int idChat, String idUsuarioAjeno) {
     ref.read(databaseProvider).actualizarEstadoMensajes(idChat, idUsuarioAjeno);
+  }
+
+  void actualizarChat(Chat chatActualizado) {
+    final int index = state.value!.indexWhere((element) => element.id == chatActualizado.id);
+    final estado = state.value!;
+    estado[index] = chatActualizado;
+    state = AsyncValue.data(estado);
   }
 
   void ponerChatAlPrincipio(int idChat) async {

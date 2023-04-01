@@ -81,6 +81,7 @@ void main() {
                     descripcionDefecto: 'Descripción por defecto',
                   ),
                   Usuario(id: 'idOtroUsuario', nombre: 'UsuarioTest'),
+                  [],
                 )
               ],
             ),

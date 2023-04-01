@@ -78,6 +78,7 @@ void main() {
                   descripcionDefecto: 'Descripción por defecto',
                 ),
                 Usuario(id: 'idOtroUsuario', nombre: 'UsuarioTest'),
+                [],
               )
             ],
           ),
@@ -125,6 +126,7 @@ void main() {
                   descripcionDefecto: 'Descripción por defecto',
                 ),
                 Usuario(id: 'idOtroUsuario', nombre: 'UsuarioTest'),
+                [],
               )
             ],
           ),
@@ -729,6 +731,7 @@ void main() {
                     descripcionDefecto: 'Descripción por defecto',
                   ),
                   Usuario(id: 'idOtroUsuario', nombre: 'UsuarioTest'),
+                  [],
                 )
               ],
             ),
@@ -1059,6 +1062,8 @@ void main() {
   });
 
 //TODO pruebas sobre chats
+//TODO hacer que los chats tengan una lista de mensajes y que con un copyOf se añada en los chats desde tarjeta de chat
+//TODO dividir la función de filtros en varias funciones privadas más pequeñas
   group('Funciones de chat', () {});
 
 //TODO pruebas sobre tema

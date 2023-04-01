@@ -81,7 +81,8 @@ void main() {
                       tituloDefecto: 'Titulo por defecto',
                       descripcionDefecto: 'Descripción por defecto',
                     ),
-                    Usuario(id: 'idOtroUsuario', nombre: 'UsuarioTest'))
+                    Usuario(id: 'idOtroUsuario', nombre: 'UsuarioTest'),
+                    [])
               ],
             ),
           ),

@@ -222,10 +222,8 @@ void main() {
             pasajerosViajeProvider.overrideWith((ref, arg) => const AsyncValue.data([])),
             plazasProvider.overrideWith((ref, arg) => oferta!.plazasDisponibles),
             temaProvider.overrideWith(() => TemaController(valorDefecto: 'claro')),
-            ofertasOfrecidasUsuarioProvider
-                //TODO Crear o un segundo proyecto unicar o hacer una implementación falsa de Database
-                .overrideWith(
-                    () => OfertasController(tipo: TipoViaje.propio, valorDefecto: [oferta!]))
+            ofertasOfrecidasUsuarioProvider.overrideWith(
+                () => OfertasController(tipo: TipoViaje.propio, valorDefecto: [oferta!]))
           ],
           child: VerViajeScreen(oferta: oferta!, tipo: TipoViaje.propio),
         ),

@@ -11,14 +11,10 @@ import 'package:unicar/models/oferta.dart';
 
 class FakeSupabase implements Database {
   @override
-  void actualizarDatosExtraUsuario(String userId, String titulo, String descripcion) {
-    // TODO: implement actualizarDatosExtraUsuario
-  }
+  void actualizarDatosExtraUsuario(String userId, String titulo, String descripcion) {}
 
   @override
-  void actualizarDatosUsuario(String id, String? nombre, String? urlIcono) {
-    // TODO: implement actualizarDatosUsuario
-  }
+  void actualizarDatosUsuario(String id, String? nombre, String? urlIcono) {}
 
   @override
   void actualizarEstadoMensajes(int chatId, String usuarioAjenoId) {}
@@ -37,28 +33,19 @@ class FakeSupabase implements Database {
       int? radioOrigen,
       int? radioDestino,
       required bool paraEstarA,
-      required bool esPeriodico}) {
-    // TODO: implement actualizarViaje
-  }
+      required bool esPeriodico}) {}
 
   @override
-  void borrarCuenta(String idUser) {
-    // TODO: implement borrarCuenta
-  }
+  void borrarCuenta(String idUser) {}
 
   @override
-  void cancelarPlaza(int id, int plazas, String idUSer) {
-    // TODO: implement cancelarPlaza
-  }
+  void cancelarPlaza(int id, int plazas, String idUSer) {}
 
   @override
-  void cerrarSesion() {
-    // TODO: implement cerrarSesion
-  }
+  void cerrarSesion() {}
 
   @override
   Future<Session?> comprobarSesion() {
-    // TODO: implement comprobarSesion
     throw UnimplementedError();
   }
 
@@ -86,85 +73,68 @@ class FakeSupabase implements Database {
 
   @override
   Future<Usuario> datosUsuario(String idUser) {
-    // TODO: implement datosUsuario
     throw UnimplementedError();
   }
 
   @override
   Future<Usuario> datosUsuarioAjeno(String idUser) {
-    // TODO: implement datosUsuarioAjeno
     throw UnimplementedError();
   }
 
   @override
-  void eliminarViaje(int id) {
-    // TODO: implement eliminarViaje
-  }
+  void eliminarViaje(int id) {}
 
   @override
   void enviarMensaje(int chatId, String text, String creadorId) {}
 
   @override
   Stream<List<Map<String, dynamic>>> escucharMensajesChat(int idChat) {
-    // TODO: implement escucharMensajesChat
     throw UnimplementedError();
   }
 
   @override
   Future<AuthResponse> iniciarSesion(String correo, String password) {
-    // TODO: implement iniciarSesion
     throw UnimplementedError();
   }
 
   @override
-  void iniciarSesionConProvider(Provider provider) {
-    // TODO: implement iniciarSesionConProvider
-  }
+  void iniciarSesionConProvider(Provider provider) {}
 
   @override
   Future<List<int>> recogerIdsChats(String idUser) {
-    // TODO: implement recogerIdsChats
     throw UnimplementedError();
   }
 
   @override
   Future<List<Usuario>> recogerParticipantesViaje(int idViaje) {
-    // TODO: implement recogerParticipantesViaje
     throw UnimplementedError();
   }
 
   @override
   Future<int> recogerPlazasViaje(int idViaje) {
-    // TODO: implement recogerPlazasViaje
     throw UnimplementedError();
   }
 
   @override
   Future<List<Usuario>> recogerUsuariosAjenosChat(int idChat, String idUser) {
-    // TODO: implement recogerUsuariosAjenosChat
     throw UnimplementedError();
   }
 
   @override
   Future<List<Oferta>> recogerViajesAjenos(String idUser) {
-    // TODO: implement recogerViajesAjenos
     throw UnimplementedError();
   }
 
   @override
   Future<List<Oferta>> recogerViajesApuntado(String idUser) {
-    // TODO: implement recogerViajesApuntado
     throw UnimplementedError();
   }
 
   @override
-  void reservarPlaza(int id, int plazas, String idUSer) {
-    // TODO: implement reservarPlaza
-  }
+  void reservarPlaza(int id, int plazas, String idUSer) {}
 
   @override
   Future<List<Oferta>> viajesDelUsuario(String idUser) {
-    // TODO: implement viajesDelUsuario
     throw UnimplementedError();
   }
 }

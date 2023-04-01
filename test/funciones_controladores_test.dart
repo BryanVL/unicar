@@ -1061,11 +1061,102 @@ void main() {
     });
   });
 
-//TODO pruebas sobre chats
-//TODO hacer que los chats tengan una lista de mensajes y que con un copyOf se añada en los chats desde tarjeta de chat
-//TODO dividir la función de filtros en varias funciones privadas más pequeñas
-  group('Funciones de chat', () {});
+  group('Funciones de chat', () {
+    test('Se busca chat correctamente', () async {
+      await container!.read(chatProvider.future);
 
-//TODO pruebas sobre tema
-  group('Funciones de tema', () {});
+      final Chat? chatBuscado = container!.read(chatProvider.notifier).buscarChat('idOtroUsuario');
+
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      expect(chatBuscado!.id, 1);
+    });
+
+    test('Si chat no existe buscar chat devuelve null', () async {
+      await container!.read(chatProvider.future);
+
+      final Chat? chatBuscado = container!.read(chatProvider.notifier).buscarChat('idQueNoExiste');
+
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      expect(chatBuscado, null);
+    });
+    test('Se crea chat correctamente', () async {
+      await container!.read(chatProvider.future);
+      expect(container!.read(chatProvider).value!.length, 2);
+      expect(container!.read(chatProvider).value!.first.id, 1);
+
+      container!.read(chatProvider.notifier).crearChat(
+            Usuario(
+              id: 'usuarioTest2',
+              nombre: 'nombreTest2',
+            ),
+          );
+
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      expect(container!.read(chatProvider).value!.length, 3);
+      expect(container!.read(chatProvider).value!.first.id, 111);
+    });
+
+    setUp(() {
+      container = ProviderContainer(
+        overrides: [
+          geolocationProvider.overrideWith((ref) => GeolocationFake()),
+          chatProvider.overrideWith(
+            () => ChatController(
+              valorDefecto: [
+                Chat(
+                  1,
+                  Usuario(
+                    id: 'usuario',
+                    nombre: 'UsuarioActivo',
+                    tituloDefecto: 'Titulo por defecto',
+                    descripcionDefecto: 'Descripción por defecto',
+                  ),
+                  Usuario(id: 'idOtroUsuario', nombre: 'UsuarioTest'),
+                  [],
+                ),
+                Chat(
+                  2,
+                  Usuario(
+                    id: 'usuario',
+                    nombre: 'UsuarioActivo',
+                    tituloDefecto: 'Titulo por defecto',
+                    descripcionDefecto: 'Descripción por defecto',
+                  ),
+                  Usuario(id: 'idOtroUsuario2', nombre: 'UsuarioTest2'),
+                  [],
+                )
+              ],
+            ),
+          ),
+          databaseProvider.overrideWith(() => DatabaseController(valorDefecto: FakeSupabase())),
+          usuarioProvider.overrideWith(
+            (ref) => Usuario(
+              id: 'usuario',
+              nombre: 'UsuarioActivo',
+              tituloDefecto: 'Titulo por defecto',
+              descripcionDefecto: 'Descripción por defecto',
+            ),
+          ),
+        ],
+      );
+    });
+
+    test('El chat se pone al principio correctamente', () async {
+      await container!.read(chatProvider.future);
+      expect(container!.read(chatProvider).value!.length, 2);
+      expect(container!.read(chatProvider).value!.first.id, 1);
+
+      container!.read(chatProvider.notifier).ponerChatAlPrincipio(2);
+
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      expect(container!.read(chatProvider).value!.first.id, 2);
+      expect(container!.read(chatProvider).value![1].id, 1);
+    });
+  });
+
+//TODO dividir la función de filtros en varias funciones privadas más pequeñas
 }

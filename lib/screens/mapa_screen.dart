@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:unicar/models/localizacion.dart';
 import 'package:unicar/widgets/buttons.dart';
-import 'package:unicar/widgets/mapa.dart';
 
 import '../providers/localizacion_provider.dart';
 
 class MapaScreen extends ConsumerStatefulWidget {
-  const MapaScreen(this.callback, {super.key});
-  final Function(String, LatLng, String, String) callback;
+  const MapaScreen(this.tipo, {super.key});
+  final TipoPosicion tipo;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MapaScreenState();
 }
@@ -23,6 +23,13 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
   List<Marker> posicionesMarcadores = [];
   List<CircleMarker> posCirculos = [];
   MapController controladorMapa = MapController();
+
+  @override
+  dispose() {
+    controladorMapa.dispose();
+    buscador.dispose();
+    super.dispose();
+  }
 
   void _ponerMarcadorEnMapa(LatLng posicionPulsada) {
     if (posicionesMarcadores.isNotEmpty) {
@@ -76,8 +83,12 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Elige una localización y radio'),
+        title: const Text(
+          'Elige una localización y radio',
+          style: TextStyle(color: Colors.black),
+        ),
         leading: IconButton(
+          color: Colors.black,
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop();
@@ -89,6 +100,17 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
           final posicionInicial = data != null
               ? LatLng(data.latitude, data.longitude)
               : LatLng(36.72016000, -4.42034000);
+
+          final marcadorUsuario = Marker(
+            point: LatLng(data!.latitude, data.longitude),
+            rotate: true,
+            width: 60,
+            builder: (context) => const Icon(
+              size: 40,
+              Icons.person,
+              color: Colors.blue,
+            ),
+          );
 
           return Stack(
             children: [
@@ -122,7 +144,7 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                     userAgentPackageName: 'com.example.unicar',
                   ),
                   CircleLayer(circles: posCirculos),
-                  MarkerLayer(markers: posicionesMarcadores),
+                  MarkerLayer(markers: [marcadorUsuario, ...posicionesMarcadores]),
                 ],
               ),
               Column(
@@ -157,11 +179,6 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                           Expanded(
                             child: Slider(
                               value: radio,
-                              /*onChangeEnd: (value) {
-                                setState(() {
-                                  radio = value;
-                                });
-                              },*/
                               onChanged: posicionElegida != null
                                   ? (value) {
                                       setState(() {
@@ -231,8 +248,14 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
                               if (localidad != '' &&
                                   lugarElegido != '' &&
                                   posicionElegida != null) {
-                                widget.callback(lugarElegido, posicionElegida!,
-                                    (radio * 1000).toStringAsFixed(0), localidad);
+                                ref
+                                    .read(posicionPersonalizadaProvider(widget.tipo).notifier)
+                                    .state = LocalizacionPersonalizada(
+                                  nombreCompleto: lugarElegido,
+                                  coordenadas: posicionElegida!,
+                                  radio: int.parse((radio * 1000).toStringAsFixed(0)),
+                                  localidad: localidad,
+                                );
                                 Navigator.of(context).pop();
                               }
                             },
@@ -246,7 +269,7 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
           );
         },
         error: (error, stackTrace) {
-          Text('Error al cargar el mapa, Codigo: $error');
+          return Text('Error al cargar el mapa, Codigo: $error');
         },
         loading: () {
           return const Center(

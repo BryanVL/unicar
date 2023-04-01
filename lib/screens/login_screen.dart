@@ -9,6 +9,9 @@ import 'package:unicar/widgets/buttons.dart';
 import 'package:unicar/widgets/textform.dart';
 import 'package:string_validator/string_validator.dart';
 
+import '../providers/login_provider.dart';
+import '../providers/tema_provider.dart';
+
 class LoginScreen extends r.ConsumerStatefulWidget {
   const LoginScreen({super.key});
   static const kRouteName = "/Login";
@@ -21,7 +24,6 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
   final correoController = TextEditingController();
   final passController = TextEditingController();
   late final StreamSubscription<AuthState> _authStateSubscription;
-  final bool _redirecting = false;
 
   final SnackBar errorSnackBar = SnackBar(
     backgroundColor: Colors.blue[400],
@@ -50,7 +52,7 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
   @override
   initState() {
     _authStateSubscription =
-        ref.read(databaseProvider.notifier).comprobarEstadoInicioConProvider(context, _redirecting);
+        ref.read(databaseProvider.notifier).comprobarEstadoInicioConProvider(context);
 
     super.initState();
   }
@@ -65,9 +67,12 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tema = ref.watch(temaProvider).when(
+          data: (data) => data == 'claro' ? true : false,
+          error: (error, stackTrace) => true,
+          loading: () => true,
+        );
     return Scaffold(
-      backgroundColor:
-          const Color.fromARGB(255, 252, 252, 252), //const Color.fromARGB(255, 245, 254, 255),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -75,12 +80,13 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 96.0, bottom: 64),
+              Padding(
+                padding: const EdgeInsets.only(top: 96.0, bottom: 64),
                 child: Text(
                   textAlign: TextAlign.center,
                   'Bienvenido a Unicar',
                   style: TextStyle(
+                    color: tema ? Colors.black : Colors.white,
                     fontWeight: FontWeight.w500,
                     fontSize: 48,
                   ),
@@ -128,7 +134,10 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('¿No tienes cuenta?'),
+                  Text(
+                    '¿No tienes cuenta?',
+                    style: TextStyle(color: tema ? Colors.black : Colors.white),
+                  ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pushNamed(RegisterScreen.kRouteName);
@@ -137,11 +146,11 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                   )
                 ],
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 8.0),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
                   'O continua con:',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 18, color: tema ? Colors.black : Colors.white),
                 ),
               ),
               Padding(
@@ -162,6 +171,7 @@ class _LoginScreenState extends r.ConsumerState<LoginScreen> {
                     ),
                   ),
                   onPressed: () {
+                    ref.read(loginProviderProvider.notifier).state = false;
                     _iniciarSesionProvider(Provider.discord);
                   },
                   child: Row(

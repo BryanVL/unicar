@@ -2,17 +2,17 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:toggle_switch/toggle_switch.dart';
+import 'package:unicar/models/localizacion.dart';
+import 'package:unicar/providers/dropdown_provider.dart';
+import 'package:unicar/providers/localizacion_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/screens/tab_bar_screen.dart';
+import 'package:unicar/widgets/seleccion_posicion.dart';
 
 import '../models/oferta.dart';
 import '../widgets/buttons.dart';
-import '../widgets/dropdown.dart';
 import '../widgets/textform.dart';
 import '../widgets/texto.dart';
-import 'mapa_screen.dart';
 
 class EditarOfertaScreen extends ConsumerStatefulWidget {
   const EditarOfertaScreen(this.oferta, {super.key});
@@ -23,45 +23,22 @@ class EditarOfertaScreen extends ConsumerStatefulWidget {
 }
 
 class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
-  String dropdownValueOrigen = 'Selecciona uno';
-  String dropdownValueDestino = 'Selecciona uno';
   TextEditingController plazasController = TextEditingController();
   TextEditingController descripcionController = TextEditingController();
   TextEditingController tituloController = TextEditingController();
   TextEditingController horaController = TextEditingController();
-  String? origenPersonalizado;
-  String? destinoPersonalizado;
-  String localidadOrigen = '';
-  String localidadDestino = '';
-  LatLng? coordOrigen;
-  LatLng? coordDestino;
-  int? radioOrigen;
-  int? radioDestino;
-  int indiceSeleccionado = 0;
-  Widget? pos;
+
   int groupValue = 0;
   final _formKey = GlobalKey<FormState>();
 
   @override
   initState() {
-    super.initState();
-    if (widget.oferta.coordOrigen != null) {
-      coordOrigen = widget.oferta.coordOrigen;
-      coordDestino = widget.oferta.coordDestino;
-      origenPersonalizado = widget.oferta.origen;
-      destinoPersonalizado = widget.oferta.destino;
-      radioOrigen = widget.oferta.radioOrigen;
-      radioDestino = widget.oferta.radioDestino;
-      indiceSeleccionado = 1;
-    } else {
-      dropdownValueOrigen = widget.oferta.origen;
-      dropdownValueDestino = widget.oferta.destino;
-    }
     groupValue = widget.oferta.paraEstarA ? 0 : 1;
     plazasController.text = '${widget.oferta.plazasTotales}';
     descripcionController.text = widget.oferta.descripcion ?? '';
     tituloController.text = widget.oferta.titulo ?? '';
     horaController.text = widget.oferta.hora;
+    super.initState();
   }
 
   @override
@@ -73,131 +50,29 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
     horaController.dispose();
   }
 
-  callbackOrigen(valorElegido) {
-    setState(() {
-      dropdownValueOrigen = valorElegido;
-    });
-  }
-
-  callbackDestino(valorElegido) {
-    setState(() {
-      dropdownValueDestino = valorElegido;
-    });
-  }
-
-  callbackOrigenPersonalizado(
-      String lugarElegido, LatLng coordenadas, String radio, String origen) {
-    setState(() {
-      dropdownValueOrigen = origen;
-      coordOrigen = coordenadas;
-      origenPersonalizado = lugarElegido;
-      radioOrigen = int.parse(radio);
-    });
-  }
-
-  callbackDestinoPersonalizado(
-      String lugarElegido, LatLng coordenadas, String radio, String destino) {
-    setState(() {
-      dropdownValueDestino = destino;
-      coordDestino = coordenadas;
-      destinoPersonalizado = lugarElegido;
-      radioDestino = int.parse(radio);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget simple = Column(
-      children: [
-        const SizedBox(height: 8),
-        CustomDropdown(
-          titulo: 'Origen:',
-          callback: callbackOrigen,
-          valorDefecto: dropdownValueOrigen,
-        ),
-        CustomDropdown(
-          titulo: 'Destino:',
-          callback: callbackDestino,
-          valorDefecto: dropdownValueDestino,
-        ),
-      ],
-    );
-
-    Widget pers = Column(
-      children: [
-        BotonMaterial(
-          contenido: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                'Selecciona un origen personalizado',
-                style: TextStyle(fontSize: 16),
-              ),
-              Icon(
-                Icons.open_in_new,
-                size: 24,
-              ),
-            ],
-          ),
-          funcion: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MapaScreen(callbackOrigenPersonalizado)),
-            );
-          },
-        ),
-        BotonMaterial(
-          contenido: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                'Selecciona un destino personalizado',
-                style: TextStyle(fontSize: 16),
-              ),
-              Icon(
-                Icons.open_in_new,
-                size: 24,
-              ),
-            ],
-          ),
-          funcion: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MapaScreen(callbackDestinoPersonalizado)),
-            );
-          },
-        ),
-        const SizedBox(height: 8),
-        TextoTitulo(
-          texto: 'Origen seleccionado',
-          padding: const EdgeInsets.only(top: 8, left: 24, right: 24, bottom: 8),
-          sizeTexto: 20,
-          colorTexto: Colors.grey[400],
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 32.0),
-            child: Text(origenPersonalizado != null
-                ? '$origenPersonalizado, Radio: $radioOrigen metros'
-                : 'Ningún origen seleccionado'),
-          ),
-        ),
-        TextoTitulo(
-          texto: 'Destino seleccionado',
-          padding: const EdgeInsets.only(top: 12, left: 24, right: 24, bottom: 4),
-          sizeTexto: 20,
-          colorTexto: Colors.grey[400],
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 32.0),
-            child: Text(destinoPersonalizado != null
-                ? '$destinoPersonalizado, Radio: $radioDestino metros'
-                : 'Ningún destino seleccionado'),
-          ),
-        ),
-      ],
-    );
+    Future(() {
+      if (widget.oferta.coordOrigen != null) {
+        ref.read(posicionPersonalizadaProvider(TipoPosicion.origen).notifier).state =
+            LocalizacionPersonalizada(
+          nombreCompleto: widget.oferta.origen,
+          localidad: widget.oferta.origen,
+          coordenadas: widget.oferta.coordOrigen!,
+          radio: widget.oferta.radioOrigen!,
+        );
+        ref.read(posicionPersonalizadaProvider(TipoPosicion.destino).notifier).state =
+            LocalizacionPersonalizada(
+          nombreCompleto: widget.oferta.destino,
+          localidad: widget.oferta.destino,
+          coordenadas: widget.oferta.coordDestino!,
+          radio: widget.oferta.radioDestino!,
+        );
+      } else {
+        ref.read(dropdownProvider(TipoPosicion.origen).notifier).state = widget.oferta.origen;
+        ref.read(dropdownProvider(TipoPosicion.destino).notifier).state = widget.oferta.destino;
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -216,62 +91,7 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
           child: Column(
             children: [
               const TextoTitulo(texto: 'Selección de posición'),
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: ToggleSwitch(
-                  initialLabelIndex: indiceSeleccionado,
-                  totalSwitches: 2,
-                  minWidth: 175,
-                  minHeight: 35,
-                  borderWidth: 2,
-                  labels: const ['Simple', 'Personalizado'],
-                  inactiveBgColor: Colors.white,
-                  borderColor: const [Colors.blue],
-                  customTextStyles: const [TextStyle(fontSize: 18)],
-                  animate: true,
-                  animationDuration: 200,
-                  curve: Curves.linear,
-                  onToggle: (index) {
-                    if (index == 0) {
-                      indiceSeleccionado = 0;
-                      pos = simple;
-                    } else {
-                      indiceSeleccionado = 1;
-                      pos = pers;
-                    }
-                    dropdownValueOrigen = 'Selecciona uno';
-                    dropdownValueDestino = 'Selecciona uno';
-                    origenPersonalizado = null;
-                    destinoPersonalizado = null;
-                    coordOrigen = null;
-                    coordDestino = null;
-                    setState(() {});
-                  },
-                ),
-              ),
-              AnimatedCrossFade(
-                firstChild: simple,
-                secondChild: pers,
-                crossFadeState:
-                    indiceSeleccionado == 0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                duration: const Duration(milliseconds: 200),
-                layoutBuilder: (topChild, topKey, bottomChild, bottomKey) {
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        key: bottomChild.key,
-                        top: 0,
-                        child: bottomChild,
-                      ),
-                      Positioned(
-                        key: topChild.key,
-                        child: topChild,
-                      ),
-                    ],
-                  );
-                },
-              ),
+              SeleccionPosicion(indice: widget.oferta.coordOrigen != null ? 1 : 0),
               const SizedBox(height: 24),
               const TextoTitulo(
                 texto: 'Selección de hora',
@@ -397,7 +217,15 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                 padding: const EdgeInsets.only(bottom: 64.0),
                 child: Boton(
                   funcion: () async {
-                    if (dropdownValueDestino == dropdownValueOrigen) {
+                    final dpOrigen = ref.read(dropdownProvider(TipoPosicion.origen));
+                    final dpDestino = ref.read(dropdownProvider(TipoPosicion.destino));
+                    final origen = ref.read(posicionPersonalizadaProvider(TipoPosicion.origen));
+                    final destino = ref.read(posicionPersonalizadaProvider(TipoPosicion.destino));
+
+                    final origenPersonalizado = origen?.nombreCompleto;
+                    final destinoPersonalizado = destino?.nombreCompleto;
+                    if (dpOrigen == dpDestino &&
+                        (origenPersonalizado == null || destinoPersonalizado == null)) {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -414,27 +242,29 @@ class _EditarOfertaScreenState extends ConsumerState<EditarOfertaScreen> {
                             );
                           });
                     }
+
                     if (_formKey.currentState!.validate() &&
-                        (((dropdownValueOrigen != 'Selecciona uno' &&
-                                    dropdownValueDestino != 'Selecciona uno') ||
+                        (((dpOrigen != 'Selecciona uno' && dpDestino != 'Selecciona uno') ||
                                 (origenPersonalizado != null && destinoPersonalizado != null)) &&
                             horaController.text != '' &&
-                            dropdownValueDestino != dropdownValueOrigen &&
+                            (dpDestino != dpOrigen ||
+                                origenPersonalizado != destinoPersonalizado) &&
                             int.parse(plazasController.text) >=
                                 (widget.oferta.plazasTotales - widget.oferta.plazasDisponibles))) {
                       ref.read(ofertasOfrecidasUsuarioProvider.notifier).editarOferta(
                             id: widget.oferta.id,
-                            origen: dropdownValueOrigen,
-                            destino: dropdownValueDestino,
+                            origen: origen?.localidad ?? dpOrigen,
+                            destino: destino?.localidad ?? dpDestino,
                             plazas: plazasController.text,
                             hora: DateTime.tryParse(horaController.text)!.toIso8601String(),
                             titulo: tituloController.text,
                             descripcion: descripcionController.text,
-                            coordOrigen: coordOrigen,
-                            coordDestino: coordDestino,
-                            radioOrigen: radioOrigen,
-                            radioDestino: radioDestino,
+                            coordOrigen: origen?.coordenadas,
+                            coordDestino: destino?.coordenadas,
+                            radioOrigen: origen?.radio,
+                            radioDestino: destino?.radio,
                             paraEstarA: groupValue == 0,
+                            esPeriodico: widget.oferta.esPeriodico,
                           );
 
                       Navigator.of(context).popUntil(ModalRoute.withName(TabBarScreen.kRouteName));

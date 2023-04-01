@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:unicar/providers/chat_provider.dart';
+import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/providers/oferta_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/editar_oferta_screen.dart';
@@ -12,6 +13,7 @@ import 'package:unicar/widgets/mapa.dart';
 import 'package:unicar/widgets/texto.dart';
 
 import '../models/oferta.dart';
+import '../providers/tema_provider.dart';
 
 class VerViajeScreen extends ConsumerWidget {
   const VerViajeScreen({
@@ -23,11 +25,14 @@ class VerViajeScreen extends ConsumerWidget {
   final Oferta oferta;
   final estiloTexto = const TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
   );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pasajeros = ref.watch(pasajerosViajeProvider(oferta.id));
+    final plazasD = ref.watch(plazasProvider(oferta.id));
+
     final botonEliminar = Boton(
       colorBoton: Colors.red,
       textSize: 16,
@@ -75,10 +80,11 @@ class VerViajeScreen extends ConsumerWidget {
       textSize: 16,
       paddingTodo: 16,
       funcion: () async {
+        final chat = await ref.read(chatProvider.notifier).crearChat(oferta.creador);
+
         if (context.mounted) {
-          ref.read(chatProvider.notifier).crearChat(oferta.creadoPor);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => VerChatScreen(oferta.creadoPor),
+            builder: (context) => VerChatScreen(chat),
           ));
         }
       },
@@ -117,6 +123,14 @@ class VerViajeScreen extends ConsumerWidget {
       }
     }
 
+    final tema = ref.watch(temaProvider).when(
+          data: (data) => data == 'claro' ? true : false,
+          error: (error, stackTrace) => true,
+          loading: () => true,
+        );
+
+    Color color = tema ? Colors.black : Colors.white;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -153,16 +167,16 @@ class VerViajeScreen extends ConsumerWidget {
                     tag: 'imagenUsuario${oferta.id}',
                     child: CircleAvatar(
                       backgroundColor: Colors.grey,
-                      backgroundImage: ref.read(imagenDefectoProvider),
-                      /*AssetImage(
-                          'lib/assets/defaultProfile.png'),*/ //NetworkImage(oferta.urlIcono!), //TODO cosa de imagen
+                      backgroundImage: oferta.creador.urlIcono != null
+                          ? NetworkImage(oferta.creador.urlIcono!)
+                          : ref.read(imagenDefectoProvider),
                       radius: 35,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: Text(
-                      oferta.nombreCreador,
+                      oferta.creador.nombre,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
@@ -179,14 +193,14 @@ class VerViajeScreen extends ConsumerWidget {
                 children: [
                   const TextoTitulo(texto: 'Viaje'),
                   Padding(
-                    padding: const EdgeInsets.only(left: 32.0, bottom: 8),
+                    padding: const EdgeInsets.only(left: 16.0, bottom: 8),
                     child: Hero(
                       tag: 'viajeOD${oferta.id}',
                       child: Material(
                         type: MaterialType.transparency,
                         child: RichText(
                           text: TextSpan(
-                            style: const TextStyle(color: Colors.black, fontSize: 20),
+                            style: TextStyle(color: color, fontSize: 20),
                             children: [
                               const TextSpan(text: 'Viaje con origen '),
                               TextSpan(
@@ -211,7 +225,7 @@ class VerViajeScreen extends ConsumerWidget {
                   const TextoTitulo(texto: 'Hora'),
                   Padding(
                     padding: const EdgeInsets.only(
-                      left: 32.0,
+                      left: 16.0,
                       bottom: 8,
                       top: 8,
                     ),
@@ -221,7 +235,7 @@ class VerViajeScreen extends ConsumerWidget {
                         type: MaterialType.transparency,
                         child: RichText(
                           text: TextSpan(
-                            style: const TextStyle(color: Colors.black, fontSize: 20),
+                            style: TextStyle(color: color, fontSize: 20),
                             children: [
                               TextSpan(
                                 text: oferta.paraEstarA ? 'Para estar el: ' : 'Salida: ',
@@ -239,25 +253,55 @@ class VerViajeScreen extends ConsumerWidget {
                   const TextoTitulo(texto: 'Datos extra'),
                   Padding(
                     padding: const EdgeInsets.only(
-                      left: 32.0,
+                      left: 16.0,
                       bottom: 8,
                       top: 8,
                     ),
                     child: RichText(
                       text: TextSpan(
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style: TextStyle(color: color, fontSize: 20),
                         children: [
                           const TextSpan(
                             text: 'Plazas libres: ',
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
-                          TextSpan(text: '${oferta.plazasDisponibles}'),
+                          TextSpan(
+                              text: '${plazasD.when(
+                            data: (data) => data,
+                            error: (error, stackTrace) => 'No se puedieron cargar las plazas',
+                            loading: () => '',
+                          )}'),
                         ],
                       ),
                     ),
                   ),
+                  tipo == TipoViaje.propio
+                      ? Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 16.0,
+                                bottom: 8,
+                                top: 8,
+                              ),
+                              child: RichText(
+                                text: TextSpan(
+                                  style: TextStyle(color: color, fontSize: 20),
+                                  children: [
+                                    const TextSpan(
+                                      text: 'Viaje recurrente: ',
+                                      style: TextStyle(fontWeight: FontWeight.w600),
+                                    ),
+                                    TextSpan(text: oferta.esPeriodico ? 'Sí' : 'No'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
                   Padding(
-                    padding: const EdgeInsets.only(left: 32.0, bottom: 8, top: 8),
+                    padding: const EdgeInsets.only(left: 16.0, bottom: 8, top: 8),
                     child: Text(
                       'Descripción',
                       style: estiloTexto,
@@ -273,6 +317,109 @@ class VerViajeScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  tipo == TipoViaje.propio
+                      ? Column(
+                          children: [
+                            const TextoTitulo(texto: 'Pasajeros apuntados'),
+                            Column(
+                              children: pasajeros.when(
+                                data: (data) {
+                                  List<Widget> res = [];
+                                  for (var element in data) {
+                                    res.add(
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 16.0, right: 16, top: 16),
+                                        child: ListTile(
+                                          leading: CircleAvatar(
+                                            backgroundColor: Colors.grey,
+                                            backgroundImage: element.urlIcono != null
+                                                ? NetworkImage(element.urlIcono!)
+                                                : ref.read(imagenDefectoProvider),
+                                            radius: 20,
+                                          ),
+                                          title: Text(element.nombre),
+                                          shape: RoundedRectangleBorder(
+                                              side: const BorderSide(width: 1, color: Colors.blue),
+                                              borderRadius: BorderRadius.circular(15)),
+                                          trailing: IconButton(
+                                            icon: const Icon(Icons.delete_outlined),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    content: Text(
+                                                        '¿Estas seguro de que quieres cancelar la reserva del usuario ${element.nombre}?'),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          ref
+                                                              .read(databaseProvider.notifier)
+                                                              .eliminarPasajero(
+                                                                oferta.id,
+                                                                element.id,
+                                                                oferta.plazasDisponibles,
+                                                              );
+                                                          ref
+                                                              .read(
+                                                                  pasajerosViajeProvider(oferta.id)
+                                                                      .notifier)
+                                                              .update((state) {
+                                                            state.value!.removeWhere(
+                                                                (user) => user.id == element.id);
+                                                            final res = state.value!;
+                                                            return AsyncData(res);
+                                                          });
+
+                                                          if (context.mounted) {
+                                                            Navigator.of(context).pop();
+                                                          }
+                                                        },
+                                                        child: const Text('Aceptar'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                        child: const Text('Cancelar'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                          onTap: () {},
+                                          onLongPress: () {},
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  if (res.isEmpty) {
+                                    res.add(
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 16.0),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'No hay pasajeros apuntados',
+                                            style: TextStyle(fontStyle: FontStyle.italic),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return res;
+                                },
+                                error: (error, stackTrace) =>
+                                    [const Text('No se pudieron cargar los pasajeros')],
+                                loading: () => [const Center(child: CircularProgressIndicator())],
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),

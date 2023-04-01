@@ -10,42 +10,48 @@ import '../models/database/supabase_db_implementer.dart';
 import '../screens/login_screen.dart';
 import '../screens/nuevo_usuario_screen.dart';
 import '../screens/tab_bar_screen.dart';
+import 'login_provider.dart';
 
 class DatabaseController extends r.Notifier<Database> {
+  final Database? valorDefecto;
+
+  DatabaseController({this.valorDefecto});
+
   @override
   Database build() {
-    return SupabaseDB();
+    return valorDefecto ?? SupabaseDB();
   }
 
   Future<bool> _comprobarPrimerInicio(User user) async {
-    final nombre = await state.nombreUsuario(user.id);
-    return nombre == '';
+    final usuario = await state.datosUsuario(user.id);
+    return usuario.nombre == '';
   }
 
-  StreamSubscription<AuthState> comprobarEstadoInicioConProvider(
-    BuildContext context,
-    bool redirecting,
-  ) {
+  StreamSubscription<AuthState> comprobarEstadoInicioConProvider(BuildContext context) {
     return Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
-      if (redirecting) return;
+      if (ref.read(loginProviderProvider)) return;
       final session = data.session;
 
       if (session != null) {
-        redirecting = true;
+        ref.read(loginProviderProvider.notifier).state = true;
         final User user = data.session!.user;
-        final nombreUsuario = await state.nombreUsuario(user.id);
-        ref.read(usuarioProvider.notifier).state = Usuario(id: user.id, nombre: nombreUsuario);
-
         final esNuevoUsuario = _comprobarPrimerInicio(user);
-        esNuevoUsuario.then((value) {
+        esNuevoUsuario.then((value) async {
           if (value) {
-            if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(NuevoUsuarioScreen.kRouteName);
-            }
+            final nombreUsuario = user.userMetadata?['full_name'];
+            final urlAvatar = user.userMetadata?['avatar_url'];
+            state.actualizarDatosUsuario(user.id, nombreUsuario, urlAvatar);
+
+            ref.read(usuarioProvider.notifier).state = Usuario(
+              id: user.id,
+              nombre: nombreUsuario,
+              urlIcono: urlAvatar,
+            );
           } else {
-            if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
-            }
+            ref.read(usuarioProvider.notifier).state = await state.datosUsuario(user.id);
+          }
+          if (context.mounted) {
+            Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
           }
         });
       }
@@ -60,8 +66,7 @@ class DatabaseController extends r.Notifier<Database> {
     final AuthResponse res = await state.iniciarSesion(correo, password);
     final user = res.user;
     if (user != null) {
-      final nombre = await state.nombreUsuario(user.id);
-      ref.read(usuarioProvider.notifier).state = Usuario(id: user.id, nombre: nombre);
+      ref.read(usuarioProvider.notifier).state = await state.datosUsuario(user.id);
 
       final esNuevoUsuario = _comprobarPrimerInicio(user);
       esNuevoUsuario.then((value) {
@@ -103,13 +108,23 @@ class DatabaseController extends r.Notifier<Database> {
     }
   }
 
+  Future<List<Usuario>> recogerPasajeros(int idViaje) {
+    return state.recogerParticipantesViaje(idViaje);
+  }
+
+  void eliminarPasajero(int idViaje, String idUsuario, int plazas) {
+    state.cancelarPlaza(idViaje, plazas, idUsuario);
+  }
+
+  Future<int> recogerPlazasDisponibles(int idViaje) {
+    return state.recogerPlazasViaje(idViaje);
+  }
+
   void comprobarSesion(BuildContext context) async {
     try {
       final initialSession = await state.comprobarSesion();
       if (initialSession != null) {
-        final nombre = await state.nombreUsuario(initialSession.user.id);
-        ref.read(usuarioProvider.notifier).state =
-            Usuario(id: initialSession.user.id, nombre: nombre);
+        ref.read(usuarioProvider.notifier).state = await state.datosUsuario(initialSession.user.id);
 
         if (context.mounted) {
           Navigator.of(context).pushReplacementNamed(TabBarScreen.kRouteName);
@@ -129,4 +144,15 @@ class DatabaseController extends r.Notifier<Database> {
 
 final databaseProvider = r.NotifierProvider<DatabaseController, Database>(() {
   return DatabaseController();
+});
+
+final pasajerosViajeInicialProvider =
+    r.FutureProvider.family.autoDispose<List<Usuario>, int>((ref, id) {
+  return ref.watch(databaseProvider).recogerParticipantesViaje(id);
+});
+
+final pasajerosViajeProvider =
+    r.StateProvider.family.autoDispose<r.AsyncValue<List<Usuario>>, int>((ref, id) {
+  final res = ref.watch(pasajerosViajeInicialProvider(id));
+  return res;
 });

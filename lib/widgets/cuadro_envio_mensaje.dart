@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:unicar/providers/chat_provider.dart';
 import 'package:unicar/providers/database_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/widgets/textform.dart';
 
-class EnvioMensajeWidget extends ConsumerStatefulWidget {
-  const EnvioMensajeWidget(this.idUsuarioAjeno, {super.key});
+class EnvioMensajeWidget extends ConsumerWidget {
+  EnvioMensajeWidget(this.idUsuarioAjeno, this.chatId, {super.key});
   final String idUsuarioAjeno;
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _EnvioMensajeWidgetState();
-}
+  final int chatId;
 
-class _EnvioMensajeWidgetState extends ConsumerState<EnvioMensajeWidget> {
   final TextEditingController _mensaje = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -43,10 +39,9 @@ class _EnvioMensajeWidgetState extends ConsumerState<EnvioMensajeWidget> {
           iconSize: 42,
           onPressed: () {
             if (_mensaje.text != '') {
-              ref.read(databaseProvider).enviarMensaje(
-                  ref.read(chatProvider.notifier).buscarIdDeChat(widget.idUsuarioAjeno),
-                  _mensaje.text,
-                  ref.read(usuarioProvider)!.id);
+              ref
+                  .read(databaseProvider)
+                  .enviarMensaje(chatId, _mensaje.text, ref.read(usuarioProvider)!.id);
               _mensaje.text = '';
             }
           },

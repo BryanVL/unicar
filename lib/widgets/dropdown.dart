@@ -1,29 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unicar/models/localizacion.dart';
 
 import '../models/oferta.dart';
+import '../providers/dropdown_provider.dart';
+import '../providers/tema_provider.dart';
 
-class CustomDropdown extends StatefulWidget {
-  const CustomDropdown(
-      {super.key, required this.titulo, required this.callback, this.valorDefecto});
+class CustomDropdown extends ConsumerWidget {
+  const CustomDropdown({super.key, required this.titulo, required this.tipo});
   final String titulo;
-  final Function(String) callback;
-  final String? valorDefecto;
+  final TipoPosicion tipo;
 
   @override
-  State<CustomDropdown> createState() => _CustomDropdownState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final valor = ref.watch(dropdownProvider(tipo));
+    final tema = ref.watch(temaProvider).when(
+          data: (data) => data == 'claro' ? true : false,
+          error: (error, stackTrace) => true,
+          loading: () => true,
+        );
+    final listaUbicaciones = Oferta.ubicaciones
+        .map(
+          (ubicacion) => DropdownMenuItem(
+            alignment: Alignment.center,
+            value: ubicacion,
+            child: Text(
+              ubicacion,
+              style: TextStyle(color: tema ? Colors.black : Colors.white),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        )
+        .toList();
 
-class _CustomDropdownState extends State<CustomDropdown> {
-  String dropdownValue = 'Selecciona uno';
-
-  @override
-  void initState() {
-    dropdownValue = widget.valorDefecto ?? 'Selecciona uno';
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -35,7 +45,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             width: 80,
             height: 80,
             child: Text(
-              widget.titulo,
+              titulo,
               style: const TextStyle(
                 fontSize: 18,
               ),
@@ -53,10 +63,9 @@ class _CustomDropdownState extends State<CustomDropdown> {
             width: 225,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.transparent, //const Color.fromARGB(255, 29, 183, 255),
+                color: Colors.transparent,
                 border: Border.all(color: Colors.blue, width: 3),
                 borderRadius: BorderRadius.circular(20),
-
                 boxShadow: const [
                   BoxShadow(
                     color: Colors.transparent,
@@ -65,29 +74,27 @@ class _CustomDropdownState extends State<CustomDropdown> {
                 ],
               ),
               child: DropdownButtonFormField(
-                  key: widget.key,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  iconSize: 24,
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  autofocus: true,
-                  dropdownColor: Colors.white, //const Color.fromARGB(255, 80, 171, 228),
-                  isExpanded: true,
-                  alignment: Alignment.center,
-                  value: dropdownValue,
-                  onChanged: (String? value) {
-                    widget.callback(value ?? '');
-                    setState(() {
-                      dropdownValue = value!;
-                    });
-                  },
-                  items: Oferta.listaUbicaciones),
+                key: key,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                ),
+                iconSize: 24,
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                autofocus: true,
+                dropdownColor: tema ? Colors.white : const Color.fromARGB(255, 29, 27, 27),
+                isExpanded: true,
+                alignment: Alignment.center,
+                value: valor,
+                onChanged: (String? value) {
+                  ref.read(dropdownProvider(tipo).notifier).state = value!;
+                },
+                items: listaUbicaciones,
+              ),
             ),
           ),
         ),

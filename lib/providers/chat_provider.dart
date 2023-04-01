@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unicar/models/chat.dart';
+import 'package:unicar/models/usuario.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
@@ -9,10 +10,13 @@ import 'package:collection/collection.dart';
 import 'database_provider.dart';
 
 class ChatController extends AsyncNotifier<List<Chat>> {
+  final List<Chat>? valorDefecto;
+
+  ChatController({this.valorDefecto});
   @override
   FutureOr<List<Chat>> build() {
     ref.watch(usuarioProvider);
-    return _inicializarLista();
+    return valorDefecto != null ? Future.value(valorDefecto) : _inicializarLista();
   }
 
   Future<List<Chat>> _inicializarLista() async {
@@ -21,47 +25,51 @@ class ChatController extends AsyncNotifier<List<Chat>> {
         );
 
     List<Chat> res = [];
-/*TODO si aqui para cada id de chat (element) hago una consulta a la tabla chat para recoger
-la fecha del ultimo mensaje, puedo tambien ordenar.
-Otra opcion sería mover el atributo ultimo_mensaje a la tabla participante de chat y al recoger
-la fila de los dos usuario comparar las fechas y quedarme con el mas reciente y con
-eso ordenar los chats*/
     for (int element in consultaChats) {
       final List listausuarios = await ref.read(databaseProvider).recogerUsuariosAjenosChat(
             element,
             ref.read(usuarioProvider)!.id,
           );
 
-      for (String element2 in listausuarios) {
-        res.add(Chat(element, ref.read(usuarioProvider)!.id, element2));
+      for (Usuario element2 in listausuarios) {
+        res.add(Chat(element, ref.read(usuarioProvider)!, element2, []));
       }
     }
 
     return Future.value(res);
   }
 
-  void crearChat(String idReceptor) async {
-    if (buscarIdDeChat(idReceptor) == -1) {
-      final String idUsuario = ref.read(usuarioProvider)!.id;
-      final int idChat = await ref.read(databaseProvider).crearChat(idReceptor);
+  Future<Chat> crearChat(Usuario receptor) async {
+    Chat? nuevoChat = buscarChat(receptor.id);
 
-      final nuevoChat = Chat(idChat, idUsuario, idReceptor);
+    if (nuevoChat == null) {
+      final idChat = await ref.read(databaseProvider).crearChat(receptor.id);
+
+      nuevoChat = Chat(idChat, ref.read(usuarioProvider)!, receptor, []);
       state = await AsyncValue.guard(() {
-        return Future(() => [nuevoChat, ...(state.value!)]);
+        return Future(() => [nuevoChat!, ...(state.value!)]);
       });
     }
+    return nuevoChat;
   }
 
-  int buscarIdDeChat(String idReceptor) {
+  Chat? buscarChat(String idReceptor) {
     final Chat? chatBuscado = state.value!.firstWhereOrNull(
-      (element) => element.usuarioReceptor == idReceptor,
+      (element) => element.usuarioReceptor.id == idReceptor,
     );
 
-    return chatBuscado == null ? -1 : chatBuscado.id;
+    return chatBuscado;
   }
 
   void actualizarMensajesVistos(int idChat, String idUsuarioAjeno) {
     ref.read(databaseProvider).actualizarEstadoMensajes(idChat, idUsuarioAjeno);
+  }
+
+  void actualizarChat(Chat chatActualizado) {
+    final int index = state.value!.indexWhere((element) => element.id == chatActualizado.id);
+    final estado = state.value!;
+    estado[index] = chatActualizado;
+    state = AsyncValue.data(estado);
   }
 
   void ponerChatAlPrincipio(int idChat) async {

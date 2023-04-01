@@ -2,47 +2,60 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as r;
 import 'package:latlong2/latlong.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:unicar/models/localizacion.dart';
 import 'package:unicar/models/oferta.dart';
 import 'package:unicar/providers/localizacion_provider.dart';
 import 'package:unicar/providers/usuario_provider.dart';
 
 import 'database_provider.dart';
 
-//OFERTAS DISPONIBLES
-class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
+//Cambiar inicializar para que lo haga segun el tipo, hacer comprobaciones en funciones como cancelar reserva
+class OfertasController extends r.AsyncNotifier<List<Oferta>> {
   List<Oferta> estadoAux = [];
   String filtroOrigen = 'Selecciona uno';
   String filtroDestino = 'Selecciona uno';
+  LocalizacionPersonalizada? filtroOrigenP;
+  LocalizacionPersonalizada? filtroDestinoP;
   String filtroHora = '';
-  LatLng? filtroCoordOrigen;
-  LatLng? filtroCoordDestino;
-  int? filtroRadioOrigen;
-  int? filtroRadioDestino;
   int filtroGroupValue = 2;
+  final List<Oferta>? valorDefecto;
+  final TipoViaje tipo;
+
+  OfertasController({this.valorDefecto, required this.tipo});
 
   @override
   FutureOr<List<Oferta>> build() {
     ref.watch(usuarioProvider);
-    return _inicializarLista();
+    return valorDefecto != null ? Future.value(valorDefecto) : _inicializarLista();
   }
 
   Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await ref.read(databaseProvider).recogerViajesAjenos(
-          ref.read(usuarioProvider)!.id,
+    switch (tipo) {
+      case TipoViaje.oferta:
+        final List<Oferta> listaOfertas =
+            await ref.read(databaseProvider).recogerViajesAjenos(ref.read(usuarioProvider)!.id);
+        List<Oferta>? ofertasApuntado = ref.read(ofertasUsuarioApuntadoProvider).valueOrNull;
+
+        if (ofertasApuntado != null) {
+          for (var ap in ofertasApuntado) {
+            listaOfertas.removeWhere((element) => element.id == ap.id);
+          }
+        }
+
+        return Future.value(listaOfertas);
+      case TipoViaje.apuntado:
+        return Future.value(
+          await ref.read(databaseProvider).recogerViajesApuntado(
+                ref.read(usuarioProvider)!.id,
+              ),
         );
-
-    final List consultaPasajero = await ref.read(databaseProvider).usuarioEsPasajero(
-          ref.read(usuarioProvider)!.id,
+      case TipoViaje.propio:
+        return Future.value(
+          await ref.read(databaseProvider).viajesDelUsuario(
+                ref.read(usuarioProvider)!.id,
+              ),
         );
-
-    final listaViajes = Oferta.fromList(consultaViajes);
-    final List<int> idsQuitar = consultaPasajero.map((e) => e['id_viaje'] as int).toList();
-
-    final List<Oferta> res = listaViajes.where((e) {
-      return !idsQuitar.contains(e.id);
-    }).toList();
-
-    return Future.value(res);
+    }
   }
 
   void addOferta(Oferta oferta) async {
@@ -52,19 +65,153 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
   }
 
   void eliminarOferta(int id) {
+    if (tipo == TipoViaje.propio) {
+      ref.read(databaseProvider).eliminarViaje(id);
+    }
     state = state.whenData((value) => value.where((element) => element.id != id).toList());
   }
 
-  void reservarPlaza(Oferta oferta) {
-    ref.read(databaseProvider).reservarPlaza(
-          oferta.id,
-          oferta.plazasDisponibles,
-          ref.read(usuarioProvider)!.id,
-        );
-    ref
-        .read(ofertasUsuarioApuntadoProvider.notifier)
-        .addOferta(oferta.copyWith(plazasDisponibles: oferta.plazasDisponibles - 1));
-    eliminarOferta(oferta.id);
+  void reservarPlaza(Oferta oferta) async {
+    if (tipo == TipoViaje.oferta) {
+      final pl = ref.read(plazasProvider(oferta.id));
+      pl.whenData((value) {
+        if (value > 0) {
+          ref.read(databaseProvider).reservarPlaza(
+                oferta.id,
+                value,
+                ref.read(usuarioProvider)!.id,
+              );
+          ref
+              .read(ofertasUsuarioApuntadoProvider.notifier)
+              .addOferta(oferta.copyWith(plazasDisponibles: value - 1));
+          eliminarOferta(oferta.id);
+        }
+      });
+    }
+  }
+
+  void cancelarReserva(Oferta oferta) {
+    if (tipo == TipoViaje.apuntado) {
+      final pl = ref.read(plazasProvider(oferta.id));
+      pl.whenData((value) {
+        ref.read(databaseProvider).cancelarPlaza(
+              oferta.id,
+              value,
+              ref.read(usuarioProvider)!.id,
+            );
+
+        ref.invalidate(ofertasDisponiblesProvider);
+        eliminarOferta(oferta.id);
+      });
+    }
+  }
+
+  void editarOferta({
+    required int id,
+    required String origen,
+    required String destino,
+    required String plazas,
+    required String hora,
+    required String titulo,
+    required String descripcion,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
+    int? radioOrigen,
+    int? radioDestino,
+    required bool paraEstarA,
+    required bool esPeriodico,
+  }) {
+    if (tipo == TipoViaje.propio) {
+      ref.read(databaseProvider).actualizarViaje(
+            idViaje: id,
+            origen: origen,
+            destino: destino,
+            plazasTotales: plazas,
+            hora: hora,
+            titulo: titulo,
+            descripcion: descripcion,
+            coordOrigen: coordOrigen,
+            coordDestino: coordDestino,
+            radioOrigen: radioOrigen,
+            radioDestino: radioDestino,
+            paraEstarA: paraEstarA,
+            esPeriodico: esPeriodico,
+          );
+
+      List<Oferta> ofertas = state.whenData((value) => value).value!;
+      int index = ofertas.indexWhere((value) => value.id == id);
+      Oferta o = ofertas[index];
+      int plazasDisp = o.plazasDisponibles;
+      ofertas[index] = o.copyWithWithoutCoords(
+        origen: origen,
+        destino: destino,
+        hora: hora,
+        plazasDisponibles: plazasDisp + (int.parse(plazas) - o.plazasTotales),
+        plazasTotales: int.parse(plazas),
+        titulo: titulo,
+        descripcion: descripcion,
+        coordOrigen: coordOrigen,
+        coordDestino: coordDestino,
+        radioOrigen: radioOrigen,
+        radioDestino: radioDestino,
+        paraEstarA: paraEstarA,
+        esPeriodico: esPeriodico,
+      );
+
+      state = AsyncValue.data(ofertas);
+    }
+  }
+
+  void addNewOferta(
+    String origen,
+    String destino,
+    String hora,
+    String plazas,
+    String descripcion,
+    String titulo,
+    LatLng? coordOrigen,
+    LatLng? coordDestino,
+    int? radioOrigen,
+    int? radioDestino,
+    bool paraEstarA,
+    bool esPeriodico,
+  ) async {
+    if (tipo == TipoViaje.propio) {
+      final user = ref.read(usuarioProvider);
+      final idNuevo = await ref.read(databaseProvider).crearViaje(
+            origen: origen,
+            destino: destino,
+            hora: hora,
+            plazas: plazas,
+            descripcion: descripcion,
+            titulo: titulo,
+            paraEstarA: paraEstarA,
+            coordOrigen: coordOrigen,
+            coordDestino: coordDestino,
+            radioOrigen: radioOrigen,
+            radioDestino: radioDestino,
+            esPeriodico: esPeriodico,
+          );
+
+      final viaje = Oferta(
+        id: idNuevo,
+        origen: origen,
+        destino: destino,
+        hora: hora,
+        plazasTotales: int.parse(plazas),
+        plazasDisponibles: int.parse(plazas),
+        titulo: titulo,
+        descripcion: descripcion,
+        creador: user!,
+        paraEstarA: paraEstarA,
+        coordOrigen: coordOrigen,
+        radioOrigen: radioOrigen,
+        coordDestino: coordDestino,
+        radioDestino: radioDestino,
+        esPeriodico: esPeriodico,
+      );
+      addOferta(viaje);
+    }
   }
 
 //TODO filtros con consultas a la base de datos en vez de local
@@ -75,12 +222,17 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     String origen,
     String destino,
     String hora,
-    LatLng? coordOrigen,
-    LatLng? coordDestino,
-    int? radioOrigen,
-    int? radioDestino,
+    LocalizacionPersonalizada? origenP,
+    LocalizacionPersonalizada? destinoP,
     int groupValue,
   ) {
+    if (tipo == TipoViaje.propio) return;
+    if (tipo == TipoViaje.apuntado) return;
+    if (origen == 'Selecciona uno' &&
+        destino == 'Selecciona uno' &&
+        hora == '' &&
+        origenP == null &&
+        destinoP == null) return;
     List<Oferta> nuevoEstado = [];
     List<Oferta> aux = [];
     bool filtroPosicionAplicado = false;
@@ -93,7 +245,7 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
 
     List<Oferta> ofertas = state.whenData((value) => value).value!;
 
-    if (coordOrigen == null && coordDestino == null) {
+    if (origenP == null && destinoP == null) {
       if (origen != 'Selecciona uno') {
         filtroPosicionAplicado = true;
         filtroOrigen = origen;
@@ -112,27 +264,37 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
           nuevoEstado.addAll(ofertas.where((element) => element.destino == destino));
         }
       }
-    } else if (coordOrigen != null || coordDestino != null) {
-      if (coordOrigen != null) {
+    } else {
+      if (origenP != null) {
         filtroPosicionAplicado = true;
-        filtroCoordOrigen = coordOrigen;
+        filtroOrigenP = LocalizacionPersonalizada(
+          nombreCompleto: origenP.nombreCompleto,
+          localidad: origenP.localidad,
+          coordenadas: origenP.coordenadas,
+          radio: origenP.radio,
+        );
         nuevoEstado.addAll(
           ofertas.where(
             (element) {
               return element.coordOrigen != null
                   ? ref
                           .read(geolocationProvider)
-                          .distanciaEntreDosPuntos(element.coordOrigen!, coordOrigen) <=
-                      (element.radioOrigen! + radioOrigen!)
+                          .distanciaEntreDosPuntos(element.coordOrigen!, origenP.coordenadas) <=
+                      (element.radioOrigen! + origenP.radio)
                   : false;
             },
           ),
         );
       }
 
-      if (coordDestino != null) {
+      if (destinoP != null) {
         filtroPosicionAplicado = true;
-        filtroCoordDestino = coordDestino;
+        filtroDestinoP = LocalizacionPersonalizada(
+          nombreCompleto: destinoP.nombreCompleto,
+          localidad: destinoP.localidad,
+          coordenadas: destinoP.coordenadas,
+          radio: destinoP.radio,
+        );
         if (nuevoEstado.isNotEmpty) {
           aux.addAll(
             nuevoEstado.where(
@@ -140,8 +302,8 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
                 return element.coordDestino != null
                     ? ref
                             .read(geolocationProvider)
-                            .distanciaEntreDosPuntos(element.coordDestino!, coordDestino) <=
-                        (element.radioDestino! + radioDestino!)
+                            .distanciaEntreDosPuntos(element.coordDestino!, destinoP.coordenadas) <=
+                        (element.radioDestino! + destinoP.radio)
                     : false;
               },
             ),
@@ -156,8 +318,8 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
                 return element.coordDestino != null
                     ? ref
                             .read(geolocationProvider)
-                            .distanciaEntreDosPuntos(element.coordDestino!, coordDestino) <=
-                        (element.radioDestino! + radioDestino!)
+                            .distanciaEntreDosPuntos(element.coordDestino!, destinoP.coordenadas) <=
+                        (element.radioDestino! + destinoP.radio)
                     : false;
               },
             ),
@@ -202,8 +364,12 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
         nuevoEstado.addAll(ofertas.where((element) {
           final tElem = DateTime.parse(element.hora);
           final time = DateTime.parse(hora);
+          final int valorGrupo = element.paraEstarA ? 0 : 1;
 
-          return tElem.day == time.day && tElem.hour == time.hour && tElem.minute == time.minute;
+          return tElem.day == time.day &&
+              tElem.hour == time.hour &&
+              tElem.minute == time.minute &&
+              (valorGrupo == groupValue || groupValue == 2);
         }));
       }
     }
@@ -215,233 +381,37 @@ class OfertasDisponiblesController extends r.AsyncNotifier<List<Oferta>> {
     filtroDestino = 'Selecciona uno';
     filtroOrigen = 'Selecciona uno';
     filtroHora = '';
-    filtroCoordOrigen = null;
-    filtroCoordDestino = null;
-    filtroRadioOrigen = null;
-    filtroRadioDestino = null;
+    filtroOrigenP = null;
+    filtroDestinoP = null;
     filtroGroupValue = 2;
-    state = AsyncValue.data(estadoAux);
+    if (estadoAux.isNotEmpty) {
+      state = AsyncValue.data(estadoAux);
+    }
     estadoAux = [];
   }
 }
 
 //Este proveedor da acceso a todas las ofertas disponibles
-final ofertasDisponiblesProvider =
-    r.AsyncNotifierProvider<OfertasDisponiblesController, List<Oferta>>(
+final ofertasDisponiblesProvider = r.AsyncNotifierProvider<OfertasController, List<Oferta>>(
   () {
-    return OfertasDisponiblesController();
+    return OfertasController(tipo: TipoViaje.oferta);
   },
 );
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-//Ofertas que el usuario OFRECE
-class OfertasOfrecidasUsuarioController extends r.AsyncNotifier<List<Oferta>> {
-  @override
-  FutureOr<List<Oferta>> build() {
-    ref.watch(usuarioProvider);
-    return _inicializarLista();
-  }
-
-  Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await ref.read(databaseProvider).viajesDelUsuario(
-          ref.read(usuarioProvider)!.id,
-        );
-
-    return Future.value(Oferta.fromList(consultaViajes));
-  }
-
-  void addNewOferta(
-    String origen,
-    String destino,
-    String hora,
-    String plazas,
-    String descripcion,
-    String titulo,
-    LatLng? coordOrigen,
-    LatLng? coordDestino,
-    int? radioOrigen,
-    int? radioDestino,
-    bool paraEstarA,
-  ) async {
-    final user = ref.read(usuarioProvider);
-    final idNuevo = await ref.read(databaseProvider).crearViaje(
-          origen: origen,
-          destino: destino,
-          hora: hora,
-          plazas: plazas,
-          descripcion: descripcion,
-          titulo: titulo,
-          paraEstarA: paraEstarA,
-          coordOrigen: coordOrigen,
-          coordDestino: coordDestino,
-          radioOrigen: radioOrigen,
-          radioDestino: radioDestino,
-        );
-
-    final viaje = Oferta(
-      id: idNuevo,
-      origen: origen,
-      destino: destino,
-      hora: hora,
-      plazasTotales: int.parse(plazas),
-      plazasDisponibles: int.parse(plazas),
-      titulo: titulo,
-      descripcion: descripcion,
-      creadoPor: user!.id,
-      nombreCreador: user.nombre!,
-      paraEstarA: paraEstarA,
-      coordOrigen: coordOrigen,
-      radioOrigen: radioOrigen,
-      coordDestino: coordDestino,
-      radioDestino: radioDestino,
-    );
-
-    state = await r.AsyncValue.guard(() {
-      return Future(() => [viaje, ...(state.value!)]);
-    });
-  }
-
-  void eliminarOferta(int id) {
-    ref.read(databaseProvider).eliminarViaje(id);
-    state = state.whenData((value) => value.where((element) => element.id != id).toList());
-  }
-
-  void editarOferta({
-    required int id,
-    required String origen,
-    required String destino,
-    required String plazas,
-    required String hora,
-    required String titulo,
-    required String descripcion,
-    LatLng? coordOrigen,
-    LatLng? coordDestino,
-    int? radioOrigen,
-    int? radioDestino,
-    required bool paraEstarA,
-  }) {
-    ref.read(databaseProvider).actualizarViaje(
-          idViaje: id,
-          origen: origen,
-          destino: destino,
-          plazasTotales: plazas,
-          hora: hora,
-          titulo: titulo,
-          descripcion: descripcion,
-          coordOrigen: coordOrigen,
-          coordDestino: coordDestino,
-          radioOrigen: radioOrigen,
-          radioDestino: radioDestino,
-          paraEstarA: paraEstarA,
-        );
-
-    List<Oferta> ofertas = state.whenData((value) => value).value!;
-    int index = ofertas.indexWhere((value) => value.id == id);
-    Oferta o = ofertas[index];
-    int plazasDisp = o.plazasDisponibles;
-    ofertas[index] = o.copyWithWithoutCoords(
-      origen: origen,
-      destino: destino,
-      hora: hora,
-      plazasDisponibles: plazasDisp + (int.parse(plazas) - plazasDisp).abs(),
-      plazasTotales: int.parse(plazas),
-      titulo: titulo,
-      descripcion: descripcion,
-      coordOrigen: coordOrigen,
-      coordDestino: coordDestino,
-      radioOrigen: radioOrigen,
-      radioDestino: radioDestino,
-      paraEstarA: paraEstarA,
-    );
-
-    state = AsyncValue.data(ofertas);
-  }
-}
 
 //Este proveedor da acceso a todas las ofertas disponibles
-final ofertasOfrecidasUsuarioProvider =
-    r.AsyncNotifierProvider<OfertasOfrecidasUsuarioController, List<Oferta>>(
+final ofertasOfrecidasUsuarioProvider = r.AsyncNotifierProvider<OfertasController, List<Oferta>>(
   () {
-    return OfertasOfrecidasUsuarioController();
+    return OfertasController(tipo: TipoViaje.propio);
   },
 );
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-//Ofertas a las que el usuario esta APUNTADO
-class OfertasUsuarioApuntadoController extends r.AsyncNotifier<List<Oferta>> {
-  @override
-  FutureOr<List<Oferta>> build() {
-    ref.watch(usuarioProvider);
-    return _inicializarLista();
-  }
-
-  Future<List<Oferta>> _inicializarLista() async {
-    final List consultaViajes = await ref.read(databaseProvider).recogerViajesAjenos(
-          ref.read(usuarioProvider)!.id,
-        );
-
-    final List consultaPasajero = await ref.read(databaseProvider).usuarioEsPasajero(
-          ref.read(usuarioProvider)!.id,
-        );
-
-    final listaViajes = Oferta.fromList(consultaViajes);
-    final List<int> idsQuitar = consultaPasajero.map((e) => e['id_viaje'] as int).toList();
-
-    final List<Oferta> res = listaViajes.where((e) {
-      return idsQuitar.contains(e.id);
-    }).toList();
-
-    return Future.value(res);
-  }
-
-  void cancelarReserva(Oferta oferta) {
-    ref.read(databaseProvider).cancelarPlaza(
-          oferta.id,
-          oferta.plazasDisponibles,
-          ref.read(usuarioProvider)!.id,
-        );
-
-    ref.invalidate(ofertasDisponiblesProvider);
-    eliminarOferta(oferta.id);
-  }
-
-  void addOferta(Oferta oferta) async {
-    state = await r.AsyncValue.guard(() {
-      return Future(() => [oferta, ...(state.value!)]);
-    });
-  }
-
-  void eliminarOferta(int id) {
-    state = state.whenData((value) => value.where((element) => element.id != id).toList());
-  }
-}
 
 //Este proveedor da acceso a todas las ofertas disponibles
-final ofertasUsuarioApuntadoProvider =
-    r.AsyncNotifierProvider<OfertasUsuarioApuntadoController, List<Oferta>>(
+final ofertasUsuarioApuntadoProvider = r.AsyncNotifierProvider<OfertasController, List<Oferta>>(
   () {
-    return OfertasUsuarioApuntadoController();
+    return OfertasController(tipo: TipoViaje.apuntado);
   },
 );
+
+final plazasProvider = r.FutureProvider.family.autoDispose<int, int>((ref, id) {
+  return ref.watch(databaseProvider).recogerPlazasViaje(id);
+});

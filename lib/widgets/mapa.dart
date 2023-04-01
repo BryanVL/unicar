@@ -6,7 +6,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../providers/localizacion_provider.dart';
 
-class Mapa extends ConsumerStatefulWidget {
+class Mapa extends ConsumerWidget {
   const Mapa(this.localizacionOrigen, this.localizacionDestino, this.radioOrigen, this.radioDestino,
       {super.key});
   final LatLng localizacionOrigen;
@@ -15,16 +15,11 @@ class Mapa extends ConsumerStatefulWidget {
   final int radioDestino;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MapaState();
-}
-
-class _MapaState extends ConsumerState<Mapa> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final posicionActual = ref.watch(localizacionActualUsuarioProvider);
     return FlutterMap(
       options: MapOptions(
-        center: widget.localizacionOrigen,
+        center: localizacionOrigen,
         zoom: 11,
         maxZoom: 16.5,
         minZoom: 11,
@@ -44,16 +39,16 @@ class _MapaState extends ConsumerState<Mapa> {
         CircleLayer(
           circles: [
             CircleMarker(
-              point: widget.localizacionOrigen,
-              radius: widget.radioOrigen.toDouble(),
+              point: localizacionOrigen,
+              radius: radioOrigen.toDouble(),
               color: const Color.fromARGB(78, 56, 88, 231),
               borderColor: Colors.blue,
               borderStrokeWidth: 1,
               useRadiusInMeter: true,
             ),
             CircleMarker(
-              point: widget.localizacionDestino,
-              radius: widget.radioDestino.toDouble(),
+              point: localizacionDestino,
+              radius: radioDestino.toDouble(),
               color: const Color.fromARGB(78, 56, 88, 231),
               borderColor: Colors.blue,
               borderStrokeWidth: 1,
@@ -65,7 +60,7 @@ class _MapaState extends ConsumerState<Mapa> {
           rotate: true,
           markers: [
             Marker(
-              point: widget.localizacionOrigen,
+              point: localizacionOrigen,
               builder: (context) => const SizedBox(
                 height: 50,
                 width: 50,
@@ -79,7 +74,7 @@ class _MapaState extends ConsumerState<Mapa> {
               ),
             ),
             Marker(
-              point: widget.localizacionDestino,
+              point: localizacionDestino,
               builder: (context) => const SizedBox(
                 height: 50,
                 width: 50,
@@ -95,9 +90,7 @@ class _MapaState extends ConsumerState<Mapa> {
             posicionActual.when(
               data: (data) {
                 return Marker(
-                  point: data != null
-                      ? LatLng(data.latitude, data.longitude)
-                      : widget.localizacionOrigen,
+                  point: data != null ? LatLng(data.latitude, data.longitude) : localizacionOrigen,
                   builder: (context) => const Icon(
                     Icons.person,
                     color: Colors.blue,
@@ -106,7 +99,7 @@ class _MapaState extends ConsumerState<Mapa> {
               },
               error: (error, stackTrace) {
                 return Marker(
-                  point: widget.localizacionOrigen,
+                  point: localizacionOrigen,
                   builder: (context) => const Icon(
                     Icons.person,
                     color: Colors.blue,
@@ -115,7 +108,7 @@ class _MapaState extends ConsumerState<Mapa> {
               },
               loading: () {
                 return Marker(
-                  point: widget.localizacionOrigen,
+                  point: localizacionOrigen,
                   builder: (context) => const SizedBox(
                     height: 10,
                     width: 10,
@@ -130,7 +123,7 @@ class _MapaState extends ConsumerState<Mapa> {
             Polyline(
               color: Colors.red,
               strokeWidth: 2,
-              points: [widget.localizacionOrigen, widget.localizacionDestino],
+              points: [localizacionOrigen, localizacionDestino],
             )
           ],
         )

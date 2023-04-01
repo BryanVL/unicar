@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:unicar/models/usuario.dart';
 
 class Oferta {
   final int id;
@@ -15,9 +15,9 @@ class Oferta {
   final int plazasDisponibles;
   final String? titulo;
   final String? descripcion;
-  final String creadoPor;
-  final String nombreCreador;
+  final Usuario creador;
   final bool paraEstarA;
+  final bool esPeriodico;
 
   Oferta({
     required this.id,
@@ -33,9 +33,9 @@ class Oferta {
     required this.plazasDisponibles,
     this.titulo,
     this.descripcion,
-    required this.creadoPor,
-    required this.nombreCreador,
+    required this.creador,
     required this.paraEstarA,
+    required this.esPeriodico,
   });
 
   Oferta.fromKeyValue(Map<String, dynamic> json)
@@ -44,7 +44,11 @@ class Oferta {
         destino = json['destino']!,
         hora = json['hora']!,
         creadoEn = json['created_at'],
-        creadoPor = json['creado_por'],
+        creador = Usuario(
+          id: json['creado_por'],
+          nombre: json['usuario']['nombre'],
+          urlIcono: json['usuario']['url_icono'],
+        ),
         descripcion = json['descripcion'],
         coordOrigen = json['latitud_origen'] == null
             ? null
@@ -54,13 +58,13 @@ class Oferta {
             ? null
             : LatLng(json['latitud_destino'] as double, json['longitud_destino'] as double),
         radioDestino = json['radio_destino'] as int?,
-        nombreCreador = json['usuario']['nombre'],
         plazasDisponibles = json['plazas_disponibles'] as int,
         plazasTotales = json['plazas_totales'] as int,
         titulo = (json['titulo'] == null || json['titulo'] == '')
             ? 'Viaje a ${json['destino']}'
             : json['titulo'],
-        paraEstarA = json['para_estar_a'];
+        paraEstarA = json['para_estar_a'],
+        esPeriodico = json['es_periodico'];
 
   Oferta copyWith({
     String? creadoEn,
@@ -75,9 +79,9 @@ class Oferta {
     int? plazasDisponibles,
     String? titulo,
     String? descripcion,
-    String? creadoPor,
-    String? nombreCreador,
+    Usuario? creador,
     bool? paraEstarA,
+    bool? esPeriodico,
   }) {
     return Oferta(
       id: id,
@@ -93,9 +97,9 @@ class Oferta {
       plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
       plazasTotales: plazasTotales ?? this.plazasTotales,
       titulo: titulo ?? this.titulo,
-      creadoPor: creadoPor ?? this.creadoPor,
-      nombreCreador: nombreCreador ?? this.nombreCreador,
+      creador: creador ?? this.creador,
       paraEstarA: paraEstarA ?? this.paraEstarA,
+      esPeriodico: esPeriodico ?? this.esPeriodico,
     );
   }
 
@@ -112,9 +116,9 @@ class Oferta {
     int? plazasDisponibles,
     String? titulo,
     String? descripcion,
-    String? creadoPor,
-    String? nombreCreador,
+    Usuario? creador,
     bool? paraEstarA,
+    bool? esPeriodico,
   }) {
     return Oferta(
       id: id,
@@ -130,9 +134,9 @@ class Oferta {
       plazasDisponibles: plazasDisponibles ?? this.plazasDisponibles,
       plazasTotales: plazasTotales ?? this.plazasTotales,
       titulo: titulo ?? this.titulo,
-      creadoPor: creadoPor ?? this.creadoPor,
-      nombreCreador: nombreCreador ?? this.nombreCreador,
+      creador: creador ?? this.creador,
       paraEstarA: paraEstarA ?? this.paraEstarA,
+      esPeriodico: esPeriodico ?? this.esPeriodico,
     );
   }
 
@@ -149,20 +153,6 @@ class Oferta {
     'Benalmadena',
     'Alhaurin de la torre',
   ];
-
-  static final listaUbicaciones = ubicaciones
-      .map(
-        (ubicacion) => DropdownMenuItem(
-          alignment: Alignment.center,
-          value: ubicacion,
-          child: Text(
-            ubicacion,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ),
-      )
-      .toList();
 }
 
 enum TipoViaje { propio, apuntado, oferta }

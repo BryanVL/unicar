@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:unicar/screens/chats_screen.dart';
 import 'package:unicar/screens/mis_viajes_screen.dart';
 import 'package:unicar/screens/ofertas_screen.dart';
@@ -20,8 +21,15 @@ class _TabBarScreenState extends State<TabBarScreen> with SingleTickerProviderSt
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
   }
 
+  void _comprobarPermisos() async {
+    if (await Permission.location.status.isDenied) {
+      await Permission.location.request();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _comprobarPermisos();
     return DefaultTabController(
       length: 3,
       child: Scaffold(

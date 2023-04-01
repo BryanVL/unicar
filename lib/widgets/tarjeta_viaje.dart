@@ -5,6 +5,7 @@ import 'package:unicar/providers/usuario_provider.dart';
 import 'package:unicar/screens/ver_viaje_screen.dart';
 
 import '../models/oferta.dart';
+import '../providers/tema_provider.dart';
 
 class TarjetaViajeWidget extends ConsumerWidget {
   const TarjetaViajeWidget({
@@ -18,6 +19,58 @@ class TarjetaViajeWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tema = ref.watch(temaProvider).when(
+          data: (data) => data == 'claro' ? true : false,
+          error: (error, stackTrace) => true,
+          loading: () => true,
+        );
+
+    BoxDecoration temaClaro = BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade500,
+          offset: const Offset(4.0, 4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+        const BoxShadow(
+          color: Colors.white,
+          offset: Offset(-4.0, -4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+      ],
+      color: /*Color.fromARGB(255, 240, 240, 255),*/
+          Colors.white,
+      /*Colors.blue[400],*/
+      borderRadius: const BorderRadius.all(
+        Radius.circular(20),
+      ),
+    );
+
+    BoxDecoration temaOscuro = BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade800,
+          offset: const Offset(4.0, 4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+        const BoxShadow(
+          color: Colors.black,
+          offset: Offset(-4.0, -4.0),
+          blurRadius: 15,
+          spreadRadius: 1,
+        ),
+      ],
+      color: /*Color.fromARGB(255, 240, 240, 255),*/
+          const Color.fromARGB(255, 29, 26, 26),
+      /*Colors.blue[400],*/
+      borderRadius: const BorderRadius.all(
+        Radius.circular(20),
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.only(
         bottom: 20,
@@ -25,28 +78,7 @@ class TarjetaViajeWidget extends ConsumerWidget {
         left: 16,
       ),
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade500,
-              offset: const Offset(4.0, 4.0),
-              blurRadius: 15,
-              spreadRadius: 1,
-            ),
-            const BoxShadow(
-              color: Colors.white,
-              offset: Offset(-4.0, -4.0),
-              blurRadius: 15,
-              spreadRadius: 1,
-            ),
-          ],
-          color: /*Color.fromARGB(255, 240, 240, 255),*/
-              Colors.white,
-          /*Colors.blue[400],*/
-          borderRadius: const BorderRadius.all(
-            Radius.circular(20),
-          ),
-        ),
+        decoration: tema ? temaClaro : temaOscuro,
         child: Material(
           elevation: 0,
           color: Colors.transparent,
@@ -72,12 +104,9 @@ class TarjetaViajeWidget extends ConsumerWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                        //TODO imagen del usuario
-                        image: ref.read(imagenDefectoProvider),
-                        //AssetImage('lib/assets/defaultProfile.png'),
-                        /*oferta.urlIcono == null
-                            ? const AssetImage('lib/assets/defaultProfile.png')
-                            : NetworkImage(oferta.urlIcono!) as ImageProvider<Object>,*/
+                        image: oferta.creador.urlIcono != null
+                            ? NetworkImage(oferta.creador.urlIcono!)
+                            : ref.read(imagenDefectoProvider),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -142,7 +171,7 @@ class TarjetaViajeWidget extends ConsumerWidget {
                                       child: Icon(
                                         Icons.arrow_right_alt_rounded,
                                         size: 17,
-                                        color: Colors.blue[700],
+                                        color: Colors.blue[800],
                                       ),
                                     ),
                                     TextSpan(

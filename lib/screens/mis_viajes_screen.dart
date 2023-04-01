@@ -6,6 +6,7 @@ import 'package:unicar/providers/oferta_provider.dart';
 
 import '../widgets/seccion_tarjetas.dart';
 import '../widgets/texto.dart';
+import 'crear_oferta_screen.dart';
 
 class MisViajesScreen extends ConsumerWidget {
   const MisViajesScreen({super.key});
@@ -93,6 +94,19 @@ class MisViajesScreen extends ConsumerWidget {
             ),
           )
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        foregroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 60, 119, 245),
+        onPressed: () {
+          Navigator.of(context).pushNamed(CrearOferta.kRouteName);
+        },
+        label: const Text(
+          'Publicar oferta',
+          style: TextStyle(fontSize: 16),
+        ),
+        icon: const Icon(Icons.add),
       ),
     );
   }

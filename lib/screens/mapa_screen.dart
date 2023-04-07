@@ -102,7 +102,7 @@ class _MapaScreenState extends ConsumerState<MapaScreen> {
               : LatLng(36.72016000, -4.42034000);
 
           final marcadorUsuario = Marker(
-            point: LatLng(data!.latitude, data.longitude),
+            point: posicionInicial,
             rotate: true,
             width: 60,
             builder: (context) => const Icon(

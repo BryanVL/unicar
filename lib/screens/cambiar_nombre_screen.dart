@@ -20,7 +20,8 @@ class _CambiarNombreScreen extends ConsumerState<CambiarNombreScreen> {
   final nombreController = TextEditingController();
 
   void _actualizarDatos(String nombre) async {
-    ref.read(databaseProvider).actualizarDatosUsuario(ref.read(usuarioProvider)!.id, nombre, null);
+    ref.read(databaseProvider).actualizarDatosUsuario(
+        ref.read(usuarioProvider)!.id, nombre, ref.read(usuarioProvider)!.urlIcono);
     ref.read(usuarioProvider.notifier).state =
         ref.read(usuarioProvider.notifier).state!.copyWith(nombre: nombre);
     if (context.mounted) {

@@ -1,16 +1,5 @@
 # unicar
 
-A new Flutter project.
+Unicar is a car sharing app made in Flutter. The goal of the app is to give people an easy and secure way to find someone to go from and to the university of Málaga sharing a car. This app was made as part of my final year project in the computer science undergraduate. In the "docs" directory you can find the dissertation made and the docs generated for the project.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Unicar es una aplicación para compartir coche hecha en Flutter. El objetico de la aplicación es proporcionar una manera fácil de encontrar a otras personas que vayan a la universidad de Málaga para compartir coche. Esta aplicación se hizo como parte del trabajo fin de grado del grado de ingenieria informática en la universidad de Málaga. En la carpeta "docs" se encuentran tanto la memoria del TFG como la documentación generada para el proyecto.
